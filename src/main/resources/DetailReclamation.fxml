@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.DetailReclamationController"
+      spacing="10"
+      style="-fx-padding:15;">
+
+    <Label fx:id="lblTitre"/>
+    <Label fx:id="lblDate"/>
+    <Label fx:id="lblStatut"/>
+
+    <TextArea fx:id="txtDescription" editable="false" wrapText="true"/>
+
+    <Button text="Annuler" onAction="#onBack"/>
+
+</VBox>

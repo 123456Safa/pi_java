@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.FormReclamationController"
+      spacing="10">
+
+    <TextField fx:id="titre" promptText="Titre"/>
+    <TextField fx:id="description" promptText="Description"/>
+
+    <HBox spacing="10">
+        <Button text="Enregistrer" onAction="#save"/>
+        <Button text="Annuler" onAction="#cancel"/>
+    </HBox>
+
+</VBox>
