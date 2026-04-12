@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.HomeAdminController"
+      spacing="10">
+
+    <TextField fx:id="searchField" promptText="Recherche par titre" onKeyReleased="#search"/>
+
+    <TableView fx:id="table">
+
+        <columns>
+            <TableColumn fx:id="colTitre" text="Titre"/>
+            <TableColumn fx:id="colDate" text="Date"/>
+            <TableColumn fx:id="colStatut" text="Statut"/>
+            <TableColumn fx:id="colAction" text="Action"/>
+        </columns>
+
+    </TableView>
+
+</VBox>

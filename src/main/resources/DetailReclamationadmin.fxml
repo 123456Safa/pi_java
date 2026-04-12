@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.DetailReclamationControlleradmin"
+      spacing="10">
+
+    <Label fx:id="titre"/>
+    <Label fx:id="description"/>
+    <Label fx:id="date"/>
+    <Label fx:id="statut"/>
+
+    <Button text="Modifier" onAction="#modifier"/>
+    <Button text="Ajouter réponse" onAction="#repondre"/>
+
+
+</VBox>
