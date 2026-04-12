@@ -83,6 +83,36 @@ public class ReclamationService {
 
         return list;
     }
+    public List<Reclamation> getAll() {
+
+        List<Reclamation> list = new ArrayList<>();
+
+        try {
+            String sql = "SELECT * FROM reclamation"; // 🔥 بدون user_id
+            PreparedStatement ps = cnx.prepareStatement(sql);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                Reclamation r = new Reclamation();
+
+                r.setId(rs.getInt("id"));
+                r.setTitre(rs.getString("titre"));
+                r.setDescription(rs.getString("description"));
+                r.setDateCreation(rs.getDate("date_creation"));
+                r.setStatut(rs.getString("statut"));
+                r.setUserId(rs.getInt("user_id"));
+
+                list.add(r);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
 
     // ================= UPDATE =================
     public void update(Reclamation r) {

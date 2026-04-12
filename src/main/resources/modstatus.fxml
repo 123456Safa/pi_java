@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="299.0" prefWidth="377.0" spacing="10" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ModifierStatusController">
+
+    <Button onAction="#save" text="Enregistrer" />
+
+    <ComboBox fx:id="statusBox" prefHeight="26.0" prefWidth="110.0" />
+    <Button onAction="#cancel" text="Annuler" />
+
+</VBox>
