@@ -10,7 +10,47 @@ import java.util.List;
 public class ReclamationService {
 
     Connection cnx = MyConnection.getInstance();
+    public void updateStatus(Reclamation r) {
+        try {
+            String sql = "UPDATE reclamation SET statut=? WHERE id=?";
+            PreparedStatement ps = cnx.prepareStatement(sql);
+            ps.setString(1, r.getStatut());
+            ps.setInt(2, r.getId());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public List<Reclamation> searchByTitre(String titre) {
 
+        List<Reclamation> list = new ArrayList<>();
+
+        try {
+            String sql = "SELECT * FROM reclamation WHERE titre LIKE ?";
+            PreparedStatement ps = cnx.prepareStatement(sql);
+
+            ps.setString(1, "%" + titre + "%");
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Reclamation r = new Reclamation();
+
+                r.setId(rs.getInt("id"));
+                r.setTitre(rs.getString("titre"));
+                r.setDescription(rs.getString("description"));
+                r.setDateCreation(rs.getDate("date_creation"));
+                r.setStatut(rs.getString("statut"));
+
+                list.add(r);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
     // ================= GET ALL =================
     public List<Reclamation> getAll(int userId) {
 
@@ -92,5 +132,6 @@ public class ReclamationService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 }
