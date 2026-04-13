@@ -39,8 +39,6 @@ public class HomeAdminController {
         colDate.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getDateCreation()));
 
         addButtons();
-
-        loadTable(service.getAll()); // 🔥 الحل هنا
     }
 
     private void loadTable(List<Reclamation> list) {
@@ -114,11 +112,6 @@ public class HomeAdminController {
     @FXML
     public void search() {
         String txt = searchField.getText();
-
-        if (txt == null || txt.isEmpty()) {
-            loadTable(service.getAll()); // 🔥 يرجّع الكل
-        } else {
             loadTable(service.searchByTitre(txt));
         }
     }
-}
