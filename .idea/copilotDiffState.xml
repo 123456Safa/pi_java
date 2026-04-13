@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/MODIFICATIONS.md">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/MODIFICATIONS.md" />
+              <option name="updatedContent" value="# Modifications effectuées - Gestion des Produits&#10;&#10;## Résumé&#10;Une interface d'ajout de produits a été créée pour permettre aux utilisateurs de remplir un formulaire et d'ajouter des produits à la base de données.&#10;&#10;## Fichiers créés :&#10;&#10;### 1. **ProduitForm.fxml** (C:\Users\islem\Desktop\piDev\projetDev\src\main\resources\ProduitForm.fxml)&#10;- Nouvelle interface pour le formulaire d'ajout de produit&#10;- Contient les champs suivants:&#10;  - Nom du produit (TextField)&#10;  - Description (TextArea)&#10;  - Prix (TextField - nombre décimal)&#10;  - Quantité (TextField - nombre entier)&#10;  - Statut (ComboBox avec options: Actif, Inactif, En rupture)&#10;  - Catégorie ID (TextField - nombre entier)&#10;  - Date d'expiration (DatePicker)&#10;  - URL Image (TextField)&#10;- Deux boutons d'action:&#10;  - Bouton &quot;Ajouter&quot; (vert #34C759) - ajoute le produit et rafraîchit la table&#10;  - Bouton &quot;Annuler&quot; (gris #999999) - ferme le formulaire sans rien faire&#10;&#10;### 2. **ProduitFormController.java** (C:\Users\islem\Desktop\piDev\projetDev\src\main\java\controllers\ProduitFormController.java)&#10;- Contrôleur pour le formulaire d'ajout&#10;- Responsabilités:&#10;  - Validation de tous les champs saisis&#10;  - Conversion des données (prix, quantité, ID catégorie)&#10;  - Ajout du produit à la base de données via ProduitService&#10;  - Gestion des erreurs et messages de succès&#10;  - Rafraîchissement automatique de la table principale après l'ajout&#10;&#10;## Fichiers modifiés :&#10;&#10;### 1. **ProduitController.java**&#10;Modifications:&#10;- Ajout des imports nécessaires (FXMLLoader, Scene, BorderPane, Stage, IOException)&#10;- Implémentation complète de la méthode `onAjouter()`:&#10;  - Charge le fichier FXML ProduitForm.fxml&#10;  - Crée une nouvelle fenêtre (Stage)&#10;  - Passe les références du stage et du contrôleur parent au formulaire&#10;  - Affiche la fenêtre de manière modale (bloque l'accès à la fenêtre principale)&#10;- Modification de `rafraichirTable()`:&#10;  - Passée de `private` à `public` pour permettre au formulaire de rafraîchir la table&#10;&#10;### 2. **Produit.fxml**&#10;Modifications:&#10;- Restructuration des colonnes du tableau&#10;- Correction de la colonne d'actions (était utilisée pour &quot;Description&quot;)&#10;- Ordre des colonnes:&#10;  1. ID&#10;  2. NOM&#10;  3. DESCRIPTION&#10;  4. PRIX&#10;  5. QUANTITÉ&#10;  6. STATUT&#10;  7. DATE EXPIRATION&#10;  8. CATÉGORIE&#10;  9. IMAGE&#10;  10. ACTIONS (avec boutons [Edit] Modifier et [X] Supprimer)&#10;&#10;## Flux de fonctionnement :&#10;&#10;1. **L'utilisateur clique sur &quot;Ajouter un produit&quot;**&#10;   - Le bouton `btnAjouter` déclenche la méthode `onAjouter()`&#10;&#10;2. **Ouverture du formulaire**&#10;   - Une nouvelle fenêtre s'ouvre avec le formulaire&#10;   - La fenêtre est modale (bloque la fenêtre principale)&#10;&#10;3. **L'utilisateur remplit les champs**&#10;   - Tous les champs sont validés (non vides, type correct)&#10;   - Des messages d'erreur s'affichent pour les erreurs de validation&#10;&#10;4. **Clic sur &quot;Ajouter&quot;**&#10;   - Les données sont converties aux types appropriés&#10;   - Un nouvel objet Produit est créé&#10;   - La méthode `produitService.ajouter()` enregistre le produit&#10;   - La table principale se rafraîchit automatiquement&#10;   - Un message de succès s'affiche&#10;   - La fenêtre du formulaire se ferme&#10;&#10;5. **Clic sur &quot;Annuler&quot;**&#10;   - La fenêtre du formulaire se ferme sans enregistrer&#10;&#10;## Gestion des erreurs :&#10;&#10;- **Champs vides** : Message d'erreur &quot;Veuillez entrer [le champ]&quot;&#10;- **Format invalide** :&#10;  - Prix : doit être un nombre décimal&#10;  - Quantité : doit être un nombre entier&#10;  - Catégorie ID : doit être un nombre entier&#10;- **Erreurs base de données** : Affichage du message d'erreur SQL complet&#10;&#10;## Comment utiliser :&#10;&#10;1. **Compiler le projet :**&#10;   ```bash&#10;   mvn clean compile&#10;   ```&#10;&#10;2. **Exécuter l'application :**&#10;   - Windows: Double-cliquer sur `run.bat` ou exécuter:&#10;     ```cmd&#10;     mvn javafx:run&#10;     ```&#10;   - Linux/Mac: Exécuter:&#10;     ```bash&#10;     mvn javafx:run&#10;     ```&#10;&#10;3. **Utiliser le formulaire :**&#10;   - Cliquer sur le bouton &quot;+ Ajouter un produit&quot;&#10;   - Remplir tous les champs&#10;   - Cliquer sur &quot;Ajouter&quot; pour enregistrer&#10;   - Le produit s'ajoute à la table et est visible immédiatement&#10;&#10;## Fonctionnalités supplémentaires disponibles :&#10;&#10;- **Modifier** : Cliquer sur le bouton [Edit] dans la colonne Actions&#10;- **Supprimer** : Cliquer sur le bouton [X] dans la colonne Actions (avec confirmation)&#10;- **Recherche et filtres** : Interface de recherche en haut de la page&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/run.bat">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/run.bat" />
+              <option name="updatedContent" value="@echo off&#10;REM Script pour executer l'application JavaFX&#10;&#10;REM Ajouter Maven au PATH&#10;set PATH=%PATH%;C:\Users\islem\maven\bin&#10;&#10;REM Se placer dans le repertoire du projet&#10;cd /d &quot;C:\Users\islem\Desktop\piDev\projetDev&quot;&#10;&#10;REM Lancer l'application&#10;mvn javafx:run&#10;&#10;pause&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/run.sh">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/run.sh" />
+              <option name="updatedContent" value="#!/bin/bash&#10;# Script pour exécuter l'application JavaFX&#10;&#10;# Ajouter Maven au PATH&#10;export PATH=&quot;$PATH:/c/Users/islem/maven/bin&quot;&#10;&#10;# Se placer dans le répertoire du projet&#10;cd &quot;C:\Users\islem\Desktop\piDev\projetDev&quot;&#10;&#10;# Lancer l'application&#10;mvn javafx:run&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
