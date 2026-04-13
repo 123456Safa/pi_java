@@ -5,6 +5,9 @@ import utils.MyConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReponseService {
 
@@ -26,5 +29,33 @@ public class ReponseService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    public List<Reponse> getByReclamationId(int id) {
+
+        List<Reponse> list = new ArrayList<>();
+
+        try {
+            String sql = "SELECT * FROM reponse WHERE reclamation_id=?";
+            PreparedStatement ps = cnx.prepareStatement(sql);
+            ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                Reponse r = new Reponse();
+                r.setId(rs.getInt("id"));
+                r.setContenu(rs.getString("contenu"));
+                r.setDateReponse(rs.getDate("date_reponse"));
+                r.setReclamationId(rs.getInt("reclamation_id"));
+
+                list.add(r);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 }

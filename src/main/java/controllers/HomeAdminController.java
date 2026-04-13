@@ -39,6 +39,8 @@ public class HomeAdminController {
         colDate.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getDateCreation()));
 
         addButtons();
+
+        loadTable(service.getAll());
     }
 
     private void loadTable(List<Reclamation> list) {
@@ -68,7 +70,7 @@ public class HomeAdminController {
         });
     }
     public void refresh() {
-        loadTable(service.getAll(1));
+        loadTable(service.getAll());
     }
     private void openDetail(Reclamation r) {
         try {
@@ -77,7 +79,7 @@ public class HomeAdminController {
 
             DetailReclamationControlleradmin c = loader.getController();
             c.setData(r);
-
+            c.setHomeController(this);
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.show();
@@ -93,7 +95,7 @@ public class HomeAdminController {
 
             ModifierStatusController c = loader.getController();
             c.setData(r);
-            c.setHomeController(this); // 🔥 مهم
+            c.setHomeController(this);
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
@@ -106,12 +108,16 @@ public class HomeAdminController {
 
     private void delete(Reclamation r) {
         service.delete(r.getId());
-        loadTable(service.getAll(1));
+        loadTable(service.getAll());
     }
-
     @FXML
     public void search() {
         String txt = searchField.getText();
+
+        if (txt == null || txt.isEmpty()) {
+            loadTable(service.getAll());
+        } else {
             loadTable(service.searchByTitre(txt));
         }
+    }
     }

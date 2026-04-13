@@ -88,22 +88,17 @@ public class ReclamationService {
         List<Reclamation> list = new ArrayList<>();
 
         try {
-            String sql = "SELECT * FROM reclamation"; // 🔥 بدون user_id
+            String sql = "SELECT * FROM reclamation";
             PreparedStatement ps = cnx.prepareStatement(sql);
-
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-
                 Reclamation r = new Reclamation();
-
                 r.setId(rs.getInt("id"));
                 r.setTitre(rs.getString("titre"));
                 r.setDescription(rs.getString("description"));
                 r.setDateCreation(rs.getDate("date_creation"));
                 r.setStatut(rs.getString("statut"));
-                r.setUserId(rs.getInt("user_id"));
-
                 list.add(r);
             }
 
@@ -133,13 +128,17 @@ public class ReclamationService {
 
     // ================= DELETE =================
     public void delete(int id) {
+
         try {
-            String sql = "DELETE FROM reclamation WHERE id=?";
+            String sql1 = "DELETE FROM reponse WHERE reclamation_id=?";
+            PreparedStatement ps1 = cnx.prepareStatement(sql1);
+            ps1.setInt(1, id);
+            ps1.executeUpdate();
 
-            PreparedStatement ps = cnx.prepareStatement(sql);
-            ps.setInt(1, id);
-
-            ps.executeUpdate();
+            String sql2 = "DELETE FROM reclamation WHERE id=?";
+            PreparedStatement ps2 = cnx.prepareStatement(sql2);
+            ps2.setInt(1, id);
+            ps2.executeUpdate();
 
         } catch (Exception e) {
             e.printStackTrace();

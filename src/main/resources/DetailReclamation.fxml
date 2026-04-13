@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<VBox spacing="10"
+      style="-fx-padding:15;"
+      xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.DetailReclamationController">
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controllers.DetailReclamationController"
-      spacing="10"
-      style="-fx-padding:15;">
+    <Label fx:id="lblTitre" />
+    <Label fx:id="lblDate" />
+    <Label fx:id="lblStatut" />
 
-    <Label fx:id="lblTitre"/>
-    <Label fx:id="lblDate"/>
-    <Label fx:id="lblStatut"/>
+    <TextArea fx:id="txtDescription"
+              editable="false"
+              wrapText="true"/>
 
-    <TextArea fx:id="txtDescription" editable="false" wrapText="true"/>
+    <Separator/>
 
-    <Button text="Annuler" onAction="#onBack"/>
+    <!-- 🔥 هنا باش نعرضو الردود -->
+    <Label text="Réponses :" style="-fx-font-weight:bold;"/>
+
+    <VBox fx:id="reponseContainer" spacing="8"/>
+
+    <Button onAction="#onBack" text="Annuler"/>
 
 </VBox>

@@ -1,46 +1,73 @@
 package controllers;
 
-import javafx.fxml.FXML;
-import javafx.stage.Stage;
-import javafx.scene.control.TextField;
 import Model.Reclamation;
 import Service.ReclamationService;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
 
 import java.util.Date;
 
 public class FormReclamationController {
 
-    @FXML
-    private TextField titre;
+    @FXML private TextField titre;
+    @FXML private TextArea description;
+    @FXML private Label titreError;
+    @FXML private Label descError;
 
-    @FXML
-    private TextField description;
-
+    private HomeReclamationController homeController;
     private final ReclamationService service = new ReclamationService();
+
+    public void setHomeController(HomeReclamationController c) {
+        this.homeController = c;
+    }
 
     @FXML
     public void save() {
 
+        boolean valid = true;
+
+        titreError.setText("");
+        descError.setText("");
+
+        String t = titre.getText();
+        String d = description.getText();
+
+        if (t == null || t.length() < 5) {
+            titreError.setText("Min 5 caractères");
+            valid = false;
+        } else if (t.length() > 255) {
+            titreError.setText("Max 255 caractères");
+            valid = false;
+        }
+
+        if (d == null || d.length() < 20) {
+            descError.setText("Min 20 caractères");
+            valid = false;
+        } else if (d.length() > 2000) {
+            descError.setText("Max 2000 caractères");
+            valid = false;
+        }
+
+        if (!valid) return;
+
         Reclamation r = new Reclamation();
-
-        r.setTitre(titre.getText());
-        r.setDescription(description.getText());
-
-        r.setDateCreation(new Date()); // date du PC
-        r.setStatut("EN_COURS");
+        r.setTitre(t);
+        r.setDescription(d);
+        r.setDateCreation(new Date());
+        r.setStatut("EN_ATTENTE");
 
         service.add(r);
 
-        close();
+        if (homeController != null) {
+            homeController.load();
+        }
+
+        ((Stage) titre.getScene().getWindow()).close();
     }
 
     @FXML
     public void cancel() {
-        close();
-    }
-
-    private void close() {
-        Stage stage = (Stage) titre.getScene().getWindow();
-        stage.close();
+        ((Stage) titre.getScene().getWindow()).close();
     }
 }

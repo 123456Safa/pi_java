@@ -39,7 +39,7 @@ public class DetailReclamationControlleradmin {
             ReponseFormController c = loader.getController();
             c.setReclamation(r);
 
-            Stage stage = new Stage();   // ✅ نفس stage
+            Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.show();
 
@@ -54,7 +54,10 @@ public class DetailReclamationControlleradmin {
             Parent root = loader.load();
 
             ModifierStatusController c = loader.getController();
-            c.setData(r); // نبعث reclamation
+            c.setData(r);
+
+
+            c.setHomeController(homeController);
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));

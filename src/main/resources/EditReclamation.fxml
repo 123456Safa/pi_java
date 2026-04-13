@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx"
+<VBox spacing="10" style="-fx-padding:15;"
+      xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="controllers.EditReclamationController"
-      spacing="10"
-      style="-fx-padding:15;">
+      fx:controller="controllers.EditReclamationController">
 
-    <TextField fx:id="titre" promptText="Titre"/>
-    <TextField fx:id="description" promptText="Description"/>
+    <!-- Titre -->
+    <HBox spacing="10">
+        <Label text="Titre:"/>
+        <TextField fx:id="titre" prefWidth="164" promptText="Titre"/>
+    </HBox>
+    <Label fx:id="titreError" style="-fx-text-fill:red;"/>
 
-    <Button text="Enregistrer" onAction="#save"/>
-    <Button text="Annuler" onAction="#cancel"/>
+    <!-- Description -->
+    <HBox spacing="10">
+        <Label text="Description:"/>
+        <TextArea fx:id="description" prefHeight="100" prefWidth="200"/>
+    </HBox>
+    <Label fx:id="descError" style="-fx-text-fill:red;"/>
+
+    <!-- Buttons -->
+    <HBox alignment="CENTER" spacing="10">
+        <Button text="Enregistrer" onAction="#save"/>
+        <Button text="Annuler" onAction="#cancel"/>
+    </HBox>
 
 </VBox>

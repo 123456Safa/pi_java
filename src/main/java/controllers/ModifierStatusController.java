@@ -32,7 +32,7 @@ public class ModifierStatusController {
         service.updateStatus(r);
 
         if (homeController != null) {
-            homeController.refresh();
+            homeController.refresh(); // OK
         }
 
         ((Stage) statusBox.getScene().getWindow()).close();

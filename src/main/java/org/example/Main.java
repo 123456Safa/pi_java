@@ -12,7 +12,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
             Parent root = FXMLLoader.load(
-                    getClass().getResource("/HomeAdmin.fxml")
+                    getClass().getResource("/HomeReclamation.fxml")
             );
 
             Scene scene = new Scene(root);
