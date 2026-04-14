@@ -1,0 +1,39 @@
+<VBox spacing="10" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.UtilisateurController">
+
+    <TextField fx:id="tfNom" promptText="Nom"/>
+    <TextField fx:id="tfEmail" promptText="Email"/>
+    <TextField fx:id="tfMotDePasse" promptText="Mot de passe"/>
+    <TextField fx:id="tfRole" promptText="Rôle"/>
+
+    <HBox spacing="10">
+       <Button text="Ajouter" onAction="#ajouterUtilisateur"/>
+       <Button text="Modifier" onAction="#modifierUtilisateur"/>
+       <Button text="Supprimer" onAction="#supprimerUtilisateur"/>
+    </HBox>
+
+    <TableView fx:id="tableUtilisateur">
+        <columns>
+            <TableColumn text="ID" prefWidth="50">
+                <cellValueFactory>
+                    <PropertyValueFactory property="id" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Nom" prefWidth="150">
+                <cellValueFactory>
+                    <PropertyValueFactory property="nom" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Email" prefWidth="200">
+                <cellValueFactory>
+                    <PropertyValueFactory property="email" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Rôle" prefWidth="100">
+                <cellValueFactory>
+                    <PropertyValueFactory property="role" />
+                </cellValueFactory>
+            </TableColumn>
+        </columns>
+    </TableView>
+</VBox>

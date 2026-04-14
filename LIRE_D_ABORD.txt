@@ -1,0 +1,96 @@
+================================================================================
+🎯 PHARMAX - AJOUTER PRODUITS AU CATALOGUE - INSTRUCTIONS SIMPLES
+================================================================================
+
+⏱️  TEMPS: 3 minutes
+✅ RÉSULTAT: 25 produits dans le catalogue
+
+================================================================================
+📋 ÉTAPES À SUIVRE:
+================================================================================
+
+ÉTAPE 1️⃣  - Arrêter l'application JavaFX
+   ► Cliquez sur le bouton ROUGE "Stop" en bas d'IntelliJ (s'il existe)
+
+ÉTAPE 2️⃣  - Nettoyer et recompiler
+   ► Dans IntelliJ, allez à: Build → Clean Project
+   ► Puis: Build → Build Project
+   ► Attendez que la barre de compilation se termine
+
+ÉTAPE 3️⃣  - Relancer l'application
+   ► Appuyez sur F5 ou Ctrl+F5 pour relancer
+
+ÉTAPE 4️⃣  - Vérifier la console
+   ► Regardez en bas d'IntelliJ (onglet "Console")
+   ► Vous devez voir:
+     === 🔧 INITIALISATION DE LA BASE DE DONNÉES ===
+     ✅ Table 'produits' créée/vérifiée
+     📦 INSERTION de 25 produits de test...
+     ✅ RÉSULTAT: 25/25 produits insérés avec succès!
+
+ÉTAPE 5️⃣  - Tester dans l'interface
+   ► L'application s'ouvre
+   ► Cliquez sur le bouton vert: 🛍️ Catalogue
+   ► ✅ RÉSULTAT: Les 25 produits s'affichent !
+
+================================================================================
+🆘 SI ÇA NE MARCHE PAS:
+================================================================================
+
+OPTION A - Exécuter le script SQL directement (10 minutes)
+   1. Ouvrez MySQL Workbench
+   2. Allez à: File → Open SQL Script
+   3. Sélectionnez: AJOUTER_PRODUITS.sql
+   4. Exécutez: Ctrl+Shift+Enter
+   5. Relancez l'application (F5)
+
+OPTION B - Double-cliquer sur le batch (5 minutes)
+   1. Ouvrez l'Explorateur Windows
+   2. Naviguez vers: C:\Users\fatma\IdeaProjects\pidevjava\
+   3. Double-cliquez sur: ajouter_produits.bat
+   4. Relancez l'application (F5)
+
+================================================================================
+✅ VÉRIFICATION FINALE:
+================================================================================
+
+DANS L'INTERFACE:
+   □ Cliquez sur "🛍️ Catalogue"
+   □ ✅ Vous voyez 25 produits
+   □ Chaque produit a: nom, prix, description, bouton "Ajouter au panier"
+
+EN BASE DE DONNÉES (optionnel):
+   □ MySQL Workbench: SELECT COUNT(*) FROM produits;
+   □ Résultat: 25
+
+================================================================================
+📁 FICHIERS DE SUPPORT (si vous en avez besoin):
+================================================================================
+
+DOCUMENTATION:
+   • GUIDE_AJOUT_PRODUITS.md - Guide complet en français
+   • SOLUTION_RAPIDE.txt - Instructions détaillées
+   • README_PRODUITS.md - Vue d'ensemble
+   • FICHIER_UTILISATION.txt - Dépannage complet
+
+SCRIPTS SQL:
+   • AJOUTER_PRODUITS.sql - Pour MySQL Workbench
+   • COPIER_COLLER.sql - À copier-coller dans MySQL
+   • VERIFIER_PRODUITS.sql - Vérifier les produits
+
+SCRIPTS BATCH:
+   • ajouter_produits.bat - Pour Windows
+
+CODE JAVA MODIFIÉ:
+   • src/main/java/utils/DataInitializer.java - Amélioré
+
+================================================================================
+🚀 C'EST TOUT ! COMMENCEZ PAR L'ÉTAPE 1️⃣
+================================================================================
+
+✅ L'application insérera automatiquement 25 produits au démarrage !
+
+Besoin d'aide? Consultez GUIDE_AJOUT_PRODUITS.md
+
+================================================================================
+

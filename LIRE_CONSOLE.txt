@@ -1,0 +1,188 @@
+================================================================================
+🔍 CE QUE VOUS DEVEZ VOIR DANS LA CONSOLE (CONSOLE DE SORTIE)
+================================================================================
+
+Quand vous relancez l'application (F5), vous devez voir ces logs dans la
+console en bas d'IntelliJ (onglet "Run" ou "Console"):
+
+================================================================================
+✅ LOGS ATTENDUS:
+================================================================================
+
+✅ Connecté à la base de données
+com.mysql.cj.jdbc.ConnectionImpl@... (deux lignes similaires)
+
+=== 🔧 INITIALISATION DE LA BASE DE DONNÉES ===
+📋 Vérification/Création table 'produits'...
+✅ Table 'produits' créée/vérifiée
+📊 Vérification des données existantes...
+   📌 Produits actuels en BD: 0
+
+📦 INSERTION de 25 produits de test...
+   ✅ [1/25] Produit inséré
+   ✅ [2/25] Produit inséré
+   ✅ [3/25] Produit inséré
+   ...
+   ✅ [25/25] Produit inséré
+
+✅ RÉSULTAT: 25/25 produits insérés avec succès!
+✅ TOTAL EN BD: 25 produits
+✅ Initialisation TERMINÉE
+
+[L'application s'ouvre normalement]
+
+================================================================================
+❌ LOGS D'ERREUR - SIGNIFIANT UN PROBLÈME:
+================================================================================
+
+Si vous voyez une de ces erreurs:
+
+❌ Erreur création table: [message]
+  → La BD 'pharm' n'existe pas ou l'accès est refusé
+  → Solution: Créez la BD manuellement ou vérifiez les droits
+
+❌ Erreur lors du comptage: [message]
+  → La requête SQL a échoué
+  → Solution: Vérifiez que la table 'produits' est bien créée
+
+❌ [X/25] Erreur: [message]
+  → L'insertion a échoué pour ce produit
+  → Solution: Exécutez AJOUTER_PRODUITS.sql manuellement
+
+❌ ERREUR CRITIQUE lors de l'initialisation:
+  → Problème grave de connexion ou de configuration
+  → Solution: Vérifiez MyConnection.java (URL, user, password)
+
+================================================================================
+✅ LOGS SI DONNÉES EXISTENT DÉJÀ:
+================================================================================
+
+Si vous relancez l'application une deuxième fois, les logs seront:
+
+✅ Connecté à la base de données
+...
+
+=== 🔧 INITIALISATION DE LA BASE DE DONNÉES ===
+📋 Vérification/Création table 'produits'...
+✅ Table 'produits' créée/vérifiée
+📊 Vérification des données existantes...
+   📌 Produits actuels en BD: 25
+
+✅ Données déjà présentes (25 produits) - Aucune insertion nécessaire
+✅ Initialisation TERMINÉE
+
+[L'application s'ouvre normalement]
+
+>>> CELA SIGNIFIE QUE LES PRODUITS SONT BIEN EN BD !
+
+================================================================================
+🔍 OÙ TROUVER LA CONSOLE DANS INTELLIJ:
+================================================================================
+
+1. Regardez en bas de la fenêtre IntelliJ
+2. Vous verrez plusieurs onglets:
+   - "Services"
+   - "Run" (ou "Exécution")
+   - "Debug"
+   - "Console"
+   - etc.
+
+3. Cliquez sur l'onglet "Run" (ou "Exécution")
+4. Les logs s'affichent dans ce panneau
+
+Si vous ne voyez pas de logs:
+   - Vérifiez que l'application est bien en cours d'exécution (indication verte)
+   - Cliquez sur l'onglet "Run" pour basculer vers la console
+   - Attendez quelques secondes après le démarrage
+
+================================================================================
+🎯 APRÈS LES LOGS - CE QUI SE PASSE ENSUITE:
+================================================================================
+
+1. APRÈS les logs (5-10 secondes), l'application JavaFX s'ouvre
+2. Vous voyez: "Bienvenue sur PHARMAX"
+3. Vous voyez 3 boutons:
+   - "🛍️ Catalogue" (vert)
+   - "🛒 Panier" (rouge)
+   - "📜 Historique" (bleu)
+
+4. Cliquez sur "🛍️ Catalogue"
+5. ✅ RÉSULTAT: Les 25 produits s'affichent !
+
+================================================================================
+📱 SI L'INTERFACE NE MONTRE PAS DE PRODUITS:
+================================================================================
+
+Même si les logs disent "✅ 25/25 produits insérés":
+
+1. VÉRIFIER: Vous avez bien cliqué sur "🛍️ Catalogue" ?
+2. ATTENDRE: Parfois, ça prend quelques secondes à charger
+3. RECHARGER: Essayez de cliquer plusieurs fois sur "Catalogue"
+4. REDÉMARRER: Si ça ne marche pas, redémarrez l'app (Ctrl+C, puis F5)
+
+Si toujours rien n'apparaît:
+   → Les produits sont en BD mais ne s'affichent pas dans l'interface
+   → Vérifiez CatalogueController.java pour un bug potentiel
+   → Consultez GUIDE_AJOUT_PRODUITS.md
+
+================================================================================
+✅ VÉRIFICATION MANUELLE EN BASE DE DONNÉES:
+================================================================================
+
+Si vous voulez vérifier que les produits sont VRAIMENT en BD:
+
+1. Ouvrez MySQL Workbench
+2. Connectez-vous
+3. Exécutez cette requête:
+
+   USE pharm;
+   SELECT COUNT(*) FROM produits;
+
+4. Vous devez voir: "25"
+
+5. Pour voir les produits:
+
+   SELECT * FROM produits LIMIT 5;
+
+6. Vous devez voir les 5 premiers produits avec leurs données
+
+================================================================================
+🆘 TROUBLESHOOTING PAR LOGS:
+================================================================================
+
+LOGS AFFICHÉS?         │ SOLUTION
+────────────────────────┼─────────────────────────────────────────
+Oui, "25/25 insérés"   │ ✅ Parfait ! Cliquez sur "Catalogue"
+────────────────────────┼─────────────────────────────────────────
+Non, rien n'apparaît   │ ❌ Vérifiez:
+                        │   - La console est visible (onglet "Run")
+                        │   - L'application s'est bien lancée
+                        │   - Attendez 10 secondes
+────────────────────────┼─────────────────────────────────────────
+Oui, "0 produit"       │ ⚠️  Les données existaient déjà vides
+                        │   Exécutez AJOUTER_PRODUITS.sql manuellement
+────────────────────────┼─────────────────────────────────────────
+Erreur de connexion    │ ❌ Vérifiez:
+                        │   - MySQL est en cours d'exécution
+                        │   - La BD 'pharm' existe
+                        │   - L'URL est bonne
+────────────────────────┼─────────────────────────────────────────
+Erreur: "Classe non     │ ❌ Vérifiez:
+trouvée" ou similaire   │   - Vous avez compilé le projet
+                        │   - Build → Build Project
+────────────────────────┼─────────────────────────────────────────
+Les logs montrent 25    │ 🎯 C'est normal ! Les données existent
+produits déjà présents  │   Cliquez sur "Catalogue" normalement
+
+================================================================================
+💡 CONSEILS:
+================================================================================
+
+✅ Les logs commencent toujours par "✅ Connecté à la base de données"
+✅ Cherchez "🔧 INITIALISATION" pour trouver les logs de produits
+✅ Cherchez "25/25" pour confirmer que tout a fonctionné
+✅ Si vous redémarrez l'app, les logs seront "0 produits" → "25 déjà présents"
+✅ C'est normal ! Les produits ne sont insérés qu'une seule fois
+
+================================================================================
+

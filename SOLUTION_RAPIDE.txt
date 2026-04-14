@@ -1,0 +1,132 @@
+================================================================================
+🛍️  PHARMAX - SOLUTION RAPIDE POUR AJOUTER LES PRODUITS
+================================================================================
+
+PROBLÈME:
+  "Pas de produits" dans le catalogue
+
+SOLUTION RAPIDE (2 clics):
+  1. Dans IntelliJ :
+     - Menu → Run → Clean Project
+     - Menu → Run → Build Project
+  2. Relancez l'application (F5)
+  3. ✅ Les 25 produits doivent s'afficher !
+
+================================================================================
+ÉTAPES DÉTAILLÉES :
+================================================================================
+
+ÉTAPE 1 - Arrêter l'application
+  □ Cliquez sur le bouton ROUGE "Stop" en bas d'IntelliJ (s'il est en cours)
+
+ÉTAPE 2 - Nettoyer le projet
+  □ Allez à : Build → Clean Project
+
+ÉTAPE 3 - Recompiler
+  □ Allez à : Build → Build Project
+
+ÉTAPE 4 - Relancer l'application
+  □ Appuyez sur F5 ou Ctrl+F5
+  OU
+  □ Cliquez sur le bouton vert "Run"
+
+ÉTAPE 5 - Vérifier dans la console
+  ✅ Vous devriez voir dans la console :
+     "=== 🔧 INITIALISATION DE LA BASE DE DONNÉES ==="
+     "📋 Vérification/Création table 'produits'..."
+     "✅ Table 'produits' créée/vérifiée"
+     "📦 INSERTION de 25 produits de test..."
+     "✅ RÉSULTAT: 25/25 produits insérés avec succès!"
+
+ÉTAPE 6 - Vérifier dans l'interface
+  ✅ Cliquez sur le bouton "🛍️ Catalogue"
+  ✅ Les 25 produits doivent s'afficher avec :
+     - Nom
+     - Description
+     - Prix
+     - Bouton "Ajouter au panier"
+
+================================================================================
+SI ÇA NE MARCHE PAS :
+================================================================================
+
+OPTION 1 - Exécuter le script SQL directement
+  □ Ouvrez MySQL Workbench
+  □ Connectez-vous
+  □ File → Open SQL Script
+  □ Sélectionnez : AJOUTER_PRODUITS.sql
+  □ Execute (Ctrl+Shift+Enter)
+  □ Relancez l'application
+
+OPTION 2 - Exécuter le script batch
+  □ Allez dans : C:\Users\fatma\IdeaProjects\pidevjava\
+  □ Double-cliquez sur : ajouter_produits.bat
+  □ Relancez l'application
+
+OPTION 3 - Vérifier manuellement la BD
+  □ Ouvrez MySQL Workbench
+  □ Exécutez cette requête :
+     USE pharm;
+     SELECT COUNT(*) FROM produits;
+  □ Vous devriez voir 25 (ou plus)
+  □ Si 0, exécutez AJOUTER_PRODUITS.sql
+
+================================================================================
+FICHIERS IMPORTANTS :
+================================================================================
+
+  ✅ DataInitializer.java (amélioré)
+     - Crée la table produits au démarrage
+     - Insère 25 produits si vide
+
+  ✅ AJOUTER_PRODUITS.sql
+     - Script pour insérer les 25 produits manuellement
+
+  ✅ VERIFIER_PRODUITS.sql
+     - Script pour vérifier les produits en BD
+
+  ✅ ajouter_produits.bat
+     - Batch pour exécuter facilement le script SQL
+
+  ✅ insert_products.py
+     - Script Python (optionnel)
+
+  ✅ GUIDE_AJOUT_PRODUITS.md
+     - Documentation complète
+
+================================================================================
+PRODUITS DISPONIBLES :
+================================================================================
+
+ 1. Aspirine 500mg (4.99 DT) - 50 stock
+ 2. Paracétamol 500mg (3.49 DT) - 75 stock
+ 3. Ibuprofène 200mg (5.99 DT) - 60 stock
+ 4. Sirop contre la toux (8.50 DT) - 30 stock
+ 5. Spray nasal (6.99 DT) - 45 stock
+ 6. Pastilles gorge (2.99 DT) - 100 stock
+ 7. Oméprazole 20mg (7.50 DT) - 40 stock
+ 8. Charbon actif (5.49 DT) - 55 stock
+ 9. Probiotiques (12.99 DT) - 25 stock
+10. Vitamines C (6.99 DT) - 80 stock
+11. Multivitamines (9.99 DT) - 45 stock
+12. Calcium + D (10.99 DT) - 35 stock
+13. Magnésium (8.49 DT) - 50 stock
+14. Antihistaminique (7.99 DT) - 65 stock
+15. Pommade anti-itch (5.99 DT) - 40 stock
+16. Gel antibactérien (3.99 DT) - 120 stock
+17. Pansements (4.99 DT) - 90 stock
+18. Thermomètre (15.99 DT) - 20 stock
+19. Masques (6.99 DT) - 75 stock
+20. Écran solaire (11.99 DT) - 55 stock
+21. Crème hydratante (9.49 DT) - 40 stock
+22. Shampooing (7.99 DT) - 35 stock
+23. Mélatonine (8.99 DT) - 50 stock
+24. Glucosamine (14.99 DT) - 25 stock
+25. Zinc (6.49 DT) - 70 stock
+
+================================================================================
+
+✅ C'EST TOUT ! L'application devrait maintenant afficher les produits du catalogue !
+
+================================================================================
+

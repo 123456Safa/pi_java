@@ -1,0 +1,17 @@
+<VBox spacing="10" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.CommandeController">
+
+   <TextField fx:id="tfProduits" promptText="Produits"/>
+   <TextField fx:id="tfTotales" promptText="Total"/>
+   <TextField fx:id="tfStatut" promptText="Statut"/>
+   <DatePicker fx:id="dpDate"/>
+   <TextField fx:id="tfUtilisateurId" promptText="Utilisateur ID"/>
+
+   <HBox spacing="10">
+      <Button text="Ajouter" onAction="#ajouterCommande"/>
+      <Button text="Modifier" onAction="#modifierCommande"/>
+      <Button text="Supprimer" onAction="#supprimerCommande"/>
+   </HBox>
+
+   <TableView fx:id="tableCommande"/>
+</VBox>

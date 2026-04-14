@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.frontoffice.HistoriqueController" style="-fx-padding: 15;">
+    <Label text="Historique des Commandes" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+
+    <Label text="Mes Commandes:" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+    <TableView fx:id="tableCommandes" VBox.vgrow="ALWAYS" prefHeight="200">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="colStatut" text="Statut" prefWidth="100"/>
+            <TableColumn fx:id="colDate" text="Date" prefWidth="100"/>
+            <TableColumn fx:id="colTotal" text="Total" prefWidth="100"/>
+        </columns>
+    </TableView>
+
+    <Separator/>
+
+    <Label text="Détails de la Commande:" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+    <TableView fx:id="tableLignes" VBox.vgrow="ALWAYS" prefHeight="200">
+        <columns>
+            <TableColumn fx:id="colLigneNom" text="Produit" prefWidth="200"/>
+            <TableColumn fx:id="colLigneQte" text="Quantité" prefWidth="100"/>
+            <TableColumn fx:id="colLignePrix" text="Prix" prefWidth="100"/>
+            <TableColumn fx:id="colLigneSousTotal" text="Sous-total" prefWidth="100"/>
+        </columns>
+    </TableView>
+</VBox>
+
