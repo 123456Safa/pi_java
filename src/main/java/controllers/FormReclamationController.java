@@ -14,9 +14,27 @@ public class FormReclamationController {
     @FXML private TextArea description;
     @FXML private Label titreError;
     @FXML private Label descError;
+    @FXML private Label titreCharCount;
+    @FXML private Label descCharCount;
 
     private HomeReclamationController homeController;
     private final ReclamationService service = new ReclamationService();
+
+    @FXML
+    public void initialize() {
+        // Add character counter listeners
+        titre.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (titreCharCount != null) {
+                titreCharCount.setText(newVal.length() + "/255");
+            }
+        });
+
+        description.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (descCharCount != null) {
+                descCharCount.setText(newVal.length() + "/2000");
+            }
+        });
+    }
 
     public void setHomeController(HomeReclamationController c) {
         this.homeController = c;
@@ -54,8 +72,8 @@ public class FormReclamationController {
         Reclamation r = new Reclamation();
         r.setTitre(t);
         r.setDescription(d);
-        r.setDateCreation(new Date());
-        r.setStatut("EN_ATTENTE");
+        r.setDateCreation(new java.sql.Date(System.currentTimeMillis()));
+        r.setStatut("EN ATTENTE");
 
         service.add(r);
 

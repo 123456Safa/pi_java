@@ -13,10 +13,29 @@ public class EditReclamationController {
 
     @FXML private Label titreError;
     @FXML private Label descError;
+    @FXML private Label titreCharCount;
+    @FXML private Label descCharCount;
+    @FXML private Label lblStatusActuel;
 
     private Reclamation r;
     private final ReclamationService service = new ReclamationService();
     private HomeReclamationController homeController;
+
+    @FXML
+    public void initialize() {
+        // Add character counter listeners
+        titre.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (titreCharCount != null) {
+                titreCharCount.setText(newVal.length() + "/255");
+            }
+        });
+
+        description.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (descCharCount != null) {
+                descCharCount.setText(newVal.length() + "/2000");
+            }
+        });
+    }
 
     public void setHomeController(HomeReclamationController c) {
         this.homeController = c;
@@ -26,6 +45,35 @@ public class EditReclamationController {
         this.r = r;
         titre.setText(r.getTitre());
         description.setText(r.getDescription());
+        
+        // Update character counts
+        if (titreCharCount != null) {
+            titreCharCount.setText(r.getTitre().length() + "/255");
+        }
+        if (descCharCount != null) {
+            descCharCount.setText(r.getDescription().length() + "/2000");
+        }
+        
+        // Display current status
+        if (lblStatusActuel != null) {
+            lblStatusActuel.setText(r.getStatut());
+            String statusColor = getStatusColor(r.getStatut());
+            lblStatusActuel.setStyle("-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: " + statusColor + "; -fx-padding: 5 10; -fx-border-radius: 3;");
+        }
+    }
+
+    private String getStatusColor(String statut) {
+        switch (statut.toUpperCase()) {
+            case "EN ATTENTE":
+                return "#FFA500";
+            case "RÉSOLUE":
+                return "#28a745";
+
+            case "EN COURS":
+                return "#17a2b8";
+            default:
+                return "#999999";
+        }
     }
 
     @FXML

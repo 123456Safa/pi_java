@@ -3,11 +3,44 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox prefHeight="299.0" prefWidth="377.0" spacing="10" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ModifierStatusController">
+<VBox spacing="20" style="-fx-padding: 30; -fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ModifierStatusController">
 
-    <Button onAction="#save" text="Enregistrer" />
+    <!-- Header -->
+    <Label style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #333333;" text=" Éditer le Statut" />
 
-    <ComboBox fx:id="statusBox" prefHeight="26.0" prefWidth="110.0" />
-    <Button onAction="#cancel" text="Annuler" />
+    <!-- Main Card -->
+    <VBox spacing="20" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+
+        <!-- Reclamation Section -->
+        <VBox spacing="8">
+            <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #666666;" text="RÉCLAMATION" />
+            <Label fx:id="lblReclamation" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+        </VBox>
+
+        <!-- Separator -->
+        <Separator />
+
+        <!-- New Status Section -->
+        <VBox spacing="8">
+            <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #333333;" text="NOUVEAU STATUT *" />
+            <ComboBox fx:id="statusBox" promptText="Sélectionner un statut" style="-fx-font-size: 12; -fx-padding: 12; -fx-border-radius: 5;" />
+        </VBox>
+
+        <!-- Current Status Section -->
+        <HBox spacing="10" style="-fx-background-color: #e0f4ff; -fx-border-color: #87ceeb; -fx-border-radius: 4; -fx-padding: 15; -fx-alignment: center-left;">
+            <Label style="-fx-font-size: 12; -fx-text-fill: #333333;" text="Statut actuel :" />
+            <Label fx:id="lblStatusActuel" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: #17a2b8; -fx-padding: 5 10; -fx-border-radius: 3;" />
+        </HBox>
+
+        <!-- Separator -->
+        <Separator />
+
+        <!-- Action Buttons -->
+        <HBox spacing="15" style="-fx-alignment: center-left; -fx-padding: 15 0 0 0;">
+            <Button onAction="#save" style="-fx-font-size: 13; -fx-padding: 12 40; -fx-text-fill: white; -fx-background-color: #5b6eff; -fx-border-color: #5b6eff; -fx-border-radius: 5; -fx-cursor: hand; -fx-font-weight: bold;" text="📋 Enregistrer" />
+            <Button onAction="#cancel" style="-fx-font-size: 13; -fx-padding: 12 40; -fx-text-fill: #666666; -fx-background-color: transparent; -fx-border-color: #cccccc; -fx-border-radius: 5; -fx-cursor: hand;" text="✕ Annuler" />
+        </HBox>
+
+    </VBox>
 
 </VBox>

@@ -1,19 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.VBox?>
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controllers.DetailReclamationControlleradmin"
-      spacing="10">
+<?import javafx.scene.layout.*?>
 
-    <Label fx:id="titre"/>
-    <Label fx:id="description"/>
-    <Label fx:id="date"/>
-    <Label fx:id="statut"/>
+<VBox prefHeight="743.0" prefWidth="443.0" spacing="20" style="-fx-padding: 30; -fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DetailReclamationControlleradmin">
 
-    <Button text="Modifier" onAction="#modifier"/>
-    <Button text="Ajouter réponse" onAction="#repondre"/>
+    <!-- Back Button -->
+    <Button onAction="#onBack" style="-fx-font-size: 12; -fx-padding: 8 15; -fx-text-fill: #666666; -fx-background-color: white; -fx-border-color: #cccccc; -fx-border-radius: 4; -fx-cursor: hand;" text="← Retour" />
 
+    <!-- Scrollable Content -->
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="622.0" prefWidth="376.0" style="-fx-border-color: transparent; -fx-background-color: #f5f5f5; -fx-padding: 0;">
+        <VBox spacing="20" style="-fx-padding: 0; -fx-background-color: transparent;">
+
+            <!-- Main Card -->
+            <VBox prefHeight="341.0" prefWidth="367.0" spacing="15" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+
+                <!-- Title and Status -->
+                <HBox spacing="15" style="-fx-alignment: center-left;">
+                    <Label fx:id="titre" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+                    <Label fx:id="statut" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 5 10; -fx-border-radius: 3;" />
+                </HBox>
+
+                <!-- Date -->
+                <VBox spacing="8">
+                    <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #333333;" text="Date de création:" />
+                    <Label fx:id="date" style="-fx-font-size: 12; -fx-text-fill: #666666;" />
+                </VBox>
+
+                <!-- Separator -->
+                <Separator />
+
+                <!-- Description -->
+                <VBox spacing="8">
+                    <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #333333;" text="Description:" />
+                    <Label fx:id="description" style="-fx-font-size: 12; -fx-text-fill: #555555;" wrapText="true" />
+                </VBox>
+
+                <!-- Separator -->
+                <Separator />
+
+                <!-- Status Info -->
+                <VBox spacing="8">
+                    <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #333333;" text="Statut actuel:" />
+                    <Label fx:id="statusActuel" style="-fx-font-size: 12; -fx-text-fill: #666666;" />
+                </VBox>
+
+                <!-- Action Buttons -->
+                <HBox spacing="15" style="-fx-alignment: center-left; -fx-padding: 15 0 0 0;">
+                    <Button fx:id="btnModifier" onAction="#modifier" style="-fx-font-size: 12; -fx-padding: 10 20; -fx-text-fill: white; -fx-background-color: #FFA500; -fx-border-color: #FFA500; -fx-border-radius: 4; -fx-cursor: hand;" text=" Modifier Statut" />
+                    <Button fx:id="btnSupprimer" onAction="#supprimer" style="-fx-font-size: 12; -fx-padding: 10 20; -fx-text-fill: white; -fx-background-color: #FF4444; -fx-border-color: #FF4444; -fx-border-radius: 4; -fx-cursor: hand;" text="Supprimer" />
+                </HBox>
+
+            </VBox>
+
+            <!-- Responses Section -->
+            <VBox spacing="15" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+
+                <!-- Header with Add Button -->
+                <HBox spacing="15" style="-fx-alignment: center-left;">
+                    <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #333333;">
+                        <text>💬 Réponses Envoyées </text>
+                    </Label>
+                    <Label fx:id="reponseCount" style="-fx-font-size: 12; -fx-text-fill: #999999;" />
+                    <Region style="-fx-grow: always;" />
+                    <Button fx:id="btnAjouterReponse" onAction="#repondre" style="-fx-font-size: 12; -fx-padding: 8 15; -fx-text-fill: white; -fx-background-color: #28a745; -fx-border-color: #28a745; -fx-border-radius: 4; -fx-cursor: hand;" text="+ Ajouter Réponse" />
+                </HBox>
+
+                <!-- Responses Container -->
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-border-color: transparent; -fx-background-color: transparent; -fx-padding: 0; -fx-min-height: 150; -fx-max-height: 350;">
+                    <VBox fx:id="reponseContainer" spacing="12" style="-fx-padding: 0; -fx-background-color: transparent;" />
+                </ScrollPane>
+
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
 
 </VBox>

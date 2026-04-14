@@ -1,24 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controllers.HomeAdminController"
-      spacing="10">
+<VBox spacing="25" style="-fx-padding: 30; -fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.HomeAdminController">
 
-    <TextField fx:id="searchField" promptText="Recherche par titre" onKeyReleased="#search"/>
+    <!-- Header -->
+    <Label style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #333333;" text="📊 Gestion des Réclamations" />
 
-    <TableView fx:id="table">
+    <!-- Filters Section -->
+    <VBox spacing="15" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
 
-        <columns>
-            <TableColumn fx:id="colTitre" text="Titre"/>
-            <TableColumn fx:id="colDate" text="Date"/>
-            <TableColumn fx:id="colStatut" text="Statut"/>
-            <TableColumn fx:id="colAction" text="Action"/>
-        </columns>
+        <!-- Title -->
+        <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #555555;" text="Filtres et Recherche" />
 
-    </TableView>
+        <!-- Filter Row 1 -->
+        <HBox prefHeight="76.0" prefWidth="1109.0" spacing="20" style="-fx-alignment: top-left;">
+
+            <!-- Search by Title -->
+            <VBox spacing="8" style="-fx-min-width: 350; -fx-pref-width: 350;">
+                <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #333333;" text="TITRE / UTILISATEUR *" />
+                <TextField fx:id="searchField" prefHeight="50.0" prefWidth="350.0" promptText="Rechercher par titre ou utilisateur..." style="-fx-font-size: 12; -fx-padding: 12; -fx-border-color: #d0d0d0; -fx-border-radius: 5; -fx-border-width: 1;" />
+            </VBox>
+
+            <!-- Filter by Status -->
+            <VBox spacing="8" style="-fx-min-width: 220;">
+                <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #333333;" text="STATUT" />
+                <ComboBox fx:id="statusFilter" prefHeight="50.0" prefWidth="128.0" promptText="Tous" style="-fx-font-size: 12; -fx-padding: 12; -fx-border-radius: 5;" />
+            </VBox>
+
+            <!-- Filter by Date -->
+            <VBox spacing="8" style="-fx-min-width: 220;">
+                <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #333333;" text="DATE" />
+                <DatePicker fx:id="dateFilter" prefHeight="50.0" prefWidth="166.0" promptText="jj/mm/aaaa" style="-fx-font-size: 12; -fx-padding: 12; -fx-border-radius: 5;" />
+            </VBox>
+            <Button onAction="#resetFilters" prefHeight="59.0" prefWidth="126.0" style="-fx-font-size: 12; -fx-padding: 12 20; -fx-background-color: white; -fx-text-fill: #666666; -fx-border-radius: 5; -fx-cursor: hand; -fx-font-weight: bold; -fx-border-color: #cccccc;" text="Réinitialiser">
+                <HBox.margin>
+                    <Insets top="20.0" />
+                </HBox.margin>
+            </Button>
+
+            <!-- Search Button -->
+            <VBox spacing="8" style="-fx-pref-width: 80; -fx-alignment: bottom-left;" />
+
+        </HBox>
+
+        <!-- Filter Row 2 - Sort -->
+        <HBox spacing="20" style="-fx-alignment: center-left;">
+
+            <!-- Sort By -->
+            <VBox spacing="8" style="-fx-min-width: 200;">
+                <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #333333;" text="TRIER PAR" />
+                <ComboBox fx:id="sortByField" prefHeight="38.0" prefWidth="162.0" promptText="Date (défaut)" style="-fx-font-size: 12; -fx-padding: 10; -fx-border-radius: 5;" />
+            </VBox>
+
+            <!-- Sort Order (ASC/DESC) -->
+            <VBox spacing="8" style="-fx-min-width: 160;">
+                <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #333333;" text="ORDRE" />
+                <ComboBox fx:id="sortOrder" prefHeight="46.0" prefWidth="132.0" promptText="↓ DESC" style="-fx-font-size: 12; -fx-padding: 10; -fx-border-radius: 5;" />
+            </VBox>
+
+        </HBox>
+
+    </VBox>
+
+    <!-- Table Section -->
+    <VBox spacing="10" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 25; -fx-grow: ALWAYS; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+
+        <TableView fx:id="table" style="-fx-font-size: 12; -fx-table-cell-border-color: #f0f0f0;">
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+            <columns>
+                <TableColumn fx:id="colTitre" prefWidth="300" text="TITRE" />
+                <TableColumn fx:id="colDate" prefWidth="150" text="DATE" />
+                <TableColumn fx:id="colStatut" prefWidth="130" text="STATUT" />
+                <TableColumn fx:id="colAction" prefWidth="220" text="ACTIONS" />
+            </columns>
+        </TableView>
+
+    </VBox>
 
 </VBox>

@@ -51,7 +51,7 @@ public class ReclamationService {
 
         return list;
     }
-    // ================= GET ALL =================
+
     public List<Reclamation> getAll(int userId) {
 
         List<Reclamation> list = new ArrayList<>();
@@ -88,7 +88,7 @@ public class ReclamationService {
         List<Reclamation> list = new ArrayList<>();
 
         try {
-            String sql = "SELECT * FROM reclamation";
+            String sql = "SELECT * FROM reclamation ORDER BY date_creation DESC";
             PreparedStatement ps = cnx.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
@@ -109,7 +109,7 @@ public class ReclamationService {
         return list;
     }
 
-    // ================= UPDATE =================
+
     public void update(Reclamation r) {
         try {
             String sql = "UPDATE reclamation SET titre=?, description=? WHERE id=?";
@@ -126,7 +126,6 @@ public class ReclamationService {
         }
     }
 
-    // ================= DELETE =================
     public void delete(int id) {
 
         try {

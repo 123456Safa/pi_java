@@ -1,28 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.VBox?>
-<VBox spacing="10"
-      style="-fx-padding:15;"
-      xmlns="http://javafx.com/javafx/17"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="controllers.DetailReclamationController">
+<?import javafx.scene.layout.*?>
 
-    <Label fx:id="lblTitre" />
-    <Label fx:id="lblDate" />
-    <Label fx:id="lblStatut" />
+<VBox spacing="15" style="-fx-padding: 30; -fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DetailReclamationController">
 
-    <TextArea fx:id="txtDescription"
-              editable="false"
-              wrapText="true"/>
+    <!-- Back Button -->
+    <Button onAction="#onBack" style="-fx-font-size: 12; -fx-padding: 8 15; -fx-text-fill: #666666; -fx-background-color: white; -fx-border-color: #cccccc; -fx-border-radius: 4; -fx-cursor: hand;" text="← Retour à la Liste" />
 
-    <Separator/>
+    <!-- Main Card in ScrollPane -->
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-border-color: transparent; -fx-background-color: #f5f5f5; -fx-padding: 0;">
+        <VBox spacing="15" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 20;">
 
-    <!-- 🔥 هنا باش نعرضو الردود -->
-    <Label text="Réponses :" style="-fx-font-weight:bold;"/>
+            <!-- Title and Status -->
+            <HBox spacing="15" style="-fx-alignment: center-left;">
+                <Label fx:id="lblTitre" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+                <Label fx:id="lblStatut" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 5 10; -fx-border-radius: 3;" />
+            </HBox>
 
-    <VBox fx:id="reponseContainer" spacing="8"/>
+            <!-- Date -->
+            <Label fx:id="lblDate" style="-fx-font-size: 12; -fx-text-fill: #999999;" />
 
-    <Button onAction="#onBack" text="Annuler"/>
+            <!-- Separator -->
+            <Separator prefHeight="0.0" prefWidth="679.0" />
+
+            <!-- Description Section -->
+            <VBox spacing="8">
+                <Label style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #333333;" text="Description" />
+                <TextArea fx:id="txtDescription" editable="false" prefHeight="77.0" prefWidth="597.0" style="-fx-font-size: 13; -fx-text-fill: #555555; -fx-control-inner-background: #f9f9f9; -fx-border-color: #e0e0e0;" wrapText="true" />
+            </VBox>
+
+            <!-- Separator -->
+            <Separator />
+
+            <!-- Responses Section -->
+            <VBox spacing="10">
+                <HBox spacing="10" style="-fx-alignment: center-left;">
+                    <Label style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #333333;" text="💬 Réponses" />
+                    <Label fx:id="lblReponseCount" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #999999;" />
+                </HBox>
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-border-color: transparent; -fx-background-color: transparent; -fx-padding: 0; -fx-min-height: 150; -fx-max-height: 350;">
+                    <VBox fx:id="reponseContainer" spacing="12" style="-fx-padding: 0; -fx-background-color: transparent;" />
+                </ScrollPane>
+            </VBox>
+
+            <!-- Separator -->
+            <Separator />
+
+            <!-- Action Buttons for Reclamation -->
+            <HBox spacing="10" style="-fx-alignment: center-left; -fx-padding: 10 0 0 0;">
+                <Button fx:id="btnEditer" onAction="#onEdit" style="-fx-font-size: 12; -fx-padding: 8 20; -fx-text-fill: #0066cc; -fx-background-color: transparent; -fx-border-color: #0066cc; -fx-border-radius: 4; -fx-cursor: hand;" text=" Éditer" />
+                <Button fx:id="btnSupprimer" onAction="#onDelete" style="-fx-font-size: 12; -fx-padding: 8 20; -fx-text-fill: white; -fx-background-color: #FF4444; -fx-border-color: #FF4444; -fx-border-radius: 4; -fx-cursor: hand;" text="Supprimer" />
+            </HBox>
+
+        </VBox>
+    </ScrollPane>
 
 </VBox>

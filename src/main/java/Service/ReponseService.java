@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReponseService {
+public class ReponseService    {
 
 
 
@@ -57,5 +57,34 @@ public class ReponseService {
         }
 
         return list;
+    }
+
+    public void update(Reponse r) {
+        try {
+            String sql = "UPDATE reponse SET contenu=?, date_reponse=? WHERE id=?";
+            PreparedStatement ps = cnx.prepareStatement(sql);
+
+            ps.setString(1, r.getContenu());
+            ps.setDate(2, new java.sql.Date(r.getDateReponse().getTime()));
+            ps.setInt(3, r.getId());
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void delete(int id) {
+        try {
+            String sql = "DELETE FROM reponse WHERE id=?";
+            PreparedStatement ps = cnx.prepareStatement(sql);
+
+            ps.setInt(1, id);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

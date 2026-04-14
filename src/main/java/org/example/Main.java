@@ -12,15 +12,18 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
             Parent root = FXMLLoader.load(
-                    getClass().getResource("/HomeReclamation.fxml")
+                    getClass().getResource("/HomeAdmin.fxml")
             );
 
             Scene scene = new Scene(root);
 
-            primaryStage.setTitle("Gestion Réclamations");
             primaryStage.setScene(scene);
-            primaryStage.setWidth(900);
+            primaryStage.setWidth(1000);
             primaryStage.setHeight(600);
+
+            primaryStage.setMinWidth(800);
+            primaryStage.setMinHeight(500);
+
             primaryStage.show();
 
         } catch (Exception e) {
