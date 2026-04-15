@@ -124,16 +124,20 @@ public class ProduitController {
 
      private void addActionButtons() {
          colActions.setCellFactory(col -> new TableCell<Produit, Void>() {
-             private final Button btnModifier = new Button("[Edit] Modifier");
-             private final Button btnSupprimer = new Button("[X] Supprimer");
-            private final HBox box = new HBox(10);
+             private final Button btnDetail = new Button("👁️");
+             private final Button btnModifier = new Button("✏️");
+             private final Button btnSupprimer = new Button("🗑️");
+             private final HBox box = new HBox(8);
 
             {
-                btnModifier.setStyle("-fx-padding: 5 10; -fx-font-size: 11; -fx-background-color: #5856d6; -fx-text-fill: white; -fx-cursor: hand;");
-                btnSupprimer.setStyle("-fx-padding: 5 10; -fx-font-size: 11; -fx-background-color: #ff3b30; -fx-text-fill: white; -fx-cursor: hand;");
-                box.setAlignment(Pos.CENTER);
-                box.getChildren().addAll(btnModifier, btnSupprimer);
+                btnDetail.getStyleClass().addAll("action-btn", "action-btn-detail");
+                btnModifier.getStyleClass().addAll("action-btn", "action-btn-edit");
+                btnSupprimer.getStyleClass().addAll("action-btn", "action-btn-delete");
 
+                box.setAlignment(Pos.CENTER);
+                box.getChildren().addAll(btnDetail, btnModifier, btnSupprimer);
+
+                btnDetail.setOnAction(e -> afficherDetailProduit(getTableView().getItems().get(getIndex())));
                 btnModifier.setOnAction(e -> modifierProduit(getTableView().getItems().get(getIndex())));
                 btnSupprimer.setOnAction(e -> supprimerProduit(getTableView().getItems().get(getIndex())));
             }
@@ -199,10 +203,19 @@ public class ProduitController {
          try {
              // Charger le fichier FXML du formulaire
              FXMLLoader loader = new FXMLLoader(getClass().getResource("/ProduitForm.fxml"));
+             if (loader.getLocation() == null) {
+                 showError("Erreur", "Le fichier ProduitForm.fxml n'a pas pu être trouvé");
+                 return;
+             }
+
              BorderPane root = loader.load();
 
              // Obtenir le contrôleur du formulaire
              ProduitFormController formController = loader.getController();
+             if (formController == null) {
+                 showError("Erreur", "Le contrôleur ProduitFormController n'a pas pu être initialisé");
+                 return;
+             }
 
              // Créer une nouvelle fenêtre (Stage)
              Stage stage = new Stage();
@@ -214,90 +227,79 @@ public class ProduitController {
              formController.setStage(stage);
              formController.setParentController(this);
 
-             // Afficher la fenêtre de manière modale (bloquer l'accès à la fenêtre principale jusqu'à fermeture)
+             // Afficher la fenêtre de manière modale
              stage.showAndWait();
 
          } catch (IOException e) {
              e.printStackTrace();
              showError("Erreur", "Impossible d'ouvrir la fenêtre du formulaire: " + e.getMessage());
+         } catch (Exception e) {
+             e.printStackTrace();
+             showError("Erreur", "Une erreur est survenue: " + e.getMessage());
          }
      }
 
       private void modifierProduit(Produit produit) {
-          if (produit != null) {
-              try {
-                  // Charger le fichier FXML du formulaire
-                  FXMLLoader loader = new FXMLLoader(getClass().getResource("/ProduitForm.fxml"));
-                  BorderPane root = loader.load();
-
-                  // Obtenir le contrôleur du formulaire
-                  ProduitFormController formController = loader.getController();
-
-                  // Passer le produit pour édition AVANT de créer la stage
-                  formController.setProduitToEdit(produit);
-
-                  // Créer une nouvelle fenêtre (Stage)
-                  Stage stage = new Stage();
-                  stage.setTitle("Modifier le produit");
-                  stage.setScene(new Scene(root, 600, 800));
-                  stage.setResizable(true);
-
-                  // Passer la référence de la stage et du contrôleur parent
-                  formController.setStage(stage);
-                  formController.setParentController(this);
-
-                  // Afficher la fenêtre de manière modale
-                  stage.showAndWait();
-
-              } catch (IOException e) {
-                  e.printStackTrace();
-                  showError("Erreur", "Impossible d'ouvrir la fenêtre du formulaire: " + e.getMessage());
+          if (produit == null) {
+              showError("Erreur", "Veuillez sélectionner un produit à modifier");
+              return;
+          }
+          try {
+              // Charger le fichier FXML du formulaire
+              FXMLLoader loader = new FXMLLoader(getClass().getResource("/ProduitForm.fxml"));
+              if (loader.getLocation() == null) {
+                  showError("Erreur", "Le fichier ProduitForm.fxml n'a pas pu être trouvé");
+                  return;
               }
+
+              BorderPane root = loader.load();
+
+              // Obtenir le contrôleur du formulaire
+              ProduitFormController formController = loader.getController();
+              if (formController == null) {
+                  showError("Erreur", "Le contrôleur ProduitFormController n'a pas pu être initialisé");
+                  return;
+              }
+
+              // Passer le produit pour édition AVANT de créer la stage
+              formController.setProduitToEdit(produit);
+
+              // Créer une nouvelle fenêtre (Stage)
+              Stage stage = new Stage();
+              stage.setTitle("Modifier le produit");
+              stage.setScene(new Scene(root, 600, 800));
+              stage.setResizable(true);
+
+              // Passer la référence de la stage et du contrôleur parent
+              formController.setStage(stage);
+              formController.setParentController(this);
+
+              // Afficher la fenêtre de manière modale
+              stage.showAndWait();
+
+          } catch (IOException e) {
+              e.printStackTrace();
+              showError("Erreur", "Impossible d'ouvrir la fenêtre du formulaire: " + e.getMessage());
+          } catch (Exception e) {
+              e.printStackTrace();
+              showError("Erreur", "Une erreur est survenue: " + e.getMessage());
           }
       }
 
     private void supprimerProduit(Produit produit) {
-        if (produit != null) {
-            Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmation.setTitle("Confirmation");
-            confirmation.setHeaderText("Supprimer le produit ?");
-            confirmation.setContentText("Êtes-vous sûr de vouloir supprimer le produit \"" + produit.getNom() + "\" ?");
-            
-            if (confirmation.showAndWait().get() == ButtonType.OK) {
-                try {
-                    produitService.supprimer(produit.getId());
-                    rafraichirTable();
-                    Alert success = new Alert(Alert.AlertType.INFORMATION);
-                    success.setTitle("Succès");
-                    success.setHeaderText("Produit supprimé");
-                    success.setContentText("Le produit a été supprimé avec succès.");
-                    success.show();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    Alert error = new Alert(Alert.AlertType.ERROR);
-                    error.setTitle("Erreur");
-                    error.setHeaderText("Erreur lors de la suppression");
-                    error.setContentText("Une erreur est survenue: " + e.getMessage());
-                    error.show();
-                }
-            }
+        if (produit == null) {
+            AlertUtil.showError("Erreur", "Veuillez sélectionner un produit à supprimer");
+            return;
         }
-    }
 
-    @FXML
-    private void onModifier(ActionEvent event) {
-        // TODO: ouvrir une fenêtre ou formulaire pour modifier le produit sélectionné
-    }
-
-    @FXML
-    private void onSupprimer(ActionEvent event) {
-        Produit selected = tableProduits.getSelectionModel().getSelectedItem();
-        if (selected != null) {
+        if (AlertUtil.showConfirmation("Confirmation", "Êtes-vous sûr de vouloir supprimer le produit \"" + produit.getNom() + "\" ?")) {
             try {
-                produitService.supprimer(selected.getId());
+                produitService.supprimer(produit.getId());
                 rafraichirTable();
+                AlertUtil.showSuccess("Succès", "Le produit a été supprimé avec succès.");
             } catch (SQLException e) {
                 e.printStackTrace();
+                AlertUtil.showError("Erreur", "Une erreur est survenue: " + e.getMessage());
             }
         }
     }
@@ -309,6 +311,10 @@ public class ProduitController {
             Categorie categorieSelectionnee = cbCategorieProduit.getValue();
 
             List<Produit> tousLesProduits = produitService.afficher();
+            if (tousLesProduits == null) {
+                tousLesProduits = new ArrayList<>();
+            }
+
             ObservableList<Produit> resultatRecherche = FXCollections.observableArrayList();
 
             for (Produit prod : tousLesProduits) {
@@ -328,22 +334,35 @@ public class ProduitController {
         } catch (SQLException e) {
             e.printStackTrace();
             showError("Erreur", "Erreur lors de la recherche: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Erreur", "Une erreur inattendue s'est produite: " + e.getMessage());
         }
     }
 
     @FXML
     private void onResetRechercheProduit(ActionEvent event) {
-        tfRechercheProduit.clear();
-        cbCategorieProduit.setValue(null);
-        cbTriProduit.setValue("Date d'ajout");
-        cbOrdreProduit.setValue("↓ Décroissant");
-        rafraichirTable();
+        try {
+            tfRechercheProduit.clear();
+            cbCategorieProduit.setValue(null);
+            cbTriProduit.setValue("Date d'ajout");
+            cbOrdreProduit.setValue("↓ Décroissant");
+            rafraichirTable();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Erreur", "Une erreur s'est produite lors de la réinitialisation: " + e.getMessage());
+        }
     }
 
     private void appliquerTri() {
         try {
             String triOption = cbTriProduit.getValue();
             String ordreOption = cbOrdreProduit.getValue();
+
+            if (triOption == null || triOption.isEmpty()) {
+                return;
+            }
+
             boolean estCroissant = ordreOption != null && ordreOption.startsWith("↑");
 
             List<Produit> produits = new ArrayList<>(produitsList);
@@ -384,6 +403,7 @@ public class ProduitController {
             tableProduits.setItems(FXCollections.observableArrayList(produits));
         } catch (Exception e) {
             e.printStackTrace();
+            showError("Erreur", "Une erreur s'est produite lors du tri: " + e.getMessage());
         }
     }
 
@@ -393,5 +413,51 @@ public class ProduitController {
         alert.setHeaderText(title);
         alert.setContentText(content);
         alert.show();
+    }
+
+    private void afficherDetailProduit(Produit produit) {
+        if (produit == null) {
+            showError("Erreur", "Veuillez sélectionner un produit");
+            return;
+        }
+        try {
+            // Charger le fichier FXML du détail
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ProduitDetail.fxml"));
+            if (loader.getLocation() == null) {
+                showError("Erreur", "Le fichier ProduitDetail.fxml n'a pas pu être trouvé");
+                return;
+            }
+
+            BorderPane root = loader.load();
+
+            // Obtenir le contrôleur du détail
+            ProduitDetailController detailController = loader.getController();
+            if (detailController == null) {
+                showError("Erreur", "Le contrôleur ProduitDetailController n'a pas pu être initialisé");
+                return;
+            }
+
+            // Passer le produit
+            detailController.setProduit(produit);
+
+            // Créer une nouvelle fenêtre (Stage)
+            Stage stage = new Stage();
+            stage.setTitle("Détail du produit - " + produit.getNom());
+            stage.setScene(new Scene(root, 800, 600));
+            stage.setResizable(true);
+
+            // Passer la référence de la stage
+            detailController.setStage(stage);
+
+            // Afficher la fenêtre
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Erreur", "Impossible d'ouvrir la fenêtre de détail: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Erreur", "Une erreur est survenue: " + e.getMessage());
+        }
     }
 }

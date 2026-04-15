@@ -65,16 +65,20 @@ public class CategorieController {
 
     private void addActionButtons() {
         colActions.setCellFactory(col -> new TableCell<Categorie, Void>() {
-            private final Button btnModifier = new Button("[Edit] Modifier");
-            private final Button btnSupprimer = new Button("[X] Supprimer");
-            private final HBox box = new HBox(10);
+            private final Button btnDetail = new Button("👁️");
+            private final Button btnModifier = new Button("✏️");
+            private final Button btnSupprimer = new Button("🗑️");
+            private final HBox box = new HBox(8);
 
             {
-                btnModifier.setStyle("-fx-padding: 5 10; -fx-font-size: 11; -fx-background-color: #5856d6; -fx-text-fill: white; -fx-cursor: hand;");
-                btnSupprimer.setStyle("-fx-padding: 5 10; -fx-font-size: 11; -fx-background-color: #ff3b30; -fx-text-fill: white; -fx-cursor: hand;");
-                box.setAlignment(Pos.CENTER);
-                box.getChildren().addAll(btnModifier, btnSupprimer);
+                btnDetail.getStyleClass().addAll("action-btn", "action-btn-detail");
+                btnModifier.getStyleClass().addAll("action-btn", "action-btn-edit");
+                btnSupprimer.getStyleClass().addAll("action-btn", "action-btn-delete");
 
+                box.setAlignment(Pos.CENTER);
+                box.getChildren().addAll(btnDetail, btnModifier, btnSupprimer);
+
+                btnDetail.setOnAction(e -> afficherDetailCategorie(getTableView().getItems().get(getIndex())));
                 btnModifier.setOnAction(e -> modifierCategorie(getTableView().getItems().get(getIndex())));
                 btnSupprimer.setOnAction(e -> supprimerCategorie(getTableView().getItems().get(getIndex())));
             }
@@ -164,27 +168,14 @@ public class CategorieController {
 
     private void supprimerCategorie(Categorie categorie) {
         if (categorie != null) {
-            Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmation.setTitle("Confirmation");
-            confirmation.setHeaderText("Supprimer la catégorie ?");
-            confirmation.setContentText("Êtes-vous sûr de vouloir supprimer la catégorie \"" + categorie.getNom() + "\" ?");
-            
-            if (confirmation.showAndWait().get() == ButtonType.OK) {
+            if (AlertUtil.showConfirmation("Confirmation", "Êtes-vous sûr de vouloir supprimer la catégorie \"" + categorie.getNom() + "\" ?")) {
                 try {
                     categorieService.supprimer(categorie.getId());
                     rafraichirTable();
-                    Alert success = new Alert(Alert.AlertType.INFORMATION);
-                    success.setTitle("Succès");
-                    success.setHeaderText("Catégorie supprimée");
-                    success.setContentText("La catégorie a été supprimée avec succès.");
-                    success.show();
+                    AlertUtil.showSuccess("Succès", "La catégorie a été supprimée avec succès.");
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    Alert error = new Alert(Alert.AlertType.ERROR);
-                    error.setTitle("Erreur");
-                    error.setHeaderText("Erreur lors de la suppression");
-                    error.setContentText("Une erreur est survenue: " + e.getMessage());
-                    error.show();
+                    AlertUtil.showError("Erreur", "Une erreur est survenue: " + e.getMessage());
                 }
             }
         }
@@ -273,5 +264,50 @@ public class CategorieController {
         alert.setContentText(content);
         alert.show();
     }
-}
 
+    private void afficherDetailCategorie(Categorie categorie) {
+        if (categorie == null) {
+            showError("Erreur", "Veuillez sélectionner une catégorie");
+            return;
+        }
+        try {
+            // Charger le fichier FXML du détail
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CategorieDetail.fxml"));
+            if (loader.getLocation() == null) {
+                showError("Erreur", "Le fichier CategorieDetail.fxml n'a pas pu être trouvé");
+                return;
+            }
+
+            BorderPane root = loader.load();
+
+            // Obtenir le contrôleur du détail
+            CategorieDetailController detailController = loader.getController();
+            if (detailController == null) {
+                showError("Erreur", "Le contrôleur CategorieDetailController n'a pas pu être initialisé");
+                return;
+            }
+
+            // Passer la catégorie
+            detailController.setCategorie(categorie);
+
+            // Créer une nouvelle fenêtre (Stage)
+            Stage stage = new Stage();
+            stage.setTitle("Détail de la catégorie - " + categorie.getNom());
+            stage.setScene(new Scene(root, 700, 500));
+            stage.setResizable(true);
+
+            // Passer la référence de la stage
+            detailController.setStage(stage);
+
+            // Afficher la fenêtre
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Erreur", "Impossible d'ouvrir la fenêtre de détail: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Erreur", "Une erreur est survenue: " + e.getMessage());
+        }
+    }
+}

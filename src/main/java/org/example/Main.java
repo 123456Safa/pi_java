@@ -3,6 +3,7 @@ package org.example;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
@@ -21,7 +22,14 @@ public class Main extends Application {
             TabPane tabPane = new TabPane();
             tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
-            // Charger l'onglet Produits
+            // Onglet Accueil (Front Office)
+            FXMLLoader accueilLoader = new FXMLLoader(getClass().getResource("/AccueilFront.fxml"));
+            BorderPane accueilRoot = accueilLoader.load();
+            Tab accueilTab = new Tab("Accueil", accueilRoot);
+            tabPane.getTabs().add(accueilTab);
+
+
+            // Onglet Produits (Back Office)
             FXMLLoader produitLoader = new FXMLLoader(getClass().getResource("/Produit.fxml"));
             BorderPane produitRoot = produitLoader.load();
             Tab produitTab = new Tab("Produits", produitRoot);
