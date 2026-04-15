@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="42332132-b611-4429-ab64-8d6caab07312" name="Changes" comment="vesrion_1">
+    <list default="true" id="42332132-b611-4429-ab64-8d6caab07312" name="Changes" comment="gestion_produit">
+      <change beforePath="$PROJECT_DIR$/.idea/copilotDiffState.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/copilotDiffState.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/CategorieController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/CategorieController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/ProduitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/ProduitController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/ProduitFormController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/ProduitFormController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/SidebarController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/SidebarController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/AccueilFront.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/AccueilFront.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/Categorie.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Categorie.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/CategorieForm.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/CategorieForm.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/Dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Dashboard.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/Produit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Produit.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/ProduitForm.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/ProduitForm.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/Sidebar.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Sidebar.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +27,22 @@
       <entry key="_C:/Users/islem/Desktop/piDev/projetDev" value="3CJxLbPG94kGzeUmOrc1yQyAkv5" />
     </persistenceIdMap>
   </component>
+  <component name="CopilotUserSelectedChatMode">
+    <option name="chatModeId" value="Agent" />
+  </component>
+  <component name="CopilotUserSelectedModel">
+    <selectedModels>
+      <entry key="chat-panel" value="Auto" />
+      <entry key="agent-panel" value="Auto" />
+    </selectedModels>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="PUSH_TAGS">
       <GitPushTagMode>
@@ -31,7 +52,7 @@
     </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="Gestion_produit" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -48,6 +69,15 @@
     &quot;accountId&quot;: &quot;4743924c-a609-4fa6-8b4d-2404ec878458&quot;
   }
 }</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jrt://$USER_HOME$/.jdks/jbr-17.0.14!/java.base/java/lang/Thread.class" root0="SKIP_INSPECTION" />
+    <setting file="jrt://$USER_HOME$/.jdks/jbr-17.0.14!/java.xml/com/sun/org/apache/xerces/internal/impl/XMLStreamReaderImpl.class" root0="SKIP_INSPECTION" />
+    <setting file="jrt://$USER_HOME$/.jdks/jbr-17.0.14!/java.xml/javax/xml/stream/util/StreamReaderDelegate.class" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 6
@@ -57,26 +87,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.projet.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.workshopjdbc3a.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Gestion__produit&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Debug",
+    "Application.projet.executor": "Run",
+    "Maven.workshopjdbc3a.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "Gestion__produit__version__final",
+    "kotlin-language-version-configured": "true",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "com.github.copilot.settings.customization.CustomizationConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.Main" />
@@ -132,7 +168,10 @@
       <workItem from="1776250009091" duration="1018000" />
       <workItem from="1776251061330" duration="12000" />
       <workItem from="1776251096062" duration="2399000" />
-      <workItem from="1776253543830" duration="3505000" />
+      <workItem from="1776253543830" duration="4856000" />
+      <workItem from="1776258527563" duration="2826000" />
+      <workItem from="1776266244262" duration="12035000" />
+      <workItem from="1776279086943" duration="5044000" />
     </task>
     <task id="LOCAL-00001" summary="vesrion_1">
       <option name="closed" value="true" />
@@ -150,15 +189,80 @@
       <option name="project" value="LOCAL" />
       <updated>1776122267319</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="vesrion_2">
+      <option name="closed" value="true" />
+      <created>1776257332601</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1776257332601</updated>
+    </task>
+    <task id="LOCAL-00004" summary="gestion_produit">
+      <option name="closed" value="true" />
+      <created>1776279656490</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1776279656490</updated>
+    </task>
+    <task id="LOCAL-00005" summary="gestion_produit">
+      <option name="closed" value="true" />
+      <created>1776279736632</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1776279736632</updated>
+    </task>
+    <task id="LOCAL-00006" summary="gestion_produit">
+      <option name="closed" value="true" />
+      <created>1776279755335</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1776279755335</updated>
+    </task>
+    <task id="LOCAL-00007" summary="gestion_produit">
+      <option name="closed" value="true" />
+      <created>1776279796391</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1776279796391</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="vesrion_1/Gestion_produit" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="vesrion_1" />
-    <option name="LAST_COMMIT_MESSAGE" value="vesrion_1" />
+    <MESSAGE value="vesrion_2" />
+    <MESSAGE value="gestion_produit" />
+    <option name="LAST_COMMIT_MESSAGE" value="gestion_produit" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

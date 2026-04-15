@@ -16,6 +16,19 @@
          -fx-font-weight: bold;
          -fx-text-fill: #555555;
       }
+      .validation-message {
+         -fx-font-size: 11;
+         -fx-padding: 3 0 0 0;
+         -fx-min-height: 16;
+      }
+      .validation-error {
+         -fx-text-fill: #dc3545;
+         -fx-font-weight: 500;
+      }
+      .validation-success {
+         -fx-text-fill: #28a745;
+         -fx-font-weight: 500;
+      }
       .button-add {
          -fx-font-size: 12;
          -fx-padding: 10 30;
@@ -45,45 +58,52 @@
          <VBox spacing="15" style="-fx-padding: 30;">
 
             <!-- Nom -->
-            <VBox spacing="5">
+            <VBox spacing="2">
                <Label styleClass="field-label" text="Nom du produit" />
                <TextField fx:id="tfNom" promptText="Entrez le nom du produit" prefHeight="40" />
+               <Label fx:id="lblNomValidation" styleClass="validation-message" text="" />
             </VBox>
 
             <!-- Description -->
-            <VBox spacing="5">
+            <VBox spacing="2">
                <Label styleClass="field-label" text="Description" />
                <TextArea fx:id="taDescription" promptText="Entrez la description du produit" prefHeight="80" wrapText="true" />
+               <Label fx:id="lblDescriptionValidation" styleClass="validation-message" text="" />
             </VBox>
 
             <!-- Prix et Quantité -->
             <HBox spacing="20">
-               <VBox spacing="5" HBox.hgrow="ALWAYS">
+               <VBox spacing="2" HBox.hgrow="ALWAYS">
                   <Label styleClass="field-label" text="Prix" />
                   <TextField fx:id="tfPrix" promptText="0.00" prefHeight="40" />
+                  <Label fx:id="lblPrixValidation" styleClass="validation-message" text="" />
                </VBox>
-               <VBox spacing="5" HBox.hgrow="ALWAYS">
+               <VBox spacing="2" HBox.hgrow="ALWAYS">
                   <Label styleClass="field-label" text="Quantité" />
                   <TextField fx:id="tfQuantite" promptText="0" prefHeight="40" />
+                  <Label fx:id="lblQuantiteValidation" styleClass="validation-message" text="" />
                </VBox>
             </HBox>
 
             <!-- Statut -->
-            <VBox spacing="5">
+            <VBox spacing="2">
                <Label styleClass="field-label" text="Statut" />
                <ComboBox fx:id="cbStatut" prefHeight="40" promptText="Choisir un statut" />
+               <Label fx:id="lblStatutValidation" styleClass="validation-message" text="" />
             </VBox>
 
              <!-- Catégorie -->
-             <VBox spacing="5">
+             <VBox spacing="2">
                 <Label styleClass="field-label" text="Catégorie" />
                 <ComboBox fx:id="cbCategorie" prefHeight="40" promptText="Choisir une catégorie" />
+                <Label fx:id="lblCategorieValidation" styleClass="validation-message" text="" />
              </VBox>
 
             <!-- Date d'expiration -->
-            <VBox spacing="5">
+            <VBox spacing="2">
                <Label styleClass="field-label" text="Date d'expiration" />
                <DatePicker fx:id="dpDateExpiration" prefHeight="40" />
+               <Label fx:id="lblDateExpirationValidation" styleClass="validation-message" text="" />
             </VBox>
 
              <!-- Image -->
@@ -93,6 +113,7 @@
                    <TextField fx:id="tfImage" promptText="Chemin ou URL de l'image" prefHeight="40" HBox.hgrow="ALWAYS" />
                    <Button fx:id="btnBrowseImage" text="📁 Parcourir" onAction="#onBrowseImage" style="-fx-padding: 8 15; -fx-font-size: 11; -fx-background-color: #5856d6; -fx-text-fill: white; -fx-cursor: hand;" />
                 </HBox>
+                <Label fx:id="lblImageValidation" styleClass="validation-message" text="" />
                 <ImageView fx:id="imgPreview" fitHeight="100" fitWidth="100" preserveRatio="true" style="-fx-border-color: #d0d0d0; -fx-border-width: 1;" />
              </VBox>
 

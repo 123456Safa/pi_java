@@ -15,6 +15,19 @@
          -fx-font-weight: bold;
          -fx-text-fill: #555555;
       }
+      .validation-message {
+         -fx-font-size: 11;
+         -fx-padding: 3 0 0 0;
+         -fx-min-height: 16;
+      }
+      .validation-error {
+         -fx-text-fill: #dc3545;
+         -fx-font-weight: 500;
+      }
+      .validation-success {
+         -fx-text-fill: #28a745;
+         -fx-font-weight: 500;
+      }
       .button-add {
          -fx-font-size: 12;
          -fx-padding: 10 30;
@@ -44,15 +57,17 @@
           <VBox spacing="15" style="-fx-padding: 30;">
 
              <!-- Nom -->
-             <VBox spacing="5">
+             <VBox spacing="2">
                 <Label styleClass="field-label" text="Nom de la catégorie" />
                 <TextField fx:id="tfNom" promptText="Entrez le nom de la catégorie" prefHeight="40" />
+                <Label fx:id="lblNomValidation" styleClass="validation-message" text="" />
              </VBox>
 
              <!-- Description -->
-             <VBox spacing="5">
+             <VBox spacing="2">
                 <Label styleClass="field-label" text="Description" />
                 <TextArea fx:id="taDescription" promptText="Entrez la description de la catégorie" prefHeight="80" wrapText="true" />
+                <Label fx:id="lblDescriptionValidation" styleClass="validation-message" text="" />
              </VBox>
 
              <!-- Separator -->

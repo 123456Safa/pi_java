@@ -22,6 +22,7 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import utils.NavigationService;
 
 public class ProduitController {
     private ProduitService produitService = new ProduitService();
@@ -199,7 +200,7 @@ public class ProduitController {
      }
 
      @FXML
-     private void onAjouter(ActionEvent event) {
+    private void onAjouter(ActionEvent event) {
          try {
              // Charger le fichier FXML du formulaire
              FXMLLoader loader = new FXMLLoader(getClass().getResource("/ProduitForm.fxml"));
@@ -459,5 +460,23 @@ public class ProduitController {
             e.printStackTrace();
             showError("Erreur", "Une erreur est survenue: " + e.getMessage());
         }
+    }
+
+    @FXML
+    private void onLinkProduits(ActionEvent event) {
+        // Navigation vers la vue Produits
+        NavigationService.getInstance().navigateByName("Produits");
+    }
+
+    @FXML
+    private void onLinkCategories(ActionEvent event) {
+        // Navigation vers la vue Catégories
+        NavigationService.getInstance().navigateByName("Catégories");
+    }
+
+    @FXML
+    private void onLinkDashboard(ActionEvent event) {
+        // Navigation vers la vue Dashboard
+        NavigationService.getInstance().navigateByName("Dashboard");
     }
 }

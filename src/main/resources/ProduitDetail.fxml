@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ProduitDetailController" stylesheets="@produitdetail.css">
+
+   <top>
+      <VBox style="-fx-background-color: #f8f9fb; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0; -fx-padding: 25;">
+         <Label fx:id="lblHeader" styleClass="header-label" text="Détails du Produit" />
+      </VBox>
+   </top>
+
+   <center>
+      <ScrollPane fitToWidth="true" styleClass="scroll-pane" style="-fx-padding: 0;">
+         <VBox spacing="25" style="-fx-padding: 30;" styleClass="detail-container">
+            <HBox spacing="35" alignment="CENTER_LEFT">
+               <VBox spacing="15" styleClass="detail-section" HBox.hgrow="ALWAYS">
+                  <GridPane styleClass="info-grid" hgap="15" vgap="12">
+                     <columnConstraints>
+                        <ColumnConstraints prefWidth="120" />
+                        <ColumnConstraints prefWidth="200" hgrow="ALWAYS" />
+                     </columnConstraints>
+
+                     <Label styleClass="field-label" text="Nom :" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                     <Label fx:id="lblNom" styleClass="field-value" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                     <Label styleClass="field-label" text="Description :" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                     <Label fx:id="lblDescription" styleClass="field-value" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                     <Label styleClass="field-label" text="Prix :" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                     <Label fx:id="lblPrix" styleClass="field-value" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                     <Label styleClass="field-label" text="Quantité :" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                     <Label fx:id="lblQuantite" styleClass="field-value" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                     <Label styleClass="field-label" text="Statut :" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                     <Label fx:id="lblStatut" styleClass="field-value" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                     <Label styleClass="field-label" text="Catégorie :" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                     <Label fx:id="lblCategorie" styleClass="field-value" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+                     <Label styleClass="field-label" text="Date d'expiration :" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                     <Label fx:id="lblDateExpiration" styleClass="field-value" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  </GridPane>
+               </VBox>
+
+               <VBox spacing="15" alignment="TOP_CENTER">
+                  <Label styleClass="field-label" text="Image du produit" />
+                  <ImageView fx:id="imgProduit" fitHeight="250" fitWidth="250" preserveRatio="true" styleClass="image-view" />
+               </VBox>
+            </HBox>
+
+            <HBox spacing="15" alignment="CENTER">
+               <Button fx:id="btnFermer" styleClass="close-btn" text="Fermer" onAction="#onFermer" />
+            </HBox>
+         </VBox>
+      </ScrollPane>
+   </center>
+</BorderPane>

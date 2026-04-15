@@ -1,5 +1,6 @@
 package org.example;
 
+import controllers.SidebarController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -7,6 +8,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import utils.*;
 
@@ -18,31 +20,29 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         try {
-            // Créer un TabPane pour afficher les onglets
-            TabPane tabPane = new TabPane();
-            tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+            // Créer un BorderPane principal
+            BorderPane root = new BorderPane();
 
-            // Onglet Accueil (Front Office)
-            FXMLLoader accueilLoader = new FXMLLoader(getClass().getResource("/AccueilFront.fxml"));
-            BorderPane accueilRoot = accueilLoader.load();
-            Tab accueilTab = new Tab("Accueil", accueilRoot);
-            tabPane.getTabs().add(accueilTab);
+            // Charger la sidebar
+            FXMLLoader sidebarLoader = new FXMLLoader(getClass().getResource("/Sidebar.fxml"));
+            VBox sidebarPane = sidebarLoader.load();
+            root.setLeft(sidebarPane);
 
+            // Définir le BorderPane principal et la sidebar dans le SidebarController
+            SidebarController.setMainLayout(root);
+            SidebarController.setSidebar(sidebarPane);
 
-            // Onglet Produits (Back Office)
-            FXMLLoader produitLoader = new FXMLLoader(getClass().getResource("/Produit.fxml"));
-            BorderPane produitRoot = produitLoader.load();
-            Tab produitTab = new Tab("Produits", produitRoot);
-            tabPane.getTabs().add(produitTab);
-
-            // Charger l'onglet Catégories
-            FXMLLoader categorieLoader = new FXMLLoader(getClass().getResource("/Categorie.fxml"));
-            BorderPane categorieRoot = categorieLoader.load();
-            Tab categorieTab = new Tab("Catégories", categorieRoot);
-            tabPane.getTabs().add(categorieTab);
+            // Charger le contenu initial (Dashboard)
+            FXMLLoader dashboardLoader = new FXMLLoader(getClass().getResource("/Dashboard.fxml"));
+            VBox dashboardContent = dashboardLoader.load();
+            root.setCenter(dashboardContent);
 
             // Créer la scène
-            Scene scene = new Scene(tabPane, 1400, 800);
+            Scene scene = new Scene(root, 1400, 800);
+
+            // Charger le fichier CSS
+            String css = getClass().getResource("/style.css").toExternalForm();
+            scene.getStylesheets().add(css);
 
             // Configurer la fenêtre
             primaryStage.setTitle("Gestion des Produits et Catégories");

@@ -17,6 +17,7 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import utils.NavigationService;
 
 public class CategorieController {
     private CategorieService categorieService = new CategorieService();
@@ -65,20 +66,17 @@ public class CategorieController {
 
     private void addActionButtons() {
         colActions.setCellFactory(col -> new TableCell<Categorie, Void>() {
-            private final Button btnDetail = new Button("👁️");
             private final Button btnModifier = new Button("✏️");
             private final Button btnSupprimer = new Button("🗑️");
             private final HBox box = new HBox(8);
 
             {
-                btnDetail.getStyleClass().addAll("action-btn", "action-btn-detail");
                 btnModifier.getStyleClass().addAll("action-btn", "action-btn-edit");
                 btnSupprimer.getStyleClass().addAll("action-btn", "action-btn-delete");
 
                 box.setAlignment(Pos.CENTER);
-                box.getChildren().addAll(btnDetail, btnModifier, btnSupprimer);
+                box.getChildren().addAll( btnModifier, btnSupprimer);
 
-                btnDetail.setOnAction(e -> afficherDetailCategorie(getTableView().getItems().get(getIndex())));
                 btnModifier.setOnAction(e -> modifierCategorie(getTableView().getItems().get(getIndex())));
                 btnSupprimer.setOnAction(e -> supprimerCategorie(getTableView().getItems().get(getIndex())));
             }
@@ -265,49 +263,21 @@ public class CategorieController {
         alert.show();
     }
 
-    private void afficherDetailCategorie(Categorie categorie) {
-        if (categorie == null) {
-            showError("Erreur", "Veuillez sélectionner une catégorie");
-            return;
-        }
-        try {
-            // Charger le fichier FXML du détail
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CategorieDetail.fxml"));
-            if (loader.getLocation() == null) {
-                showError("Erreur", "Le fichier CategorieDetail.fxml n'a pas pu être trouvé");
-                return;
-            }
+    @FXML
+    private void onLinkProduits(ActionEvent event) {
+        // Navigation vers la vue Produits
+        NavigationService.getInstance().navigateByName("Produits");
+    }
 
-            BorderPane root = loader.load();
+    @FXML
+    private void onLinkCategories(ActionEvent event) {
+        // Navigation vers la vue Catégories
+        NavigationService.getInstance().navigateByName("Catégories");
+    }
 
-            // Obtenir le contrôleur du détail
-            CategorieDetailController detailController = loader.getController();
-            if (detailController == null) {
-                showError("Erreur", "Le contrôleur CategorieDetailController n'a pas pu être initialisé");
-                return;
-            }
-
-            // Passer la catégorie
-            detailController.setCategorie(categorie);
-
-            // Créer une nouvelle fenêtre (Stage)
-            Stage stage = new Stage();
-            stage.setTitle("Détail de la catégorie - " + categorie.getNom());
-            stage.setScene(new Scene(root, 700, 500));
-            stage.setResizable(true);
-
-            // Passer la référence de la stage
-            detailController.setStage(stage);
-
-            // Afficher la fenêtre
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            showError("Erreur", "Impossible d'ouvrir la fenêtre de détail: " + e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Erreur", "Une erreur est survenue: " + e.getMessage());
-        }
+    @FXML
+    private void onLinkDashboard(ActionEvent event) {
+        // Navigation vers la vue Dashboard
+        NavigationService.getInstance().navigateByName("Dashboard");
     }
 }

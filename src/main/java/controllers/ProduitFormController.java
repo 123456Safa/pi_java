@@ -34,6 +34,14 @@ public class ProduitFormController {
     @FXML private Button btnAjouter;
     @FXML private Button btnAnnuler;
     @FXML private Label lblHeader;
+    @FXML private Label lblNomValidation;
+    @FXML private Label lblDescriptionValidation;
+    @FXML private Label lblPrixValidation;
+    @FXML private Label lblQuantiteValidation;
+    @FXML private Label lblStatutValidation;
+    @FXML private Label lblCategorieValidation;
+    @FXML private Label lblDateExpirationValidation;
+    @FXML private Label lblImageValidation;
 
     private ProduitService produitService = new ProduitService();
     private CategorieService categorieService = new CategorieService();
@@ -60,8 +68,8 @@ public class ProduitFormController {
     @FXML
     public void initialize() {
         // Initialiser les items du ComboBox Statut
-        cbStatut.getItems().addAll("Actif", "Inactif", "En rupture");
-        
+        cbStatut.getItems().addAll("Valable", "Hors stock");
+
         // Charger les catégories depuis la base de données
         chargerCategories();
         
@@ -74,6 +82,9 @@ public class ProduitFormController {
             }
         });
         
+        // Configurer les validations en temps réel
+        configurerValidations();
+
         // Le remplissage du formulaire en mode édition est appelé dans setProduitToEdit()
     }
     
@@ -212,12 +223,8 @@ public class ProduitFormController {
             int quantite = 0;
             try {
                 quantite = Integer.parseInt(quantiteStr);
-                if (quantite < 0) {
-                    showError("Validation", "La quantité ne peut pas être négative");
-                    return;
-                }
-                if (quantite > 99999) {
-                    showError("Validation", "La quantité ne peut pas dépasser 99999");
+                if (quantite <= 0) {
+                    showError("Validation", "La quantité doit être supérieure à 0");
                     return;
                 }
             } catch (NumberFormatException e) {
@@ -237,8 +244,21 @@ public class ProduitFormController {
                 return;
             }
 
-            // Validation de l'URL image (facultatif mais si fourni, doit être valide)
-            if (!imageUrl.isEmpty() && imageUrl.length() > 500) {
+            // Validation de la date d'expiration
+            if (dpDateExpiration.getValue() != null) {
+                LocalDate today = LocalDate.now();
+                if (dpDateExpiration.getValue().isBefore(today)) {
+                    showError("Validation", "La date d'expiration ne peut pas être dans le passé");
+                    return;
+                }
+            }
+
+            // Validation de l'URL image (obligatoire)
+            if (imageUrl.isEmpty()) {
+                showError("Validation", "Veuillez sélectionner une image pour le produit");
+                return;
+            }
+            if (imageUrl.length() > 500) {
                 showError("Validation", "L'URL de l'image ne peut pas dépasser 500 caractères");
                 return;
             }
@@ -348,11 +368,280 @@ public class ProduitFormController {
         alert.setContentText(message);
         alert.show();
     }
+
+    private void configurerValidations() {
+        // Validation du nom
+        tfNom.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal) {
+                validerNom();
+            }
+        });
+        tfNom.textProperty().addListener((obs, oldVal, newVal) -> {
+            validerNom();
+        });
+
+        // Validation de la description
+        taDescription.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal) {
+                validerDescription();
+            }
+        });
+        taDescription.textProperty().addListener((obs, oldVal, newVal) -> {
+            validerDescription();
+        });
+
+        // Validation du prix
+        configurerValidationPrix();
+
+        // Validation de la quantité
+        configurerValidationQuantite();
+
+        // Validation du statut
+        cbStatut.valueProperty().addListener((obs, oldVal, newVal) -> {
+            validerStatut();
+        });
+
+        // Validation de la catégorie
+        cbCategorie.valueProperty().addListener((obs, oldVal, newVal) -> {
+            validerCategorie();
+        });
+
+        // Validation de la date d'expiration
+        dpDateExpiration.valueProperty().addListener((obs, oldVal, newVal) -> {
+            validerDateExpiration();
+        });
+
+        // Validation de l'image
+        tfImage.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal) {
+                validerImage();
+            }
+        });
+        tfImage.textProperty().addListener((obs, oldVal, newVal) -> {
+            validerImage();
+        });
+    }
+
+    private void configurerValidationPrix() {
+        tfPrix.setTextFormatter(new javafx.scene.control.TextFormatter<>(change -> {
+            String text = change.getControlNewText();
+            if (text.isEmpty() || text.matches("\\d*(\\.\\d{0,2})?")) {
+                return change;
+            }
+            return null;
+        }));
+
+        tfPrix.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal && !tfPrix.getText().isEmpty()) {
+                validerPrix();
+            }
+        });
+        tfPrix.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!tfPrix.isFocused()) {
+                validerPrix();
+            }
+        });
+    }
+
+    private void configurerValidationQuantite() {
+        tfQuantite.setTextFormatter(new javafx.scene.control.TextFormatter<>(change -> {
+            String text = change.getControlNewText();
+            if (text.isEmpty() || text.matches("\\d*")) {
+                return change;
+            }
+            return null;
+        }));
+
+        tfQuantite.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal && !tfQuantite.getText().isEmpty()) {
+                validerQuantite();
+            }
+        });
+        tfQuantite.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!tfQuantite.isFocused()) {
+                validerQuantite();
+            }
+        });
+    }
+
+    private void validerNom() {
+        String nom = tfNom.getText().trim();
+        lblNomValidation.getStyleClass().removeAll("validation-error", "validation-success");
+
+        if (nom.isEmpty()) {
+            lblNomValidation.setText("⚠ Veuillez entrer un nom");
+            lblNomValidation.getStyleClass().add("validation-error");
+            tfNom.setStyle("");
+        } else if (nom.length() < 3) {
+            lblNomValidation.setText("⚠ Minimum 3 caractères");
+            lblNomValidation.getStyleClass().add("validation-error");
+            tfNom.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+        } else if (nom.length() > 100) {
+            lblNomValidation.setText("⚠ Maximum 100 caractères");
+            lblNomValidation.getStyleClass().add("validation-error");
+            tfNom.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+        } else {
+            lblNomValidation.setText("✓ Nom valide");
+            lblNomValidation.getStyleClass().add("validation-success");
+            tfNom.setStyle("-fx-border-color: #28a745; -fx-border-width: 2;");
+        }
+    }
+
+    private void validerDescription() {
+        String description = taDescription.getText();
+        lblDescriptionValidation.getStyleClass().removeAll("validation-error", "validation-success");
+
+        int charCount = description.length();
+        if (charCount > 500) {
+            lblDescriptionValidation.setText("⚠ Maximum 500 caractères - " + charCount + "/500");
+            lblDescriptionValidation.getStyleClass().add("validation-error");
+            taDescription.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+        } else if (charCount > 0) {
+            lblDescriptionValidation.setText("✓ " + charCount + "/500 caractères");
+            lblDescriptionValidation.getStyleClass().add("validation-success");
+            taDescription.setStyle("-fx-border-color: #28a745; -fx-border-width: 2;");
+        } else {
+            lblDescriptionValidation.setText("Description optionnelle");
+            taDescription.setStyle("");
+        }
+    }
+
+    private void validerPrix() {
+        String prixStr = tfPrix.getText().trim();
+        lblPrixValidation.getStyleClass().removeAll("validation-error", "validation-success");
+
+        if (prixStr.isEmpty()) {
+            lblPrixValidation.setText("⚠ Veuillez entrer le prix");
+            lblPrixValidation.getStyleClass().add("validation-error");
+            tfPrix.setStyle("");
+        } else {
+            try {
+                double prix = Double.parseDouble(prixStr);
+                if (prix < 0) {
+                    lblPrixValidation.setText("⚠ Le prix ne peut pas être négatif");
+                    lblPrixValidation.getStyleClass().add("validation-error");
+                    tfPrix.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+                } else if (prix > 999999.99) {
+                    lblPrixValidation.setText("⚠ Valeur maximale: 999999.99");
+                    lblPrixValidation.getStyleClass().add("validation-error");
+                    tfPrix.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+                } else {
+                    lblPrixValidation.setText("✓ Prix valide");
+                    lblPrixValidation.getStyleClass().add("validation-success");
+                    tfPrix.setStyle("-fx-border-color: #28a745; -fx-border-width: 2;");
+                }
+            } catch (NumberFormatException e) {
+                lblPrixValidation.setText("⚠ Format invalide (ex: 19.99)");
+                lblPrixValidation.getStyleClass().add("validation-error");
+                tfPrix.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+            }
+        }
+    }
+
+    private void validerQuantite() {
+        String quantiteStr = tfQuantite.getText().trim();
+        lblQuantiteValidation.getStyleClass().removeAll("validation-error", "validation-success");
+
+        if (quantiteStr.isEmpty()) {
+            lblQuantiteValidation.setText("⚠ Veuillez entrer la quantité");
+            lblQuantiteValidation.getStyleClass().add("validation-error");
+            tfQuantite.setStyle("");
+        } else {
+            try {
+                int quantite = Integer.parseInt(quantiteStr);
+                if (quantite <= 0) {
+                    lblQuantiteValidation.setText("⚠ La quantité doit être supérieure à 0");
+                    lblQuantiteValidation.getStyleClass().add("validation-error");
+                    tfQuantite.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+                } else if (quantite > 99999) {
+                    lblQuantiteValidation.setText("⚠ Valeur maximale: 99999");
+                    lblQuantiteValidation.getStyleClass().add("validation-error");
+                    tfQuantite.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+                } else {
+                    lblQuantiteValidation.setText("✓ Quantité valide");
+                    lblQuantiteValidation.getStyleClass().add("validation-success");
+                    tfQuantite.setStyle("-fx-border-color: #28a745; -fx-border-width: 2;");
+                }
+            } catch (NumberFormatException e) {
+                lblQuantiteValidation.setText("⚠ Doit être un nombre entier");
+                lblQuantiteValidation.getStyleClass().add("validation-error");
+                tfQuantite.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+            }
+        }
+    }
+
+    private void validerStatut() {
+        lblStatutValidation.getStyleClass().removeAll("validation-error", "validation-success");
+
+        if (cbStatut.getValue() == null) {
+            lblStatutValidation.setText("⚠ Veuillez choisir un statut");
+            lblStatutValidation.getStyleClass().add("validation-error");
+            cbStatut.setStyle("");
+        } else {
+            lblStatutValidation.setText("✓ Statut sélectionné");
+            lblStatutValidation.getStyleClass().add("validation-success");
+            cbStatut.setStyle("-fx-border-color: #28a745; -fx-border-width: 2;");
+        }
+    }
+
+    private void validerCategorie() {
+        lblCategorieValidation.getStyleClass().removeAll("validation-error", "validation-success");
+
+        if (cbCategorie.getValue() == null) {
+            lblCategorieValidation.setText("⚠ Veuillez choisir une catégorie");
+            lblCategorieValidation.getStyleClass().add("validation-error");
+            cbCategorie.setStyle("");
+        } else {
+            lblCategorieValidation.setText("✓ Catégorie sélectionnée");
+            lblCategorieValidation.getStyleClass().add("validation-success");
+            cbCategorie.setStyle("-fx-border-color: #28a745; -fx-border-width: 2;");
+        }
+    }
+
+    private void validerDateExpiration() {
+        lblDateExpirationValidation.getStyleClass().removeAll("validation-error", "validation-success");
+
+        LocalDate dateExp = dpDateExpiration.getValue();
+        if (dateExp == null) {
+            lblDateExpirationValidation.setText("⚠ Veuillez sélectionner une date d'expiration");
+            lblDateExpirationValidation.getStyleClass().add("validation-error");
+            dpDateExpiration.setStyle("");
+        } else {
+            // Vérifier que la date n'est pas dans le passé
+            LocalDate today = LocalDate.now();
+            if (dateExp.isBefore(today)) {
+                lblDateExpirationValidation.setText("⚠ La date d'expiration ne peut pas être dans le passé");
+                lblDateExpirationValidation.getStyleClass().add("validation-error");
+                dpDateExpiration.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+            } else {
+                lblDateExpirationValidation.setText("✓ Date valide");
+                lblDateExpirationValidation.getStyleClass().add("validation-success");
+                dpDateExpiration.setStyle("-fx-border-color: #28a745; -fx-border-width: 2;");
+            }
+        }
+    }
+
+    private void validerImage() {
+        String imageUrl = tfImage.getText().trim();
+        lblImageValidation.getStyleClass().removeAll("validation-error", "validation-success");
+
+        // Vérifier si le champ image est vide
+        if (imageUrl.isEmpty()) {
+            lblImageValidation.setText("⚠ Veuillez sélectionner une image");
+            lblImageValidation.getStyleClass().add("validation-error");
+            tfImage.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+        } else {
+            // Vérifier la validité du chemin de l'image
+            File file = new File(imageUrl);
+            if (!file.exists()) {
+                lblImageValidation.setText("⚠ Le fichier image n'existe pas");
+                lblImageValidation.getStyleClass().add("validation-error");
+                tfImage.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+            } else {
+                lblImageValidation.setText("✓ Image valide");
+                lblImageValidation.getStyleClass().add("validation-success");
+                tfImage.setStyle("-fx-border-color: #28a745; -fx-border-width: 2;");
+            }
+        }
+    }
 }
-
-
-
-
-
-
-

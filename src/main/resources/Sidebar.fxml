@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.SidebarController"
+      spacing="30" styleClass="sidebar" prefWidth="240">
+    <VBox spacing="10" alignment="CENTER">
+        <ImageView fitWidth="120" fitHeight="40">
+            <image>
+                <!-- Remplacez le chemin par votre logo si besoin -->
+                <Image url="@logo.png" />
+            </image>
+        </ImageView>
+    </VBox>
+    <VBox spacing="10">
+        <Button text="                Dashboard             " styleClass="sidebar-btn" fx:id="btnDashboard" onAction="#onDashboard" />
+        <Button text="               Catégories              " styleClass="sidebar-btn" fx:id="btnCategories" onAction="#onCategories" />
+        <Button text="               Produits                 " styleClass="sidebar-btn" fx:id="btnProduits" onAction="#onProduits" />
+
+
+    </VBox>
+    <VBox style="-fx-background-color: transparent;" alignment="BOTTOM_LEFT">
+        <Label text="   FRONT OFFICE" styleClass="sidebar-section" />
+        <Button text="            Voir Produits            " styleClass="sidebar-btn-secondary" fx:id="btnVoirProduits" onAction="#onVoirProduits" />
+    </VBox>
+</VBox>

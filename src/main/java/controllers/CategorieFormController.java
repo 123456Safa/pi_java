@@ -16,6 +16,8 @@ public class CategorieFormController {
     @FXML private Button btnAjouter;
     @FXML private Button btnAnnuler;
     @FXML private Label lblHeader;
+    @FXML private Label lblNomValidation;
+    @FXML private Label lblDescriptionValidation;
 
     private CategorieService categorieService = new CategorieService();
     private Stage stage;
@@ -40,7 +42,56 @@ public class CategorieFormController {
 
     @FXML
     public void initialize() {
-        // L'initialisation est vide car remplirFormulaire() est appelé dans setCategorieToEdit()
+        // Ajouter les listeners pour la validation en temps réel
+        tfNom.textProperty().addListener((obs, oldVal, newVal) -> validerNom());
+        taDescription.textProperty().addListener((obs, oldVal, newVal) -> validerDescription());
+    }
+
+    /**
+     * Valide le champ Nom en temps réel
+     */
+    private void validerNom() {
+        String nom = tfNom.getText().trim();
+        lblNomValidation.getStyleClass().removeAll("validation-error", "validation-success");
+
+        if (nom.isEmpty()) {
+            lblNomValidation.setText("⚠ Veuillez entrer un nom");
+            lblNomValidation.getStyleClass().add("validation-error");
+            tfNom.setStyle("");
+        } else if (nom.length() < 3) {
+            lblNomValidation.setText("⚠ Minimum 3 caractères");
+            lblNomValidation.getStyleClass().add("validation-error");
+            tfNom.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+        } else if (nom.length() > 100) {
+            lblNomValidation.setText("⚠ Maximum 100 caractères");
+            lblNomValidation.getStyleClass().add("validation-error");
+            tfNom.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+        } else {
+            lblNomValidation.setText("✓ Nom valide");
+            lblNomValidation.getStyleClass().add("validation-success");
+            tfNom.setStyle("-fx-border-color: #28a745; -fx-border-width: 2;");
+        }
+    }
+
+    /**
+     * Valide le champ Description en temps réel
+     */
+    private void validerDescription() {
+        String description = taDescription.getText().trim();
+        lblDescriptionValidation.getStyleClass().removeAll("validation-error", "validation-success");
+
+        if (description.isEmpty()) {
+            lblDescriptionValidation.setText("");
+            taDescription.setStyle("");
+        } else if (description.length() > 500) {
+            lblDescriptionValidation.setText("⚠ Maximum 500 caractères");
+            lblDescriptionValidation.getStyleClass().add("validation-error");
+            taDescription.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+        } else {
+            lblDescriptionValidation.setText("✓ Description valide (" + description.length() + "/500)");
+            lblDescriptionValidation.getStyleClass().add("validation-success");
+            taDescription.setStyle("-fx-border-color: #28a745; -fx-border-width: 2;");
+        }
     }
 
     private void remplirFormulaire() {
@@ -61,23 +112,31 @@ public class CategorieFormController {
             
             // Validation du nom
             if (nom.isEmpty()) {
-                showError("Validation", "Veuillez entrer le nom de la catégorie");
+                lblNomValidation.setText("❌ Veuillez entrer un nom");
+                lblNomValidation.getStyleClass().removeAll("validation-success");
+                lblNomValidation.getStyleClass().add("validation-error");
                 return;
             }
             
             if (nom.length() < 3) {
-                showError("Validation", "Le nom doit contenir au moins 3 caractères");
+                lblNomValidation.setText("❌ Minimum 3 caractères");
+                lblNomValidation.getStyleClass().removeAll("validation-success");
+                lblNomValidation.getStyleClass().add("validation-error");
                 return;
             }
             
             if (nom.length() > 100) {
-                showError("Validation", "Le nom ne peut pas dépasser 100 caractères");
+                lblNomValidation.setText("❌ Maximum 100 caractères");
+                lblNomValidation.getStyleClass().removeAll("validation-success");
+                lblNomValidation.getStyleClass().add("validation-error");
                 return;
             }
             
             // Validation de la description
             if (description.length() > 500) {
-                showError("Validation", "La description ne peut pas dépasser 500 caractères");
+                lblDescriptionValidation.setText("❌ Maximum 500 caractères");
+                lblDescriptionValidation.getStyleClass().removeAll("validation-success");
+                lblDescriptionValidation.getStyleClass().add("validation-error");
                 return;
             }
 
@@ -90,49 +149,43 @@ public class CategorieFormController {
             if (!isEditMode) {
                 categorie.setCreatedAt(new Date());
                 categorieService.ajouter(categorie);
-                showSuccess("Succès", "Catégorie ajoutée avec succès!");
             } else {
                 // Si en mode édition, mettre à jour
                 categorieService.modifier(categorie);
-                showSuccess("Succès", "Catégorie modifiée avec succès!");
             }
+
+            // Afficher un message de succès temporaire
+            String messageSucces = isEditMode ? "Catégorie modifiée avec succès! ✓" : "Catégorie ajoutée avec succès! ✓";
+            lblNomValidation.setText(messageSucces);
+            lblNomValidation.getStyleClass().removeAll("validation-error");
+            lblNomValidation.getStyleClass().add("validation-success");
 
             // Rafraîchir la table du contrôleur parent
             if (parentController != null) {
                 parentController.rafraichirTable();
             }
 
-            // Fermer la fenêtre
-            stage.close();
+            // Fermer après un court délai
+            javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.millis(1000));
+            pause.setOnFinished(e -> stage.close());
+            pause.play();
 
         } catch (SQLException e) {
             e.printStackTrace();
-            showError("Erreur base de données", "Une erreur est survenue: " + e.getMessage());
+            lblNomValidation.setText("❌ Erreur base de données");
+            lblNomValidation.getStyleClass().removeAll("validation-success");
+            lblNomValidation.getStyleClass().add("validation-error");
         } catch (Exception e) {
             e.printStackTrace();
-            showError("Erreur", "Une erreur inattendue est survenue: " + e.getMessage());
+            lblNomValidation.setText("❌ Erreur inattendue");
+            lblNomValidation.getStyleClass().removeAll("validation-success");
+            lblNomValidation.getStyleClass().add("validation-error");
         }
     }
 
     @FXML
     private void onAnnuler(ActionEvent event) {
         stage.close();
-    }
-
-    private void showError(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(title);
-        alert.setContentText(message);
-        alert.show();
-    }
-
-    private void showSuccess(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(title);
-        alert.setContentText(message);
-        alert.show();
     }
 }
 
