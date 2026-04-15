@@ -1,0 +1,133 @@
+🔴 SI VOUS RECEVEZ TOUJOURS : "JavaFX runtime components are missing"
+
+════════════════════════════════════════════════════════════════
+
+PROCÉDURE À SUIVRE IMMÉDIATEMENT
+═════════════════════════════════
+
+ÉTAPE 1 : Fermez IntelliJ complètement
+───────────────────────────────────────
+• File > Exit (ou Alt+F4)
+• Attendez que le processus java.exe se termine (quelques secondes)
+
+
+ÉTAPE 2 : Nettoyez le cache IntelliJ
+─────────────────────────────────────
+Ouvrez PowerShell et exécutez :
+
+  cd C:\Users\fatma\IdeaProjects\pidevjava
+  Remove-Item -Recurse -Force .idea\caches -ErrorAction SilentlyContinue
+  Remove-Item -Recurse -Force .idea\indexing -ErrorAction SilentlyContinue
+
+
+ÉTAPE 3 : Relancez IntelliJ
+────────────────────────────
+Double-cliquez sur le projet ou lancez IntelliJ
+
+
+ÉTAPE 4 : Mettez à jour les configurations
+──────────────────────────────────────────
+Nous avons créé 2 configurations de lancement :
+  1. "Main"
+  2. "PHARMAX Application"
+
+Vérifiez qu'elles apparaissent :
+  • Run > Edit Configurations...
+  • Vous devriez voir "Main" et "PHARMAX Application"
+
+
+ÉTAPE 5 : Testez le lancement
+─────────────────────────────
+• Sélectionnez "Main" ou "PHARMAX Application"
+• Cliquez sur "Run" (Shift+F10)
+• L'application devrait se lancer sans erreur JavaFX
+
+
+════════════════════════════════════════════════════════════════
+
+SI CELA NE FONCTIONNE PAS :
+═══════════════════════════
+
+Alternative 1 : Utilisez le script PowerShell
+──────────────────────────────────────────────
+  cd C:\Users\fatma\IdeaProjects\pidevjava
+  powershell -ExecutionPolicy Bypass -File run.ps1
+
+Alternative 2 : Réinitialiser complètement IntelliJ
+──────────────────────────────────────────────────────
+  • Help > Invalidate Caches...
+  • Cochez "Clear file system cache and Local History"
+  • Cochez "Restart IDE"
+
+Alternative 3 : Supprimer et recréer le projet
+────────────────────────────────────────────────
+  • Fermez IntelliJ
+  • Supprimez complètement .idea/
+  • Réouvrez le projet depuis IntelliJ
+  • Cliquez OK quand IntelliJ propose de configurer le framework
+
+
+════════════════════════════════════════════════════════════════
+
+EXPLICATIONS TECHNIQUES
+═══════════════════════
+
+Pourquoi cette erreur survient ?
+─────────────────────────────────
+JavaFX est modulaire depuis Java 9. Il faut passer :
+  --module-path (chemin vers les JAR modulaires)
+  --add-modules javafx.controls,javafx.fxml (modules à charger)
+
+IntelliJ oublie ces options si :
+  • Le cache n'est pas invalidé
+  • Les configurations ne sont pas reconnues
+  • Le classpath est mal configuré
+
+Solution :
+──────────
+Nous avons fourni les configurations XML qui spécifient ces options.
+IntelliJ doit être redémarré pour les reconnaître.
+
+
+════════════════════════════════════════════════════════════════
+
+FICHIERS DE CONFIGURATION
+═════════════════════════
+
+Les 2 configurations suivantes ont été créées :
+  .idea/runConfigurations/Main.xml
+  .idea/runConfigurations/PHARMAX_Application.xml
+
+Elles définissent les VM_PARAMETERS corrects pour JavaFX.
+IntelliJ doit les détecter au redémarrage.
+
+
+════════════════════════════════════════════════════════════════
+
+SI VOUS AVEZ DES QUESTIONS
+═══════════════════════════
+
+Consultez les fichiers de documentation :
+  • QUICK_START.txt - Commandes rapides
+  • JAVAFX_ERROR_FIX.md - Guide détaillé de dépannage
+  • SETUP_APPLICATION.md - Configuration complète
+
+
+════════════════════════════════════════════════════════════════
+
+RÉSUMÉ RAPIDE
+═════════════
+
+1️⃣ Fermez IntelliJ
+2️⃣ Nettoyez le cache (.idea/caches)
+3️⃣ Relancez IntelliJ
+4️⃣ Sélectionnez "Main" dans Run Configurations
+5️⃣ Cliquez "Run"
+
+OU
+
+Utilisez directement :
+  powershell -ExecutionPolicy Bypass -File run.ps1
+
+════════════════════════════════════════════════════════════════
+

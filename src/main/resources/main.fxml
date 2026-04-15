@@ -1,27 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox spacing="10"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controllers.CommandeController">
+<BorderPane xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.MainController"
+            prefWidth="1360.0" prefHeight="820.0"
+            styleClass="admin-root">
+    <stylesheets>
+        <URL value="@admin.css" />
+    </stylesheets>
 
-   <TextField fx:id="tfProduits" promptText="Produits"/>
-   <TextField fx:id="tfTotales" promptText="Total"/>
-   <TextField fx:id="tfStatut" promptText="Statut"/>
-   <DatePicker fx:id="dpDate"/>
-   <TextField fx:id="tfUtilisateurId" promptText="Utilisateur ID"/>
+    <left>
+        <VBox prefWidth="260.0" styleClass="sidebar">
+            <padding>
+                <Insets top="28" right="18" bottom="28" left="18" />
+            </padding>
 
-   <HBox spacing="10">
-      <Button text="Ajouter" onAction="#ajouterCommande"/>
-      <Button text="Modifier" onAction="#modifierCommande"/>
-      <Button text="Supprimer" onAction="#supprimerCommande"/>
-   </HBox>
+            <VBox spacing="6" styleClass="brand-box">
+                <Label fx:id="pharmaXLabel" text="pharmaX" styleClass="brand-title" onMouseClicked="#handlePharmaXLabelClick" />
+                <Label text="Order System Backoffice" styleClass="brand-subtitle" />
+            </VBox>
 
-   <TableView fx:id="tableCommande"/>
-</VBox>
+            <VBox spacing="10" styleClass="menu-box">
+                <Button fx:id="dashboardButton" text="Dashboard" onAction="#showDashboard" styleClass="sidebar-button" />
+                <Button fx:id="commandesButton" text="Commande" onAction="#showCommandes" styleClass="sidebar-button" />
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS" />
+
+            <VBox spacing="4" styleClass="sidebar-footer">
+                <Label text="Order Admin" styleClass="sidebar-footer-title" />
+                <Label text="Commandes, details et suivi de statut" styleClass="sidebar-footer-subtitle" />
+            </VBox>
+        </VBox>
+    </left>
+
+    <center>
+        <BorderPane styleClass="workspace">
+            <top>
+                <HBox alignment="CENTER_LEFT" spacing="16" styleClass="topbar">
+                    <VBox spacing="4">
+                        <Label fx:id="sectionTitleLabel" text="Dashboard Commandes" styleClass="section-title" />
+                        <Label fx:id="sectionSubtitleLabel" text="Tableau de bord / Vue generale" styleClass="section-subtitle" />
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label text="Admin" styleClass="user-chip" />
+                </HBox>
+            </top>
+            <center>
+                <ScrollPane fitToWidth="true" fitToHeight="false" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="content-scroll">
+                    <content>
+                        <StackPane fx:id="contentPane" styleClass="content-pane" />
+                    </content>
+                </ScrollPane>
+            </center>
+        </BorderPane>
+    </center>
+</BorderPane>

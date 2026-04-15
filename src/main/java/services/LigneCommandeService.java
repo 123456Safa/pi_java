@@ -3,80 +3,111 @@ package services;
 import models.LigneCommandes;
 import utils.MyConnection;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class LigneCommandeService implements IService<LigneCommandes> {
+    private static final List<String> CANDIDATE_TABLE_NAMES = Arrays.asList(
+            "ligne_commande",
+            "ligne_commandes",
+            "lignes_commandes",
+            "lignecommandes",
+            "lignescommande"
+    );
 
-    private Connection cnx;
+    private final Connection cnx;
 
     public LigneCommandeService() {
         cnx = MyConnection.getInstance().getConnection();
     }
 
     @Override
-    public void add(LigneCommandes l) throws SQLException {
-        String sql = "INSERT INTO ligne_commande(nom, prix, quantite, sous_total, commande_id) VALUES (?, ?, ?, ?, ?)";
-        PreparedStatement ps = cnx.prepareStatement(sql);
-
-        ps.setString(1, l.getNom());
-        ps.setDouble(2, l.getPrix());
-        ps.setInt(3, l.getQuantite());
-        ps.setDouble(4, l.getSousTotal());
-        ps.setInt(5, l.getCommandeId());
-
-        ps.executeUpdate();
-        System.out.println("✅ Ligne commande ajoutée");
+    public void add(LigneCommandes ligne) throws SQLException {
+        String sql = "INSERT INTO " + resolveTableName() + " (nom, prix, quantite, sous_total, commande_id) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, ligne.getNom());
+            ps.setDouble(2, ligne.getPrix());
+            ps.setInt(3, ligne.getQuantite());
+            ps.setDouble(4, ligne.getSousTotal());
+            ps.setInt(5, ligne.getCommandeId());
+            ps.executeUpdate();
+        }
     }
 
     @Override
-    public void update(LigneCommandes l) throws SQLException {
-        String sql = "UPDATE ligne_commande SET nom=?, prix=?, quantite=?, sous_total=?, commande_id=? WHERE id=?";
-        PreparedStatement ps = cnx.prepareStatement(sql);
-
-        ps.setString(1, l.getNom());
-        ps.setDouble(2, l.getPrix());
-        ps.setInt(3, l.getQuantite());
-        ps.setDouble(4, l.getSousTotal());
-        ps.setInt(5, l.getCommandeId());
-        ps.setInt(6, l.getId());
-
-        ps.executeUpdate();
-        System.out.println("✏️ Ligne commande modifiée");
+    public void update(LigneCommandes ligne) throws SQLException {
+        String sql = "UPDATE " + resolveTableName() + " SET nom=?, prix=?, quantite=?, sous_total=?, commande_id=? WHERE id=?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, ligne.getNom());
+            ps.setDouble(2, ligne.getPrix());
+            ps.setInt(3, ligne.getQuantite());
+            ps.setDouble(4, ligne.getSousTotal());
+            ps.setInt(5, ligne.getCommandeId());
+            ps.setInt(6, ligne.getId());
+            ps.executeUpdate();
+        }
     }
 
     @Override
     public void delete(int id) throws SQLException {
-        String sql = "DELETE FROM ligne_commande WHERE id=?";
-        PreparedStatement ps = cnx.prepareStatement(sql);
-        ps.setInt(1, id);
-        ps.executeUpdate();
+        String sql = "DELETE FROM " + resolveTableName() + " WHERE id=?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
+    }
 
-        System.out.println("🗑️ Ligne supprimée");
+    public void deleteByCommandeId(int commandeId) throws SQLException {
+        String sql = "DELETE FROM " + resolveTableName() + " WHERE commande_id=?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, commandeId);
+            ps.executeUpdate();
+        }
     }
 
     @Override
     public List<LigneCommandes> select() throws SQLException {
         List<LigneCommandes> list = new ArrayList<>();
+        String sql = "SELECT * FROM " + resolveTableName();
 
-        String sql = "SELECT * FROM ligne_commande";
-        Statement st = cnx.createStatement();
-        ResultSet rs = st.executeQuery(sql);
-
-        while (rs.next()) {
-            LigneCommandes l = new LigneCommandes(
-                    rs.getInt("id"),
-                    rs.getString("nom"),
-                    rs.getDouble("prix"),
-                    rs.getInt("quantite"),
-                    rs.getDouble("sous_total"),
-                    rs.getInt("commande_id")
-            );
-
-            list.add(l);
+        try (Statement st = cnx.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) {
+                list.add(new LigneCommandes(
+                        rs.getInt("id"),
+                        rs.getString("nom"),
+                        rs.getDouble("prix"),
+                        rs.getInt("quantite"),
+                        rs.getDouble("sous_total"),
+                        rs.getInt("commande_id")
+                ));
+            }
         }
 
         return list;
+    }
+
+    private String resolveTableName() throws SQLException {
+        for (String tableName : CANDIDATE_TABLE_NAMES) {
+            if (canQueryTable(tableName)) {
+                return tableName;
+            }
+        }
+        throw new SQLException("Aucune table de lignes de commande trouvee.");
+    }
+
+    private boolean canQueryTable(String tableName) {
+        String sql = "SELECT 1 FROM " + tableName + " WHERE 1 = 0";
+        try (Statement st = cnx.createStatement()) {
+            st.executeQuery(sql);
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
     }
 }

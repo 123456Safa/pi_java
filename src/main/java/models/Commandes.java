@@ -5,22 +5,21 @@ public class Commandes {
     private String produits;
     private double totales;
     private String statut;
-    private String date;
+    private String createdAt;
     private int utilisateurId;
 
     public Commandes() {}
 
     public Commandes(int id, String produits, double totales,
-                    String statut, String date, int utilisateurId) {
+                     String statut, String createdAt, int utilisateurId) {
         this.id = id;
         this.produits = produits;
         this.totales = totales;
         this.statut = statut;
-        this.date = date;
+        this.createdAt = createdAt;
         this.utilisateurId = utilisateurId;
     }
 
-    // getters setters
     public int getId() {
         return id;
     }
@@ -53,12 +52,12 @@ public class Commandes {
         this.statut = statut;
     }
 
-    public String getDate() {
-        return date;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
     public int getUtilisateurId() {

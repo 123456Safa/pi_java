@@ -1,269 +1,355 @@
 package controllers.frontoffice;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import models.PanierItem;
 import models.Client;
-import services.PanierService;
+import models.PanierItem;
 import services.CommandeService;
+import services.PanierService;
+
+import java.sql.SQLException;
 
 public class PanierController {
+    @FXML private VBox panierList;
+    @FXML private Label itemsCountLabel;
+    @FXML private Label sousTotalLabel;
+    @FXML private Label tvaLabel;
+    @FXML private Label totalTTCLabel;
+    @FXML private TextField nomField;
+    @FXML private TextField emailField;
+    @FXML private TextField adresseField;
+    @FXML private TextField telField;
+    @FXML private ComboBox<String> paiementBox;
+    @FXML private Button confirmerBtn;
+    @FXML private Button viderBtn;
+    @FXML private Button continuerAchatsBtn;
+    @FXML private Label nomErrorLabel;
+    @FXML private Label emailErrorLabel;
+    @FXML private Label adresseErrorLabel;
+    @FXML private Label telErrorLabel;
 
-    @FXML
-    private TableView<PanierItem> tablePanier;
-    @FXML
-    private TableColumn<PanierItem, String> colNom;
-    @FXML
-    private TableColumn<PanierItem, Double> colPrix;
-    @FXML
-    private TableColumn<PanierItem, Integer> colQuantite;
-    @FXML
-    private TableColumn<PanierItem, Double> colSousTotal;
-    @FXML
-    private Label totalLabel;
-    @FXML
-    private Button validerBtn;
-    @FXML
-    private Button supprimerBtn;
-
-    private CommandeService commandeService = new CommandeService();
+    private final PanierService panierService = PanierService.getInstance();
+    private final CommandeService commandeService = new CommandeService();
+    private final ObservableList<PanierItem> panier = panierService.getPanier();
+    private Runnable onContinuerAchats;
 
     @FXML
     public void initialize() {
-        // Bind tableau au panier
-        tablePanier.setItems(PanierService.getPanier());
+        paiementBox.setItems(FXCollections.observableArrayList(
+                "Carte bancaire",
+                "Paiement a la livraison"
+        ));
+        paiementBox.getSelectionModel().selectFirst();
 
-        // Setup columns
-        colNom.setCellValueFactory(cellData -> cellData.getValue().nomProperty());
-        colPrix.setCellValueFactory(cellData -> cellData.getValue().prixProperty().asObject());
-        colQuantite.setCellValueFactory(cellData -> cellData.getValue().quantiteProperty().asObject());
-        colSousTotal.setCellValueFactory(cellData -> cellData.getValue().sousTotalProperty().asObject());
-
-        // Make quantité editable
-        colQuantite.setCellFactory(column -> new TableCell<PanierItem, Integer>() {
-            @Override
-            protected void updateItem(Integer item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    Spinner<Integer> spinner = new Spinner<>(1, 100, item);
-                    spinner.setPrefWidth(60);
-                    spinner.valueProperty().addListener((obs, oldVal, newVal) -> {
-                        getTableView().getItems().get(getIndex()).setQuantite(newVal);
-                    });
-                    setGraphic(spinner);
-                }
-            }
+        panier.addListener((javafx.collections.ListChangeListener<PanierItem>) change -> {
+            afficherPanier();
+            majResume();
         });
 
-        // Update total display
-        PanierService.getPanier().addListener((javafx.collections.ListChangeListener<PanierItem>) c -> updateTotal());
-        updateTotal();
+        viderBtn.setOnAction(event -> {
+            panierService.viderPanier();
+            afficherPanier();
+            majResume();
+        });
 
-        supprimerBtn.setOnAction(e -> supprimerProduit());
-        validerBtn.setOnAction(e -> validerCommande());
+        continuerAchatsBtn.setOnAction(event -> revenirAuCatalogue());
+
+
+        afficherPanier();
+        majResume();
     }
 
-    private void updateTotal() {
-        double total = PanierService.getTotal();
-        totalLabel.setText(String.format("TOTAL: %.2f DT", total));
+    public void setOnContinuerAchats(Runnable onContinuerAchats) {
+        this.onContinuerAchats = onContinuerAchats;
     }
 
-    @FXML
-    private void supprimerProduit() {
-        PanierItem selected = tablePanier.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            PanierService.retirerDuPanier(selected);
-        }
-    }
+    private void afficherPanier() {
+        panierList.getChildren().clear();
+        itemsCountLabel.setText(panier.size() + (panier.size() > 1 ? " articles" : " article"));
 
-    @FXML
-    private void validerCommande() {
-        if (PanierService.getPanier().isEmpty()) {
-            showAlert("Panier vide", "Veuillez ajouter des produits avant de commander.");
+        if (panier.isEmpty()) {
+            Label emptyState = new Label("Votre panier est vide.");
+            emptyState.getStyleClass().add("empty-state");
+            panierList.getChildren().add(emptyState);
             return;
         }
 
-        // Open client form dialog
-        showFormulaireClient();
+        for (PanierItem item : panier) {
+            panierList.getChildren().add(creerCarteProduit(item));
+        }
     }
 
-    private void showFormulaireClient() {
-        Stage dialogStage = new Stage();
-        dialogStage.setTitle("Informations Client");
+    private VBox creerCarteProduit(PanierItem item) {
+        VBox card = new VBox(12);
+        card.getStyleClass().add("panier-card");
 
-        VBox formVBox = new VBox();
-        formVBox.setSpacing(10);
-        formVBox.setPadding(new Insets(15));
-        formVBox.setStyle("-fx-font-family: 'Arial';");
+        HBox topRow = new HBox(14);
+        topRow.setAlignment(Pos.CENTER_LEFT);
 
-        TextField nomField = new TextField();
-        nomField.setPromptText("Nom");
-        nomField.setPrefHeight(35);
+        Node media = createProductMedia(item);
 
-        TextField prenomField = new TextField();
-        prenomField.setPromptText("Prénom");
-        prenomField.setPrefHeight(35);
+        VBox productInfo = new VBox(6);
+        productInfo.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(productInfo, Priority.ALWAYS);
 
-        TextField emailField = new TextField();
-        emailField.setPromptText("Email");
-        emailField.setPrefHeight(35);
+        Label nom = new Label(item.getNom());
+        nom.getStyleClass().add("product-name");
 
-        TextField telephoneField = new TextField();
-        telephoneField.setPromptText("Téléphone");
-        telephoneField.setPrefHeight(35);
+        Label description = new Label(item.getDescription() == null || item.getDescription().isBlank()
+                ? "Produit de parapharmacie"
+                : item.getDescription());
+        description.getStyleClass().add("product-description");
+        description.setWrapText(true);
 
-        TextArea adresseArea = new TextArea();
-        adresseArea.setPromptText("Adresse");
-        adresseArea.setPrefHeight(80);
-        adresseArea.setWrapText(true);
+        Label prix = new Label(String.format("%.2f DT / unite", item.getPrix()));
+        prix.getStyleClass().add("product-price");
 
-        Button commanderBtn = new Button("Passer la commande");
-        commanderBtn.setStyle("-fx-font-size: 14; -fx-padding: 10px 20px; -fx-background-color: #27ae60; -fx-text-fill: white;");
-        commanderBtn.setOnAction(e -> {
-            if (validerFormulaire(nomField, prenomField, emailField, telephoneField, adresseArea)) {
-                Client client = new Client(
-                    nomField.getText(),
-                    prenomField.getText(),
-                    emailField.getText(),
-                    telephoneField.getText(),
-                    adresseArea.getText()
-                );
-                passerCommande(client, dialogStage);
+        productInfo.getChildren().addAll(nom, description, prix);
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        VBox subtotalBox = new VBox(4);
+        subtotalBox.setAlignment(Pos.CENTER_RIGHT);
+        subtotalBox.getStyleClass().add("subtotal-block");
+
+        Label subtotalTitle = new Label("Sous-total");
+        subtotalTitle.getStyleClass().add("subtotal-title");
+
+        Label sousTotal = new Label(String.format("%.2f DT", item.getSousTotal()));
+        sousTotal.getStyleClass().add("subtotal-value");
+        subtotalBox.getChildren().addAll(subtotalTitle, sousTotal);
+
+        topRow.getChildren().addAll(media, productInfo, spacer, subtotalBox);
+
+        HBox actionsRow = new HBox(12);
+        actionsRow.setAlignment(Pos.CENTER_LEFT);
+
+        Button minusButton = new Button("-");
+        minusButton.getStyleClass().addAll("qty-button", "qty-minus");
+        minusButton.setOnAction(event -> {
+            if (item.getQuantite() > 1) {
+                panierService.diminuerQuantite(item);
             }
+            afficherPanier();
+            majResume();
         });
 
-        formVBox.getChildren().addAll(
-            new Label("Informations de livraison:"),
-            nomField, prenomField, emailField, telephoneField, adresseArea,
-            commanderBtn
-        );
+        Label quantiteLabel = new Label(String.valueOf(item.getQuantite()));
+        quantiteLabel.getStyleClass().add("qty-value");
+        quantiteLabel.setMinWidth(42);
+        quantiteLabel.setAlignment(Pos.CENTER);
 
-        Scene scene = new Scene(formVBox, 400, 400);
-        dialogStage.setScene(scene);
-        dialogStage.show();
+        Button plusButton = new Button("+");
+        plusButton.getStyleClass().addAll("qty-button", "qty-plus");
+        plusButton.setOnAction(event -> {
+            panierService.augmenterQuantite(item);
+            afficherPanier();
+            majResume();
+        });
+
+        HBox quantityBox = new HBox(10, minusButton, quantiteLabel, plusButton);
+        quantityBox.setAlignment(Pos.CENTER_LEFT);
+        quantityBox.getStyleClass().add("quantity-box");
+
+        Label unitPrice = new Label(String.format("Prix unitaire: %.2f DT", item.getPrix()));
+        unitPrice.getStyleClass().add("product-description");
+
+        Region actionSpacer = new Region();
+        HBox.setHgrow(actionSpacer, Priority.ALWAYS);
+
+        Button supprimer = new Button("Supprimer");
+        supprimer.getStyleClass().add("delete-button");
+        supprimer.setOnAction(event -> {
+            panierService.supprimerProduit(item);
+            afficherPanier();
+            majResume();
+        });
+
+        actionsRow.getChildren().addAll(quantityBox, unitPrice, actionSpacer, supprimer);
+
+        card.getChildren().addAll(topRow, actionsRow);
+        return card;
     }
 
-    private boolean validerFormulaire(TextField nom, TextField prenom, TextField email, TextField telephone, TextArea adresse) {
-        if (nom.getText().trim().isEmpty()) {
-            showAlert("Erreur", "Veuillez entrer votre nom.");
-            return false;
+    private Node createProductMedia(PanierItem item) {
+        StackPane media = new StackPane();
+        media.getStyleClass().add("product-media");
+
+        String imagePath = item.getImage();
+        if (imagePath != null && !imagePath.isBlank()) {
+            try {
+                Image image = new Image(imagePath, 76, 76, true, true, true);
+                if (!image.isError()) {
+                    ImageView imageView = new ImageView(image);
+                    imageView.setFitWidth(76);
+                    imageView.setFitHeight(76);
+                    imageView.setPreserveRatio(true);
+                    media.getChildren().add(imageView);
+                    return media;
+                }
+            } catch (Exception ignored) {
+                // Falls back to an icon tile when the image path is invalid.
+            }
         }
-        if (prenom.getText().trim().isEmpty()) {
-            showAlert("Erreur", "Veuillez entrer votre prénom.");
-            return false;
-        }
-        if (email.getText().trim().isEmpty() || !email.getText().contains("@")) {
-            showAlert("Erreur", "Veuillez entrer un email valide.");
-            return false;
-        }
-        if (telephone.getText().trim().isEmpty() || telephone.getText().length() < 8) {
-            showAlert("Erreur", "Veuillez entrer un téléphone valide.");
-            return false;
-        }
-        if (adresse.getText().trim().isEmpty()) {
-            showAlert("Erreur", "Veuillez entrer une adresse.");
-            return false;
-        }
-        return true;
+
+        Label fallback = new Label(extractProductGlyph(item.getNom()));
+        fallback.getStyleClass().add("product-media-icon");
+        media.getChildren().add(fallback);
+        return media;
     }
 
-    private void passerCommande(Client client, Stage dialogStage) {
+    private String extractProductGlyph(String nomProduit) {
+        if (nomProduit == null || nomProduit.isBlank()) {
+            return "+";
+        }
+        return nomProduit.substring(0, 1).toUpperCase();
+    }
+
+    private void majResume() {
+        double sousTotal = panierService.getSousTotal();
+        double tva = sousTotal * 0.19;
+        double total = sousTotal + tva;
+
+        sousTotalLabel.setText(String.format("%.2f DT", sousTotal));
+        tvaLabel.setText(String.format("%.2f DT", tva));
+        totalTTCLabel.setText(String.format("%.2f DT", total));
+    }
+
+    @FXML
+    public void confirmerCommande() {
+        validerCommande();
+    }
+
+    private void validerCommande() {
+        if (panier.isEmpty()) {
+            showError("Panier vide", "Ajoutez au moins un produit avant de confirmer la commande.");
+            return;
+        }
+
+        Client client = validerEtConstruireClient();
+        if (client == null) {
+            return;
+        }
+
         try {
-            // Enregistrer la commande
-            commandeService.enregistrerCommande(client, PanierService.getPanier());
+            commandeService.enregistrerCommande(
+                    client,
+                    PanierService.getPanierStatic(),
+                    paiementBox.getValue()
+            );
 
-            dialogStage.close();
-            showAlert("Succès", "✅ Commande enregistrée avec succès!");
+            Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Commande enregistree avec succes.", ButtonType.OK);
+            successAlert.setTitle("Succes");
+            successAlert.setHeaderText(null);
+            successAlert.showAndWait();
 
-            // Afficher la facture
-            showFacture(client);
-
-            // Vider le panier
-            PanierService.viderPanier();
-        } catch (Exception e) {
-            showAlert("Erreur", "Erreur lors de l'enregistrement: " + e.getMessage());
-            e.printStackTrace();
+            panierService.viderPanier();
+            resetClientFields();
+            afficherPanier();
+            majResume();
+        } catch (SQLException e) {
+            showError("Erreur base de donnees", "La commande n'a pas pu etre enregistree.\n" + e.getMessage());
         }
     }
 
-    private void showFacture(Client client) {
-        Stage factureStage = new Stage();
-        factureStage.setTitle("Facture - Pharmax Pharmacy");
+    private Client validerEtConstruireClient() {
+        boolean valide = true;
+        String nomComplet = nomField.getText().trim();
+        String email = emailField.getText().trim();
+        String adresse = adresseField.getText().trim();
+        String telephone = telField.getText().trim();
 
-        VBox factureVBox = new VBox();
-        factureVBox.setSpacing(10);
-        factureVBox.setPadding(new Insets(20));
-        factureVBox.setStyle("-fx-font-family: 'Courier New'; -fx-font-size: 11;");
+        // Validation du nom
+        boolean nomValide = !nomComplet.isEmpty();
+        valide &= applyValidationStyle(nomField, nomValide, nomErrorLabel);
 
-        // Header
-        Label headerLabel = new Label("═══════════════════════════════════════");
-        Label titleLabel = new Label("PHARMAX PHARMACY - FACTURE");
-        Label headerLabel2 = new Label("═══════════════════════════════════════");
+        // Validation de l'email
+        boolean emailValide = email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
+        valide &= applyValidationStyle(emailField, emailValide, emailErrorLabel);
 
-        // Client info
-        Label clientLabel = new Label("CLIENT:");
-        Label clientInfoLabel = new Label(client.getNom() + " " + client.getPrenom());
-        Label emailLabel = new Label("Email: " + client.getEmail());
-        Label telLabel = new Label("Tél: " + client.getTelephone());
-        Label adresseLabel = new Label("Adresse: " + client.getAdresse());
+        // Validation de l'adresse
+        boolean adresseValide = !adresse.isEmpty();
+        valide &= applyValidationStyle(adresseField, adresseValide, adresseErrorLabel);
 
-        // Details
-        Label detailsHeader = new Label("\n═════════════════════════════════════════");
-        Label productsHeader = new Label("ARTICLE          QTE      PRIX U.      TOTAL");
-        Label detailsLine = new Label("═════════════════════════════════════════");
+        // Validation du téléphone
+        boolean telValide = telephone.matches("^\\d{8}$");
+        valide &= applyValidationStyle(telField, telValide, telErrorLabel);
 
-        TextArea productsArea = new TextArea();
-        productsArea.setEditable(false);
-        productsArea.setWrapText(true);
-        productsArea.setPrefHeight(200);
-
-        StringBuilder productText = new StringBuilder();
-        for (PanierItem item : PanierService.getPanier()) {
-            productText.append(String.format("%-20s %3d  %10.2f DT  %10.2f DT\n",
-                item.getNom().substring(0, Math.min(20, item.getNom().length())),
-                item.getQuantite(),
-                item.getPrix(),
-                item.getSousTotal()
-            ));
+        if (!valide) {
+            return null;
         }
-        productsArea.setText(productText.toString());
 
-        // Total
-        Label totalLine = new Label("═════════════════════════════════════════");
-        double total = PanierService.getTotal();
-        Label totalFinal = new Label(String.format("TOTAL GÉNÉRAL: %.2f DT", total));
-        totalFinal.setStyle("-fx-font-size: 14; -fx-font-weight: bold;");
-
-        Label footerLabel = new Label("═════════════════════════════════════════");
-        Label thanksLabel = new Label("Merci pour votre achat!");
-
-        factureVBox.getChildren().addAll(
-            headerLabel, titleLabel, headerLabel2,
-            new Separator(),
-            clientLabel, clientInfoLabel, emailLabel, telLabel, adresseLabel,
-            detailsHeader, productsHeader, detailsLine,
-            productsArea, totalLine, totalFinal,
-            footerLabel, thanksLabel
-        );
-
-        ScrollPane scrollPane = new ScrollPane(factureVBox);
-        Scene scene = new Scene(scrollPane, 500, 600);
-        factureStage.setScene(scene);
-        factureStage.show();
+        Client client = new Client();
+        client.setNom(nomComplet);
+        client.setPrenom("");
+        client.setEmail(email);
+        client.setTelephone(telephone);
+        client.setAdresse(adresse);
+        return client;
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    private boolean applyValidationStyle(TextField field, boolean isValid, Label errorLabel) {
+        if (isValid) {
+            field.setStyle("-fx-border-color: #1f9d63");
+            errorLabel.setVisible(false);
+            errorLabel.setManaged(false);
+        } else {
+            field.setStyle("-fx-border-color: #dc2626");
+            errorLabel.setVisible(true);
+            errorLabel.setManaged(true);
+        }
+        return isValid;
+    }
+
+    private void resetClientFields() {
+        nomField.clear();
+        emailField.clear();
+        adresseField.clear();
+        telField.clear();
+        paiementBox.getSelectionModel().selectFirst();
+
+        nomField.setStyle("");
+        emailField.setStyle("");
+        adresseField.setStyle("");
+        telField.setStyle("");
+
+        nomErrorLabel.setVisible(false);
+        nomErrorLabel.setManaged(false);
+        emailErrorLabel.setVisible(false);
+        emailErrorLabel.setManaged(false);
+        adresseErrorLabel.setVisible(false);
+        adresseErrorLabel.setManaged(false);
+        telErrorLabel.setVisible(false);
+        telErrorLabel.setManaged(false);
+    }
+
+    private void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
         alert.setTitle(title);
-        alert.setContentText(message);
+        alert.setHeaderText(null);
         alert.showAndWait();
     }
-}
 
+    private void revenirAuCatalogue() {
+        if (onContinuerAchats != null) {
+            onContinuerAchats.run();
+        }
+    }
+}

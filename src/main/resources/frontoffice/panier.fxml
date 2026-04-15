@@ -1,64 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TableColumn?>
+<?import java.net.URL?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.collections.FXCollections?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.frontoffice.PanierController">
+<BorderPane xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.frontoffice.PanierController"
+            prefWidth="1200.0" prefHeight="760.0">
+    <stylesheets>
+        <URL value="@panier.css" />
+    </stylesheets>
     <center>
-        <VBox fx:id="panierList" spacing="20" style="-fx-padding: 30; -fx-background-color: #fff; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, #e0e0e0, 10, 0, 0, 2);">
-            <Label text="Vos Articles" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-padding: 0 0 10 0;"/>
-            <!-- Les produits seront ajoutés dynamiquement ici -->
-        </VBox>
+        <GridPane hgap="24" vgap="0" styleClass="cart-layout">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="70" hgrow="ALWAYS" />
+                <ColumnConstraints percentWidth="30" minWidth="320" />
+            </columnConstraints>
+
+            <VBox GridPane.columnIndex="0" spacing="18" styleClass="list-column">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Votre panier" styleClass="page-title" />
+                        <Label fx:id="itemsCountLabel" text="0 article" styleClass="page-subtitle" />
+                    </VBox>
+                </HBox>
+
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="products-scroll">
+                    <content>
+                        <VBox fx:id="panierList" spacing="14" styleClass="products-list" />
+                    </content>
+                </ScrollPane>
+                <VBox.vgrow>
+                    <Priority fx:value="ALWAYS" />
+                </VBox.vgrow>
+
+                <Button fx:id="continuerAchatsBtn" text="Revenir au catalogue et completer l'achat" styleClass="outline-button" />
+            </VBox>
+
+            <ScrollPane GridPane.columnIndex="1" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="summary-scroll">
+                <content>
+                    <VBox fx:id="resumeCommande" spacing="14" styleClass="summary-card">
+                        <Label text="Resume de commande" styleClass="summary-title" />
+
+                        <VBox spacing="8" styleClass="summary-section">
+                            <HBox alignment="CENTER_LEFT" styleClass="summary-row">
+                                <Label text="Sous-total" styleClass="summary-label" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="sousTotalLabel" styleClass="summary-value" />
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" styleClass="summary-row">
+                                <Label text="Livraison" styleClass="summary-label" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label text="Gratuit" styleClass="summary-success" />
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" styleClass="summary-row">
+                                <Label text="TVA (19%)" styleClass="summary-label" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="tvaLabel" styleClass="summary-value" />
+                            </HBox>
+                        </VBox>
+
+                        <Separator />
+
+                        <HBox alignment="CENTER_LEFT" styleClass="summary-row">
+                            <Label text="Total TTC" styleClass="summary-total-label" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="totalTTCLabel" styleClass="summary-total-value" />
+                        </HBox>
+
+                        <Separator />
+
+                        <VBox spacing="4">
+                            <Label text="Nom complet" styleClass="field-label" />
+                            <TextField fx:id="nomField" promptText="Votre nom complet" />
+                            <Label fx:id="nomErrorLabel" text="Le nom est requis" styleClass="error-message" visible="false" managed="false" />
+                        </VBox>
+                        <VBox spacing="4">
+                            <Label text="Email" styleClass="field-label" />
+                            <TextField fx:id="emailField" promptText="nom@email.com" />
+                            <Label fx:id="emailErrorLabel" text="Email invalide" styleClass="error-message" visible="false" managed="false" />
+                        </VBox>
+                        <VBox spacing="4">
+                            <Label text="Adresse de livraison" styleClass="field-label" />
+                            <TextField fx:id="adresseField" promptText="Adresse complete" />
+                            <Label fx:id="adresseErrorLabel" text="L'adresse est requise" styleClass="error-message" visible="false" managed="false" />
+                        </VBox>
+                        <VBox spacing="4">
+                            <Label text="Numero de telephone" styleClass="field-label" />
+                            <TextField fx:id="telField" promptText="8 chiffres" />
+                            <Label fx:id="telErrorLabel" text="Le telephone doit contenir 8 chiffres" styleClass="error-message" visible="false" managed="false" />
+                        </VBox>
+                        <VBox spacing="6">
+                            <Label text="Mode de paiement" styleClass="field-label" />
+                            <ComboBox fx:id="paiementBox" promptText="Selectionner" />
+                        </VBox>
+
+                        <VBox spacing="8">
+                            <Button fx:id="confirmerBtn" onAction="#confirmerCommande" text="Confirmer la commande" styleClass="primary-button" />
+                            <Button fx:id="viderBtn" text="Vider le panier" styleClass="secondary-button" />
+                        </VBox>
+                    </VBox>
+                </content>
+            </ScrollPane>
+        </GridPane>
     </center>
-    <right>
-        <VBox fx:id="resumeCommande" spacing="15" style="-fx-padding: 30; -fx-background-color: #fafbfc; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, #e0e0e0, 10, 0, 0, 2);">
-            <Label text="Résumé de Commande" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
-            <HBox spacing="10">
-                <Label text="Sous-total :" />
-                <Label fx:id="sousTotalLabel" style="-fx-font-weight: bold;" />
-            </HBox>
-            <HBox spacing="10">
-                <Label text="Frais de livraison :" />
-                <Label text="GRATUIT" style="-fx-text-fill: #27ae60; -fx-font-weight: bold;" />
-            </HBox>
-            <HBox spacing="10">
-                <Label text="TVA (19%) :" />
-                <Label fx:id="tvaLabel" />
-            </HBox>
-            <Separator />
-            <HBox spacing="10">
-                <Label text="Total TTC :" style="-fx-font-size: 16; -fx-font-weight: bold;" />
-                <Label fx:id="totalTTCLabel" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #27ae60;" />
-            </HBox>
-            <Separator />
-            <Label text="NOM COMPLET" />
-            <TextField fx:id="nomField" />
-            <Label text="EMAIL" />
-            <TextField fx:id="emailField" />
-            <Label text="ADRESSE DE LIVRAISON" />
-            <TextField fx:id="adresseField" />
-            <Label text="NUMÉRO DE TÉLÉPHONE" />
-            <TextField fx:id="telField" />
-            <Label text="MODE DE PAIEMENT" />
-            <ComboBox fx:id="paiementBox">
-                <items>
-                    <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="Carte bancaire" />
-                        <String fx:value="Paiement à la livraison" />
-                    </FXCollections>
-                </items>
-            </ComboBox>
-            <Button fx:id="confirmerBtn" text="✔ Confirmer la Commande" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold; -fx-background-radius: 8;" />
-            <Button fx:id="viderBtn" text="🗑 Vider le Panier" style="-fx-background-color: #fff; -fx-text-fill: #e74c3c; -fx-font-size: 14; -fx-font-weight: bold; -fx-border-color: #e74c3c; -fx-border-radius: 8;" />
-        </VBox>
-    </right>
 </BorderPane>

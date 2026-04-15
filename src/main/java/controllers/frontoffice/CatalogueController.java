@@ -1,16 +1,20 @@
 package controllers.frontoffice;
 
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import models.Produit;
+import javafx.util.Duration;
 import models.PanierItem;
-import services.ProduitService;
+import models.Produit;
 import services.PanierService;
+import services.ProduitService;
 
 import java.util.List;
 
@@ -19,7 +23,7 @@ public class CatalogueController {
     @FXML
     private ScrollPane cataloguePane;
 
-    private ProduitService produitService = new ProduitService();
+    private final ProduitService produitService = new ProduitService();
 
     @FXML
     public void initialize() {
@@ -28,46 +32,29 @@ public class CatalogueController {
 
     private void loadProduits() {
         try {
-            System.out.println("🔄 Chargement des produits...");
             List<Produit> produits = produitService.select();
-            System.out.println("📦 Nombre de produits chargés: " + produits.size());
-            
-            if (produits.isEmpty()) {
-                System.err.println("⚠️ ATTENTION: Aucun produit trouvé!");
-                System.err.println("   Vérifiez:");
-                System.err.println("   1. La BD 'pharm' existe");
-                System.err.println("   2. La table 'produits' existe");
-                System.err.println("   3. Des données ont été insérées");
-            }
-            
-            VBox container = new VBox();
-            container.setSpacing(10);
-            container.setPadding(new Insets(10));
-            container.setStyle("-fx-font-family: 'Arial'; -fx-background-color: #f5f5f5;");
+
+            VBox container = new VBox(16);
+            container.setPadding(new Insets(4));
+            container.getStyleClass().add("catalogue-list");
 
             if (produits.isEmpty()) {
-                Label emptyLabel = new Label("❌ Aucun produit disponible.\n\nVérifiez la base de données 'pharm' et la table 'produits'.\nAssurez-vous que les données ont été insérées.");
-                emptyLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #e74c3c; -fx-padding: 20;");
+                Label emptyLabel = new Label("Aucun produit disponible pour le moment.");
+                emptyLabel.getStyleClass().add("empty-state");
                 emptyLabel.setWrapText(true);
                 container.getChildren().add(emptyLabel);
             } else {
-                System.out.println("✅ Affichage de " + produits.size() + " produits");
                 for (Produit produit : produits) {
-                    System.out.println("   - " + produit.getNom() + " (" + produit.getPrix() + " DT)");
-                    HBox productCard = createProductCard(produit);
-                    container.getChildren().add(productCard);
+                    container.getChildren().add(createProductCard(produit));
                 }
             }
 
             cataloguePane.setContent(container);
         } catch (Exception e) {
-            System.err.println("❌ Erreur lors du chargement des produits:");
-            e.printStackTrace();
-            
             VBox errorContainer = new VBox();
             errorContainer.setPadding(new Insets(20));
-            Label errorLabel = new Label("❌ ERREUR:\n" + e.getMessage());
-            errorLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #e74c3c;");
+            Label errorLabel = new Label("Erreur lors du chargement des produits.\n" + e.getMessage());
+            errorLabel.getStyleClass().add("empty-state");
             errorLabel.setWrapText(true);
             errorContainer.getChildren().add(errorLabel);
             cataloguePane.setContent(errorContainer);
@@ -75,58 +62,74 @@ public class CatalogueController {
     }
 
     private HBox createProductCard(Produit produit) {
-        HBox card = new HBox();
-        card.setSpacing(15);
-        card.setPadding(new Insets(10));
-        card.setStyle("-fx-border-color: #ddd; -fx-border-radius: 5; -fx-background-color: white;");
+        HBox card = new HBox(18);
+        card.setPadding(new Insets(18));
+        card.getStyleClass().add("product-card");
 
-        // Image placeholder
         VBox imageBox = new VBox();
-        imageBox.setPrefWidth(100);
-        imageBox.setPrefHeight(100);
-        imageBox.setStyle("-fx-background-color: #e0e0e0; -fx-border-radius: 5;");
-        Label imagePlaceholder = new Label("Image");
-        imagePlaceholder.setStyle("-fx-text-fill: #999; -fx-font-size: 12;");
+        imageBox.setPrefWidth(92);
+        imageBox.setPrefHeight(92);
+        imageBox.getStyleClass().add("product-card-media");
+
+        String initial = produit.getNom() == null || produit.getNom().isBlank()
+                ? "+"
+                : produit.getNom().substring(0, 1).toUpperCase();
+        Label imagePlaceholder = new Label(initial);
+        imagePlaceholder.getStyleClass().add("product-card-media-label");
         imageBox.getChildren().add(imagePlaceholder);
 
-        // Product details
-        VBox details = new VBox();
-        details.setSpacing(5);
-        details.setPrefWidth(300);
+        VBox details = new VBox(8);
+        HBox.setHgrow(details, Priority.ALWAYS);
 
         Label nomLabel = new Label(produit.getNom());
-        nomLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
+        nomLabel.getStyleClass().add("product-card-title");
 
-        Label descriptionLabel = new Label(produit.getDescription());
-        descriptionLabel.setStyle("-fx-font-size: 12; -fx-text-fill: #666;");
+        Label descriptionLabel = new Label(produit.getDescription() == null || produit.getDescription().isBlank()
+                ? "Produit de parapharmacie"
+                : produit.getDescription());
+        descriptionLabel.getStyleClass().add("product-card-description");
         descriptionLabel.setWrapText(true);
 
         Label prixLabel = new Label(String.format("%.2f DT", produit.getPrix()));
-        prixLabel.setStyle("-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #e74c3c;");
+        prixLabel.getStyleClass().add("product-card-price");
 
         details.getChildren().addAll(nomLabel, descriptionLabel, prixLabel);
 
-        // Add to cart button
         Button ajouterBtn = new Button("Ajouter au panier");
-        ajouterBtn.setStyle("-fx-font-size: 12; -fx-padding: 8px 15px; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-border-radius: 3;");
-        ajouterBtn.setOnAction(e -> ajouterAuPanier(produit));
+        ajouterBtn.getStyleClass().addAll("fo-action-button", "fo-action-primary");
 
-        HBox.setHgrow(details, javafx.scene.layout.Priority.ALWAYS);
-        card.getChildren().addAll(imageBox, details, ajouterBtn);
+        Label addedMessageLabel = new Label("Ajoute au panier");
+        addedMessageLabel.getStyleClass().add("cart-inline-message");
+        addedMessageLabel.setVisible(false);
+        addedMessageLabel.setManaged(false);
 
+        PauseTransition messageDelay = new PauseTransition(Duration.seconds(2));
+        messageDelay.setOnFinished(event -> {
+            addedMessageLabel.setVisible(false);
+            addedMessageLabel.setManaged(false);
+        });
+
+        ajouterBtn.setOnAction(e -> ajouterAuPanier(produit, addedMessageLabel, messageDelay));
+
+        VBox actionBox = new VBox(8, addedMessageLabel, ajouterBtn);
+        actionBox.setFillWidth(false);
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        card.getChildren().addAll(imageBox, details, spacer, actionBox);
         return card;
     }
 
-    private void ajouterAuPanier(Produit produit) {
+    private void ajouterAuPanier(Produit produit, Label addedMessageLabel, PauseTransition messageDelay) {
         PanierItem item = new PanierItem(
-            produit.getId(),
-            produit.getNom(),
-            produit.getPrix(),
-            produit.getDescription(),
-            produit.getDescription()
+                produit.getId(),
+                produit.getNom(),
+                produit.getPrix(),
+                produit.getDescription(),
+                produit.getDescription()
         );
         PanierService.ajouterAuPanier(item);
-        // Show confirmation
-        System.out.println("✅ " + produit.getNom() + " ajouté au panier!");
+
     }
 }

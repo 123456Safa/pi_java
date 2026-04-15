@@ -5,13 +5,23 @@ import javafx.collections.ObservableList;
 import models.PanierItem;
 
 public class PanierService {
-    private static final ObservableList<PanierItem> panier = FXCollections.observableArrayList();
+    private static PanierService instance;
+    private final ObservableList<PanierItem> panier = FXCollections.observableArrayList();
 
-    public static ObservableList<PanierItem> getPanier() {
+    private PanierService() {}
+
+    public static PanierService getInstance() {
+        if (instance == null) {
+            instance = new PanierService();
+        }
+        return instance;
+    }
+
+    public ObservableList<PanierItem> getPanier() {
         return panier;
     }
 
-    public static void ajouterAuPanier(PanierItem item) {
+    public void ajouterProduit(PanierItem item) {
         // Vérifier si le produit existe déjà
         for (PanierItem p : panier) {
             if (p.getProduitId() == item.getProduitId()) {
@@ -23,28 +33,59 @@ public class PanierService {
         panier.add(item);
     }
 
-    public static void retirerDuPanier(PanierItem item) {
+    public void supprimerProduit(PanierItem item) {
         panier.remove(item);
     }
 
-    public static void viderPanier() {
+    public void augmenterQuantite(PanierItem item) {
+        item.setQuantite(item.getQuantite() + 1);
+    }
+
+    public void diminuerQuantite(PanierItem item) {
+        if (item.getQuantite() > 1) {
+            item.setQuantite(item.getQuantite() - 1);
+        } else {
+            supprimerProduit(item);
+        }
+    }
+
+    public void viderPanier() {
         panier.clear();
     }
 
-    public static double getTotal() {
+    public double getSousTotal() {
         return panier.stream()
                 .mapToDouble(PanierItem::getSousTotal)
                 .sum();
     }
 
+    public static void ajouterAuPanier(PanierItem item) {
+        getInstance().ajouterProduit(item);
+    }
+
+    public static void retirerDuPanier(PanierItem item) {
+        getInstance().supprimerProduit(item);
+    }
+
+    public static void viderPanierStatic() {
+        getInstance().viderPanier();
+    }
+
+    public static double getTotal() {
+        return getInstance().getSousTotal();
+    }
+
     public static int getNombreProduits() {
-        return panier.size();
+        return getInstance().getPanier().size();
     }
 
     public static int getQuantiteTotale() {
-        return panier.stream()
+        return getInstance().getPanier().stream()
                 .mapToInt(PanierItem::getQuantite)
                 .sum();
     }
-}
 
+    public static ObservableList<PanierItem> getPanierStatic() {
+        return getInstance().getPanier();
+    }
+}

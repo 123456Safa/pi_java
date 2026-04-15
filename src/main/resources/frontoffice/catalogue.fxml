@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.frontoffice.CatalogueController">
-    <ScrollPane fx:id="cataloguePane" VBox.vgrow="ALWAYS"/>
+<VBox spacing="18" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.frontoffice.CatalogueController"
+      styleClass="catalogue-page">
+    <VBox spacing="6" styleClass="hero-card">
+        <Label text="Catalogue sante &amp; bien-etre" styleClass="hero-title" />
+        <Label text="Decouvrez une selection claire, moderne et accessible de produits pharmaceutiques."
+               styleClass="hero-subtitle"
+               wrapText="true" />
+    </VBox>
+    <ScrollPane fx:id="cataloguePane" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" styleClass="catalogue-scroll" />
 </VBox>
-

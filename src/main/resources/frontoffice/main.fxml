@@ -1,21 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="mainPane" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.frontoffice.FrontOfficeMainController">
+<BorderPane fx:id="mainPane"
+            xmlns="http://javafx.com/javafx/20.0.2"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.frontoffice.FrontOfficeMainController"
+            styleClass="fo-root">
+    <stylesheets>
+        <URL value="@frontoffice.css" />
+    </stylesheets>
     <top>
-        <HBox spacing="10" style="-fx-padding: 10; -fx-background-color: #2c3e50;" alignment="CENTER">
-            <Button text="🛍️ Catalogue" onAction="#showCatalogue" style="-fx-font-size: 12; -fx-padding: 10px 20px; -fx-background-color: #27ae60; -fx-text-fill: white;"/>
-            <Button text="🛒 Panier" onAction="#showPanier" style="-fx-font-size: 12; -fx-padding: 10px 20px; -fx-background-color: #e74c3c; -fx-text-fill: white;"/>
-            <Button text="📜 Historique" onAction="#showHistorique" style="-fx-font-size: 12; -fx-padding: 10px 20px; -fx-background-color: #3498db; -fx-text-fill: white;"/>
+        <HBox alignment="CENTER_LEFT" spacing="18" styleClass="fo-topbar">
+            <padding>
+                <Insets top="16" right="24" bottom="16" left="24" />
+            </padding>
+            <VBox spacing="2">
+                <Label fx:id="pharmaxLabel" text="PHARMAX" styleClass="fo-brand-title" onMouseClicked="#handlePharmaxLabelClick" />
+                <Label text="Parapharmacie moderne et suivi de commande" styleClass="fo-brand-subtitle" />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <HBox spacing="10">
+                <Button fx:id="catalogueButton" text="Catalogue" onAction="#showCatalogue" styleClass="fo-nav-button" />
+                <StackPane>
+                    <Button fx:id="panierButton" text="Panier" onAction="#showPanier" styleClass="fo-nav-button" />
+                    <Label fx:id="panierBadge" text="0" styleClass="panier-badge" StackPane.alignment="TOP_RIGHT" />
+                </StackPane>
+                <Button fx:id="historiqueButton" text="Mes commandes" onAction="#showHistorique" styleClass="fo-nav-button" />
+            </HBox>
+            <Label text="Client" styleClass="fo-user-chip" />
         </HBox>
     </top>
     <center>
-        <Label text="Bienvenue sur PHARMAX" style="-fx-font-size: 24; -fx-font-weight: bold;"/>
+        <VBox alignment="CENTER" spacing="10" styleClass="fo-content-placeholder">
+            <Label text="Chargement..." styleClass="fo-placeholder-title" />
+        </VBox>
     </center>
 </BorderPane>
-

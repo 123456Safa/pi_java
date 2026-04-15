@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="18" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.DashboardController"
+      styleClass="crud-page">
+    <VBox spacing="4" styleClass="crud-toolbar">
+        <Label text="Dashboard" styleClass="crud-toolbar-title" />
+        <Label text="La statistique des statuts est disponible dans la page Commande" styleClass="crud-toolbar-subtitle" />
+    </VBox>
+
+    <VBox spacing="8" styleClass="table-card">
+        <Label text="Navigation" styleClass="card-title" />
+        <Label text="Utilisez le menu Commande pour consulter les commandes, filtrer, trier, rechercher et voir les statistiques par statut." styleClass="crud-toolbar-subtitle" />
+    </VBox>
+</VBox>

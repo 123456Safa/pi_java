@@ -1,39 +1,84 @@
-<VBox spacing="10" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controllers.UtilisateurController">
+<?xml version="1.0" encoding="UTF-8"?>
 
-    <TextField fx:id="tfNom" promptText="Nom"/>
-    <TextField fx:id="tfEmail" promptText="Email"/>
-    <TextField fx:id="tfMotDePasse" promptText="Mot de passe"/>
-    <TextField fx:id="tfRole" promptText="Rôle"/>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-    <HBox spacing="10">
-       <Button text="Ajouter" onAction="#ajouterUtilisateur"/>
-       <Button text="Modifier" onAction="#modifierUtilisateur"/>
-       <Button text="Supprimer" onAction="#supprimerUtilisateur"/>
-    </HBox>
+<VBox spacing="18" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.UtilisateurController"
+      styleClass="crud-page">
+    <VBox spacing="4" styleClass="crud-toolbar">
+        <Label text="Liste des utilisateurs" styleClass="crud-toolbar-title" />
+        <Label text="Administrez les comptes utilises dans la plateforme" styleClass="crud-toolbar-subtitle" />
+    </VBox>
 
-    <TableView fx:id="tableUtilisateur">
-        <columns>
-            <TableColumn text="ID" prefWidth="50">
-                <cellValueFactory>
-                    <PropertyValueFactory property="id" />
-                </cellValueFactory>
-            </TableColumn>
-            <TableColumn text="Nom" prefWidth="150">
-                <cellValueFactory>
-                    <PropertyValueFactory property="nom" />
-                </cellValueFactory>
-            </TableColumn>
-            <TableColumn text="Email" prefWidth="200">
-                <cellValueFactory>
-                    <PropertyValueFactory property="email" />
-                </cellValueFactory>
-            </TableColumn>
-            <TableColumn text="Rôle" prefWidth="100">
-                <cellValueFactory>
-                    <PropertyValueFactory property="role" />
-                </cellValueFactory>
-            </TableColumn>
-        </columns>
-    </TableView>
+    <VBox spacing="18" styleClass="form-card">
+        <Label text="Informations utilisateur" styleClass="card-title" />
+        <GridPane hgap="16" vgap="14">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="25" />
+                <ColumnConstraints percentWidth="25" />
+                <ColumnConstraints percentWidth="25" />
+                <ColumnConstraints percentWidth="25" />
+            </columnConstraints>
+
+            <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label text="Nom" styleClass="input-label" />
+                <TextField fx:id="tfNom" promptText="Nom" />
+            </VBox>
+            <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label text="Email" styleClass="input-label" />
+                <TextField fx:id="tfEmail" promptText="Email" />
+            </VBox>
+            <VBox spacing="6" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                <Label text="Mot de passe" styleClass="input-label" />
+                <TextField fx:id="tfMotDePasse" promptText="Mot de passe" />
+            </VBox>
+            <VBox spacing="6" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                <Label text="Role" styleClass="input-label" />
+                <TextField fx:id="tfRole" promptText="Role" />
+            </VBox>
+        </GridPane>
+
+        <HBox spacing="12">
+            <Button text="Ajouter / Enregistrer" onAction="#ajouterUtilisateur" styleClass="action-button primary-action" />
+            <Button text="Charger la selection" onAction="#modifierUtilisateur" styleClass="action-button secondary-action" />
+            <Button text="Supprimer" onAction="#supprimerUtilisateur" styleClass="action-button danger-action" />
+        </HBox>
+    </VBox>
+
+    <VBox spacing="14" styleClass="table-card" VBox.vgrow="ALWAYS">
+        <Label text="Utilisateurs enregistres" styleClass="card-title" />
+        <TableView fx:id="tableUtilisateur" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn text="ID" prefWidth="70">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="id" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Nom" prefWidth="220">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="nom" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Email" prefWidth="320">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="email" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Role" prefWidth="180">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="role" />
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
+    </VBox>
 </VBox>

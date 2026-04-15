@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="18" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.LigneCommandeController"
+      styleClass="crud-page">
+    <VBox spacing="4" styleClass="crud-toolbar">
+        <Label text="Lignes de commande" styleClass="crud-toolbar-title" />
+        <Label text="Consultez et administrez les details des lignes de commande" styleClass="crud-toolbar-subtitle" />
+    </VBox>
+
+    <VBox spacing="18" styleClass="form-card">
+        <Label text="Informations ligne" styleClass="card-title" />
+        <GridPane hgap="16" vgap="14">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="20" />
+                <ColumnConstraints percentWidth="20" />
+                <ColumnConstraints percentWidth="20" />
+                <ColumnConstraints percentWidth="20" />
+                <ColumnConstraints percentWidth="20" />
+            </columnConstraints>
+
+            <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label text="Nom" styleClass="input-label" />
+                <TextField fx:id="tfNom" promptText="Nom" />
+            </VBox>
+            <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label text="Prix" styleClass="input-label" />
+                <TextField fx:id="tfPrix" promptText="Prix" />
+            </VBox>
+            <VBox spacing="6" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                <Label text="Quantite" styleClass="input-label" />
+                <TextField fx:id="tfQuantite" promptText="Quantite" />
+            </VBox>
+            <VBox spacing="6" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                <Label text="Sous-total" styleClass="input-label" />
+                <TextField fx:id="tfSousTotal" promptText="Sous-total" />
+            </VBox>
+            <VBox spacing="6" GridPane.columnIndex="4" GridPane.rowIndex="0">
+                <Label text="Commande ID" styleClass="input-label" />
+                <TextField fx:id="tfCommandeId" promptText="Commande ID" />
+            </VBox>
+        </GridPane>
+
+        <HBox spacing="12">
+            <Button text="Ajouter / Enregistrer" onAction="#ajouterLigne" styleClass="action-button primary-action" />
+            <Button text="Charger la selection" onAction="#modifierLigne" styleClass="action-button secondary-action" />
+            <Button text="Supprimer" onAction="#supprimerLigne" styleClass="action-button danger-action" />
+        </HBox>
+    </VBox>
+
+    <VBox spacing="14" styleClass="table-card" VBox.vgrow="ALWAYS">
+        <Label text="Lignes enregistrees" styleClass="card-title" />
+        <TableView fx:id="tableLigne" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="70">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="id" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="colNom" text="Nom" prefWidth="220">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="nom" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="colPrix" text="Prix" prefWidth="120">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="prix" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="colQuantite" text="Quantite" prefWidth="120">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="quantite" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="colSousTotal" text="Sous-total" prefWidth="140">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="sousTotal" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="colCommandeId" text="Commande ID" prefWidth="140">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="commandeId" />
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
+    </VBox>
+</VBox>

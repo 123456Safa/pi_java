@@ -60,7 +60,7 @@ public class CommandeController {
         colProduits.setCellValueFactory(new PropertyValueFactory<>("produits"));
         colTotal.setCellValueFactory(new PropertyValueFactory<>("totales"));
         colStatut.setCellValueFactory(new PropertyValueFactory<>("statut"));
-        colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+        colDate.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
         colUtilisateurId.setCellValueFactory(new PropertyValueFactory<>("utilisateurId"));
 
         loadCommandes();
@@ -75,7 +75,7 @@ public class CommandeController {
                 c.setProduits(tfProduits.getText());
                 c.setTotales(Double.parseDouble(tfTotales.getText()));
                 c.setStatut(tfStatut.getText());
-                c.setDate(dpDate.getValue().toString());
+                c.setCreatedAt(dpDate.getValue().toString());
                 c.setUtilisateurId(Integer.parseInt(tfUtilisateurId.getText()));
 
                 service.update(c);
@@ -86,7 +86,7 @@ public class CommandeController {
                 c.setProduits(tfProduits.getText());
                 c.setTotales(Double.parseDouble(tfTotales.getText()));
                 c.setStatut(tfStatut.getText());
-                c.setDate(dpDate.getValue().toString());
+                c.setCreatedAt(dpDate.getValue().toString());
                 c.setUtilisateurId(Integer.parseInt(tfUtilisateurId.getText()));
 
                 service.add(c);

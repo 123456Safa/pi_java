@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox spacing="10" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.frontoffice.HistoriqueController" style="-fx-padding: 15;">
-    <Label text="Historique des Commandes" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+<VBox spacing="18" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.frontoffice.HistoriqueController"
+      styleClass="history-page">
+    <Label text="Mes commandes" styleClass="hero-title" />
+    <Label text="Consultez et recherchez les details de vos commandes" styleClass="hero-subtitle" />
+    <HBox spacing="12" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField"
+                   promptText="Rechercher par numero, statut, date, total ou produit"
+                   styleClass="history-search"
+                   HBox.hgrow="ALWAYS" />
+        <Label fx:id="resultsLabel"
+               text="0 commande"
+               styleClass="history-results" />
+    </HBox>
 
-    <Label text="Mes Commandes:" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
-    <TableView fx:id="tableCommandes" VBox.vgrow="ALWAYS" prefHeight="200">
-        <columns>
-            <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
-            <TableColumn fx:id="colStatut" text="Statut" prefWidth="100"/>
-            <TableColumn fx:id="colDate" text="Date" prefWidth="100"/>
-            <TableColumn fx:id="colTotal" text="Total" prefWidth="100"/>
-        </columns>
-    </TableView>
-
-    <Separator/>
-
-    <Label text="Détails de la Commande:" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
-    <TableView fx:id="tableLignes" VBox.vgrow="ALWAYS" prefHeight="200">
-        <columns>
-            <TableColumn fx:id="colLigneNom" text="Produit" prefWidth="200"/>
-            <TableColumn fx:id="colLigneQte" text="Quantité" prefWidth="100"/>
-            <TableColumn fx:id="colLignePrix" text="Prix" prefWidth="100"/>
-            <TableColumn fx:id="colLigneSousTotal" text="Sous-total" prefWidth="100"/>
-        </columns>
-    </TableView>
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="history-scroll">
+        <content>
+            <TilePane fx:id="commandesContainer" hgap="24" vgap="24" prefColumns="2" tileAlignment="TOP_LEFT">
+                <padding>
+                    <Insets top="8" right="8" bottom="8" left="8" />
+                </padding>
+            </TilePane>
+        </content>
+    </ScrollPane>
 </VBox>
-

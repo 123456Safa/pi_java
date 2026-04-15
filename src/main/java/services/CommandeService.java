@@ -1,124 +1,207 @@
 package services;
 
 import models.Client;
+import models.CommandeConfirmation;
 import models.Commandes;
-import models.PanierItem;
 import models.LigneCommandes;
+import models.PanierItem;
 import utils.MyConnection;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Locale;
 
 public class CommandeService implements IService<Commandes> {
+    private static final double TVA_RATE = 0.19;
 
-    private Connection cnx;
+    private final Connection cnx;
+    private final LigneCommandeService ligneCommandeService;
 
     public CommandeService() {
         cnx = MyConnection.getInstance().getConnection();
+        ligneCommandeService = new LigneCommandeService();
     }
 
     @Override
-    public void add(Commandes c) throws SQLException {
-        String sql = "INSERT INTO commandes (produits, totales, statut, utilisateur_id, created_at) VALUES (?, ?, ?, ?, ?)";
-        PreparedStatement ps = cnx.prepareStatement(sql);
-
-        ps.setString(1, c.getProduits());
-        ps.setDouble(2, c.getTotales());
-        ps.setString(3, c.getStatut());
-        ps.setInt(4, c.getUtilisateurId());
-        ps.setTimestamp(5, new java.sql.Timestamp(System.currentTimeMillis()));
-
-        ps.executeUpdate();
-        System.out.println("✅ Commande ajoutée");
+    public void add(Commandes commande) throws SQLException {
+        String sql = "INSERT INTO commandes (produits, totales, statut, created_at, utilisateur_id) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, commande.getProduits());
+            ps.setDouble(2, commande.getTotales());
+            ps.setString(3, commande.getStatut());
+            ps.setString(4, commande.getCreatedAt());
+            ps.setInt(5, commande.getUtilisateurId());
+            ps.executeUpdate();
+        }
     }
 
     @Override
-    public void update(Commandes c) throws SQLException {
-        String sql = "UPDATE commandes SET produits=?, totales=?, statut=?, utilisateur_id=? WHERE id=?";
-        PreparedStatement ps = cnx.prepareStatement(sql);
-
-        ps.setString(1, c.getProduits());
-        ps.setDouble(2, c.getTotales());
-        ps.setString(3, c.getStatut());
-        ps.setInt(4, c.getUtilisateurId());
-        ps.setInt(5, c.getId());
-
-        ps.executeUpdate();
-        System.out.println("✏️ Commande modifiée");
+    public void update(Commandes commande) throws SQLException {
+        String sql = "UPDATE commandes SET produits=?, totales=?, statut=?, created_at=?, utilisateur_id=? WHERE id=?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, commande.getProduits());
+            ps.setDouble(2, commande.getTotales());
+            ps.setString(3, commande.getStatut());
+            ps.setString(4, commande.getCreatedAt());
+            ps.setInt(5, commande.getUtilisateurId());
+            ps.setInt(6, commande.getId());
+            ps.executeUpdate();
+        }
     }
 
     @Override
     public void delete(int id) throws SQLException {
-        String sql = "DELETE FROM commandes WHERE id=?";
-        PreparedStatement ps = cnx.prepareStatement(sql);
-        ps.setInt(1, id);
-        ps.executeUpdate();
+        boolean autoCommit = cnx.getAutoCommit();
+        cnx.setAutoCommit(false);
 
-        System.out.println("🗑️ Commande supprimée");
+        try {
+            ligneCommandeService.deleteByCommandeId(id);
+
+            String sql = "DELETE FROM commandes WHERE id=?";
+            try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+                ps.setInt(1, id);
+                ps.executeUpdate();
+            }
+
+            cnx.commit();
+        } catch (SQLException e) {
+            cnx.rollback();
+            throw e;
+        } finally {
+            cnx.setAutoCommit(autoCommit);
+        }
     }
 
     @Override
     public List<Commandes> select() throws SQLException {
-        List<Commandes> list = new ArrayList<>();
-
+        List<Commandes> commandes = new ArrayList<>();
         String sql = "SELECT * FROM commandes";
-        Statement st = cnx.createStatement();
-        ResultSet rs = st.executeQuery(sql);
 
-        while (rs.next()) {
-            Commandes c = new Commandes(
-                    rs.getInt("id"),
-                    rs.getString("produits"),
-                    rs.getDouble("totales"),
-                    rs.getString("statut"),
-                    null, // pas de colonne date
-                    rs.getInt("utilisateur_id")
-            );
-
-            list.add(c);
-        }
-
-        return list;
-    }
-
-    // Méthode spéciale pour front office - enregistre commande + lignes
-    public void enregistrerCommande(Client client, Collection<PanierItem> panierItems) throws SQLException {
-        // Créer la commande
-        Commandes commande = new Commandes();
-        commande.setProduits("Commande panier");
-        commande.setTotales(panierItems.stream().mapToDouble(PanierItem::getSousTotal).sum());
-        commande.setStatut("En attente");
-        commande.setUtilisateurId(1); // Par défaut
-
-        // Insérer la commande et récupérer l'ID
-        String sqlCommande = "INSERT INTO commandes (produits, totales, statut, utilisateur_id, created_at) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement pstmt = cnx.prepareStatement(sqlCommande, PreparedStatement.RETURN_GENERATED_KEYS)) {
-            pstmt.setString(1, commande.getProduits());
-            pstmt.setDouble(2, commande.getTotales());
-            pstmt.setString(3, commande.getStatut());
-            pstmt.setInt(4, commande.getUtilisateurId());
-            pstmt.setTimestamp(5, new java.sql.Timestamp(System.currentTimeMillis()));
-            pstmt.executeUpdate();
-
-            ResultSet rs = pstmt.getGeneratedKeys();
-            if (rs.next()) {
-                int commandeId = rs.getInt(1);
-
-                // Insérer les lignes de commande
-                LigneCommandeService ligneService = new LigneCommandeService();
-                for (PanierItem item : panierItems) {
-                    LigneCommandes ligne = new LigneCommandes();
-                    ligne.setNom(item.getNom());
-                    ligne.setPrix(item.getPrix());
-                    ligne.setQuantite(item.getQuantite());
-                    ligne.setSousTotal(item.getSousTotal());
-                    ligne.setCommandeId(commandeId);
-                    ligneService.add(ligne);
-                }
-                System.out.println("✅ Commande enregistrée avec " + panierItems.size() + " articles");
+        try (Statement st = cnx.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) {
+                commandes.add(new Commandes(
+                        rs.getInt("id"),
+                        rs.getString("produits"),
+                        rs.getDouble("totales"),
+                        rs.getString("statut"),
+                        rs.getString("created_at"),
+                        rs.getInt("utilisateur_id")
+                ));
             }
         }
+
+        return commandes;
+    }
+
+    public CommandeConfirmation enregistrerCommande(Client client, Collection<PanierItem> panierItems, String modePaiement) throws SQLException {
+        if (panierItems == null || panierItems.isEmpty()) {
+            throw new SQLException("Le panier est vide.");
+        }
+
+        double sousTotal = panierItems.stream().mapToDouble(PanierItem::getSousTotal).sum();
+        double tva = sousTotal * TVA_RATE;
+        double totalTtc = sousTotal + tva;
+        String createdAt = new Timestamp(System.currentTimeMillis()).toString();
+
+        Commandes commande = new Commandes();
+        commande.setProduits(construireProduitsDepuisPanier(panierItems));
+        commande.setTotales(totalTtc);
+        commande.setStatut("En attente");
+        commande.setCreatedAt(createdAt);
+        commande.setUtilisateurId(1);
+
+        boolean autoCommit = cnx.getAutoCommit();
+        cnx.setAutoCommit(false);
+
+        try {
+            int commandeId = insertCommande(commande);
+            List<LigneCommandes> lignes = insererLignesCommande(commandeId, panierItems);
+            cnx.commit();
+
+            return new CommandeConfirmation(
+                    commandeId,
+                    client,
+                    lignes,
+                    modePaiement,
+                    createdAt,
+                    sousTotal,
+                    tva,
+                    totalTtc
+            );
+        } catch (SQLException e) {
+            cnx.rollback();
+            throw e;
+        } finally {
+            cnx.setAutoCommit(autoCommit);
+        }
+    }
+
+    private int insertCommande(Commandes commande) throws SQLException {
+        String sql = "INSERT INTO commandes (produits, totales, statut, created_at, utilisateur_id) VALUES (?, ?, ?, ?, ?)";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, commande.getProduits());
+            ps.setDouble(2, commande.getTotales());
+            ps.setString(3, commande.getStatut());
+            ps.setString(4, commande.getCreatedAt());
+            ps.setInt(5, commande.getUtilisateurId());
+            ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+
+        throw new SQLException("Impossible de recuperer l'identifiant de la commande.");
+    }
+
+    private List<LigneCommandes> insererLignesCommande(int commandeId, Collection<PanierItem> panierItems) throws SQLException {
+        List<LigneCommandes> lignes = new ArrayList<>();
+
+        for (PanierItem item : panierItems) {
+            LigneCommandes ligne = new LigneCommandes();
+            ligne.setNom(item.getNom());
+            ligne.setPrix(item.getPrix());
+            ligne.setQuantite(item.getQuantite());
+            ligne.setSousTotal(item.getSousTotal());
+            ligne.setCommandeId(commandeId);
+            ligneCommandeService.add(ligne);
+            lignes.add(ligne);
+        }
+
+        return lignes;
+    }
+
+    private String construireProduitsDepuisPanier(Collection<PanierItem> panierItems) {
+        return panierItems.stream()
+                .map(item -> String.format(
+                        Locale.US,
+                        "{\"nom\":\"%s\",\"quantite\":%d,\"prix\":%.2f,\"sousTotal\":%.2f}",
+                        escapeJson(item.getNom()),
+                        item.getQuantite(),
+                        item.getPrix(),
+                        item.getSousTotal()
+                ))
+                .reduce((left, right) -> left + "," + right)
+                .map(value -> "[" + value + "]")
+                .orElse("[]");
+    }
+
+    private String escapeJson(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value
+                .replace("\\", "\\\\")
+                .replace("\"", "\\\"");
     }
 }

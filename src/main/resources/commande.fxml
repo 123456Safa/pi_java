@@ -1,17 +1,98 @@
-<VBox spacing="10" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controllers.CommandeController">
+<?xml version="1.0" encoding="UTF-8"?>
 
-   <TextField fx:id="tfProduits" promptText="Produits"/>
-   <TextField fx:id="tfTotales" promptText="Total"/>
-   <TextField fx:id="tfStatut" promptText="Statut"/>
-   <DatePicker fx:id="dpDate"/>
-   <TextField fx:id="tfUtilisateurId" promptText="Utilisateur ID"/>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-   <HBox spacing="10">
-      <Button text="Ajouter" onAction="#ajouterCommande"/>
-      <Button text="Modifier" onAction="#modifierCommande"/>
-      <Button text="Supprimer" onAction="#supprimerCommande"/>
-   </HBox>
+<VBox spacing="18" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.CommandeController"
+      styleClass="crud-page">
+    <VBox spacing="4" styleClass="crud-toolbar">
+        <Label text="Liste des commandes" styleClass="crud-toolbar-title" />
+        <Label text="Ajoutez, modifiez ou supprimez les commandes depuis le backoffice" styleClass="crud-toolbar-subtitle" />
+    </VBox>
 
-   <TableView fx:id="tableCommande"/>
+    <VBox spacing="18" styleClass="form-card">
+        <Label text="Informations commande" styleClass="card-title" />
+        <GridPane hgap="16" vgap="14">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="33.33" />
+                <ColumnConstraints percentWidth="33.33" />
+                <ColumnConstraints percentWidth="33.33" />
+            </columnConstraints>
+
+            <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label text="Produits" styleClass="input-label" />
+                <TextField fx:id="tfProduits" promptText="Produits" />
+            </VBox>
+            <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label text="Total" styleClass="input-label" />
+                <TextField fx:id="tfTotales" promptText="Total" />
+            </VBox>
+            <VBox spacing="6" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                <Label text="Statut" styleClass="input-label" />
+                <TextField fx:id="tfStatut" promptText="Statut" />
+            </VBox>
+            <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <Label text="Date" styleClass="input-label" />
+                <DatePicker fx:id="dpDate" />
+            </VBox>
+            <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Label text="Utilisateur ID" styleClass="input-label" />
+                <TextField fx:id="tfUtilisateurId" promptText="Utilisateur ID" />
+            </VBox>
+        </GridPane>
+
+        <HBox spacing="12">
+            <Button text="Ajouter / Enregistrer" onAction="#ajouterCommande" styleClass="action-button primary-action" />
+            <Button text="Charger la selection" onAction="#modifierCommande" styleClass="action-button secondary-action" />
+            <Button text="Supprimer" onAction="#supprimerCommande" styleClass="action-button danger-action" />
+        </HBox>
+    </VBox>
+
+    <VBox spacing="14" styleClass="table-card" VBox.vgrow="ALWAYS">
+        <Label text="Commandes enregistrees" styleClass="card-title" />
+        <TableView fx:id="tableCommande" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="70">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="id" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="colProduits" text="Produits" prefWidth="360">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="produits" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="colTotal" text="Total" prefWidth="120">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="totales" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="colStatut" text="Statut" prefWidth="150">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="statut" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="colDate" text="Creation" prefWidth="180">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="createdAt" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="colUtilisateurId" text="Utilisateur" prefWidth="120">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="utilisateurId" />
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
+    </VBox>
 </VBox>

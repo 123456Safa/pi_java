@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="18" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.OrdersManagementController"
+      styleClass="crud-page">
+    <VBox spacing="4" styleClass="crud-toolbar">
+        <Label text="Page Commande" styleClass="crud-toolbar-title" />
+        <Label text="Suivi des commandes, statuts, filtres et statistiques" styleClass="crud-toolbar-subtitle" />
+    </VBox>
+
+    <HBox spacing="18">
+        <VBox spacing="8" styleClass="metric-card status-stat-card" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: linear-gradient(to bottom right, #f4a524, #dd8b00); -fx-border-color: #d18700; -fx-border-width: 1; -fx-border-radius: 24; -fx-background-radius: 24; -fx-padding: 18 20 18 20;">
+            <Label text="En attente" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
+            <Label fx:id="pendingStatLabel" text="0" style="-fx-text-fill: white; -fx-font-size: 44px; -fx-font-weight: bold;" />
+        </VBox>
+        <VBox spacing="8" styleClass="metric-card status-stat-card" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: linear-gradient(to bottom right, #6d5dfc, #4f46cf); -fx-border-color: #4b42cb; -fx-border-width: 1; -fx-border-radius: 24; -fx-background-radius: 24; -fx-padding: 18 20 18 20;">
+            <Label text="Confirmees" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
+            <Label fx:id="confirmedStatLabel" text="0" style="-fx-text-fill: white; -fx-font-size: 44px; -fx-font-weight: bold;" />
+        </VBox>
+        <VBox spacing="8" styleClass="metric-card status-stat-card" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: linear-gradient(to bottom right, #14b8a6, #0f8f82); -fx-border-color: #0d7c70; -fx-border-width: 1; -fx-border-radius: 24; -fx-background-radius: 24; -fx-padding: 18 20 18 20;">
+            <Label text="Livrees" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
+            <Label fx:id="deliveredStatLabel" text="0" style="-fx-text-fill: white; -fx-font-size: 44px; -fx-font-weight: bold;" />
+        </VBox>
+        <VBox spacing="8" styleClass="metric-card status-stat-card" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: linear-gradient(to bottom right, #dc4354, #bb2f42); -fx-border-color: #a72c3c; -fx-border-width: 1; -fx-border-radius: 24; -fx-background-radius: 24; -fx-padding: 18 20 18 20;">
+            <Label text="Annulees" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
+            <Label fx:id="cancelledStatLabel" text="0" style="-fx-text-fill: white; -fx-font-size: 44px; -fx-font-weight: bold;" />
+        </VBox>
+    </HBox>
+
+    <VBox spacing="6" styleClass="table-card">
+        <Label text="Statistique des statuts" styleClass="card-title" />
+        <Label fx:id="statusSummaryLabel" text="Aucune commande" styleClass="crud-toolbar-subtitle" />
+    </VBox>
+
+    <VBox spacing="14" styleClass="table-card" VBox.vgrow="ALWAYS">
+        <HBox spacing="12" styleClass="filters-bar">
+            <TextField fx:id="searchField" promptText="Rechercher par ID, statut, produits ou utilisateur" styleClass="text-field" HBox.hgrow="ALWAYS" />
+            <ComboBox fx:id="statusFilterBox" promptText="Filtrer par statut" styleClass="status-combo" prefWidth="180" />
+            <ComboBox fx:id="sortBox" promptText="Trier par" styleClass="status-combo" prefWidth="210" />
+        </HBox>
+        <Label fx:id="ordersCountLabel" text="0 commande" styleClass="card-title" />
+        <TableView fx:id="ordersTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="idColumn" text="ID" prefWidth="70" />
+                <TableColumn fx:id="produitsColumn" text="Produits" prefWidth="290" />
+                <TableColumn fx:id="totalColumn" text="Total" prefWidth="100" />
+                <TableColumn fx:id="statutColumn" text="Statut" prefWidth="130" />
+                <TableColumn fx:id="createdAtColumn" text="Created At" prefWidth="180" />
+                <TableColumn fx:id="utilisateurIdColumn" text="Utilisateur ID" prefWidth="110" />
+                <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="360" />
+            </columns>
+        </TableView>
+    </VBox>
+</VBox>
