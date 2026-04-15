@@ -14,6 +14,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextFormatter;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -26,6 +30,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.sql.SQLDataException;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
+import javafx.scene.control.TextInputControl;
 
 public class Main extends Application {
 
@@ -92,11 +99,27 @@ public class Main extends Application {
         addFormRow(form, 3, "First Name", firstNameField);
         addFormRow(form, 4, "Last Name", lastNameField);
 
+        // Attach live validation styles and tooltips
+        attachValidation(emailField, this::isValidEmail, "Enter a valid email (example: user@example.com)");
+        attachValidation(rolesField, this::isValidRolesJson, "Roles must be a JSON array text, e.g. [\"ROLE_USER\"]");
+        attachValidation(passwordField, this::isStrongPassword, "Password must be at least 6 characters");
+        attachValidation(firstNameField, this::isValidName, "First name is required and must contain letters");
+        attachValidation(lastNameField, s -> s == null || s.trim().isEmpty() || isValidName(s), "Last name must contain only letters or be empty");
+
         Label hintLabel = new Label("Roles must be saved as JSON array text (example: [\"ROLE_USER\"]).");
         hintLabel.setStyle("-fx-text-fill: #334155;");
 
         Label statusLabel = new Label();
         Button addButton = buildPrimaryButton("Add User");
+
+        // Disable Add button while form is invalid
+        BooleanBinding createInvalid = Bindings.createBooleanBinding(() ->
+                !isValidEmail(emailField.getText())
+                        || !isValidRolesJson(rolesField.getText())
+                        || !isStrongPassword(passwordField.getText())
+                        || !isValidName(firstNameField.getText()),
+                emailField.textProperty(), rolesField.textProperty(), passwordField.textProperty(), firstNameField.textProperty());
+        addButton.disableProperty().bind(createInvalid);
         addButton.setOnAction(event -> {
             String validationMessage = validateUserInputs(
                     emailField.getText(),
@@ -166,11 +189,35 @@ public class Main extends Application {
 
         GridPane form = buildFormGrid();
         addFormRow(form, 0, "ID", idField);
+
+        // ID: numeric-only formatter and live validation
+        idField.setTextFormatter(new TextFormatter<String>(change -> {
+            if (change.getControlNewText().matches("\\d{0,10}")) {
+                return change;
+            }
+            return null;
+        }));
+        attachValidation(idField, this::isPositiveInteger, "Enter a positive numeric id");
         addFormRow(form, 1, "Email", emailField);
         addFormRow(form, 2, "Roles", rolesField);
         addFormRow(form, 3, "Password", passwordField);
         addFormRow(form, 4, "First Name", firstNameField);
         addFormRow(form, 5, "Last Name", lastNameField);
+
+        // ID: numeric-only formatter
+        idField.setTextFormatter(new TextFormatter<String>(change -> {
+            if (change.getControlNewText().matches("\\d{0,10}")) {
+                return change;
+            }
+            return null;
+        }));
+
+        // Live validations
+        attachValidation(emailField, this::isValidEmail, "Enter a valid email (example: user@example.com)");
+        attachValidation(rolesField, this::isValidRolesJson, "Roles must be a JSON array text, e.g. [\"ROLE_USER\"]");
+        attachValidation(passwordField, this::isStrongPassword, "Password must be at least 6 characters");
+        attachValidation(firstNameField, this::isValidName, "First name is required and must contain letters");
+        attachValidation(lastNameField, s -> s == null || s.trim().isEmpty() || isValidName(s), "Last name must contain only letters or be empty");
 
         TableView<User> table = buildUserTable();
         table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, selectedUser) -> {
@@ -229,6 +276,16 @@ public class Main extends Application {
                 setError(statusLabel, e.getMessage());
             }
         });
+
+        // Disable update button when form invalid or id invalid when provided
+        BooleanBinding updateInvalid = Bindings.createBooleanBinding(() ->
+                !isValidEmail(emailField.getText())
+                        || !isValidRolesJson(rolesField.getText())
+                        || !isStrongPassword(passwordField.getText())
+                        || !isValidName(firstNameField.getText())
+                        || (!idField.getText().trim().isEmpty() && !isPositiveInteger(idField.getText())),
+                emailField.textProperty(), rolesField.textProperty(), passwordField.textProperty(), firstNameField.textProperty(), idField.textProperty());
+        updateButton.disableProperty().bind(updateInvalid);
 
         Button refreshButton = buildPrimaryButton("Refresh Table");
         refreshButton.setOnAction(event -> refreshUsers(statusLabel));
@@ -291,6 +348,10 @@ public class Main extends Application {
                 setError(statusLabel, e.getMessage());
             }
         });
+
+        // Disable delete button when id is not a positive integer
+        BooleanBinding deleteInvalid = Bindings.createBooleanBinding(() -> !isPositiveInteger(idField.getText()), idField.textProperty());
+        deleteButton.disableProperty().bind(deleteInvalid);
 
         Button refreshButton = buildPrimaryButton("Refresh Table");
         refreshButton.setOnAction(event -> refreshUsers(statusLabel));
@@ -425,6 +486,66 @@ public class Main extends Application {
             return "First name is required.";
         }
         return null;
+    }
+
+    // --- Validation utilities and UI helpers ---
+    private void attachValidation(TextInputControl field, Predicate<String> validator, String message) {
+        Tooltip tip = new Tooltip(message);
+        field.setTooltip(tip);
+        field.textProperty().addListener((obs, oldV, newV) -> {
+            boolean ok = validator.test(newV == null ? "" : newV);
+            if (ok) {
+                field.setStyle("-fx-border-color: #16a34a; -fx-border-radius: 4;");
+            } else {
+                field.setStyle("-fx-border-color: #ef4444; -fx-border-radius: 4;");
+            }
+        });
+        // initialise style
+        boolean ok = validator.test(field.getText() == null ? "" : field.getText());
+        if (ok) field.setStyle("-fx-border-color: #16a34a; -fx-border-radius: 4;");
+        else field.setStyle("-fx-border-color: #ef4444; -fx-border-radius: 4;");
+    }
+
+    private boolean isValidEmail(String email) {
+        if (email == null) return false;
+        String e = email.trim();
+        if (e.isEmpty()) return false;
+        String regex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        return Pattern.compile(regex).matcher(e).matches();
+    }
+
+    private boolean isValidRolesJson(String roles) {
+        if (roles == null) return false;
+        String t = roles.trim();
+        if (t.isEmpty()) return false;
+        if (t.equals("[]")) return true;
+        if (!(t.startsWith("[") && t.endsWith("]"))) return false;
+        // minimal check: should contain at least one quoted token
+        return t.contains("\"");
+    }
+
+    private boolean isStrongPassword(String password) {
+        if (password == null) return false;
+        return password.length() >= 6;
+    }
+
+    private boolean isValidName(String name) {
+        if (name == null) return false;
+        String t = name.trim();
+        if (t.isEmpty()) return false;
+        // allow unicode letters, spaces, hyphen and apostrophe
+        return Pattern.compile("^[\\p{L} '-]{1,50}$").matcher(t).matches();
+    }
+
+    private boolean isPositiveInteger(String s) {
+        if (s == null) return false;
+        String t = s.trim();
+        if (t.isEmpty()) return false;
+        try {
+            return Integer.parseInt(t) > 0;
+        } catch (NumberFormatException ex) {
+            return false;
+        }
     }
 
     private Integer resolveTargetId(String idText, User selectedUser) {
