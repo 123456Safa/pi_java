@@ -98,7 +98,7 @@ public class DetailReclamationController {
         
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        //button traduire
+        //button traduire reclamation
         MenuButton translateMenu = new MenuButton("🌐");
         translateMenu.setStyle("-fx-background-color: #6c757d; -fx-text-fill: white; -fx-font-size: 12; -fx-cursor: hand; -fx-background-radius: 4; -fx-padding: 5 10;");
         
