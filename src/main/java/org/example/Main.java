@@ -12,17 +12,13 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
             Parent root = FXMLLoader.load(
-                    getClass().getResource("/HomeAdmin.fxml")
-            );
+                    getClass().getResource("/HomeReclamation.fxml"));
 
             Scene scene = new Scene(root);
 
             primaryStage.setScene(scene);
-            primaryStage.setWidth(1000);
-            primaryStage.setHeight(600);
 
-            primaryStage.setMinWidth(800);
-            primaryStage.setMinHeight(500);
+            primaryStage.setMaximized(true);
 
             primaryStage.show();
 

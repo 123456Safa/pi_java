@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.util.List;
@@ -23,6 +24,11 @@ public class DetailReclamationControlleradmin {
     @FXML private Label titre, description, date, statut, statusActuel, reponseCount;
     @FXML private VBox reponseContainer;
     @FXML private Button btnAjouterReponse, btnModifier, btnSupprimer;
+    
+    @FXML private VBox translationContainer;
+    @FXML private Label translatedLangLabel;
+    @FXML private Label translatedTitre;
+    @FXML private Label translatedDescription;
     
     private HomeAdminController homeController;
     private Reclamation r;
@@ -113,8 +119,47 @@ public class DetailReclamationControlleradmin {
         Label dateLabel = new Label("📅 " + rep.getDateReponse());
         dateLabel.setStyle("-fx-font-size: 11; -fx-text-fill: #999999;");
         
-        HBox.setHgrow(headerBox, Priority.ALWAYS);
-        headerBox.getChildren().add(dateLabel);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        
+        MenuButton translateMenu = new MenuButton("🌐");
+        translateMenu.setStyle("-fx-background-color: #6c757d; -fx-text-fill: white; -fx-font-size: 12; -fx-cursor: hand; -fx-background-radius: 4; -fx-padding: 5 10;");
+        
+        String[][] languages = {
+            {"English", "en"},
+            {"Español", "es"},
+            {"Deutsch", "de"},
+            {"Italiano", "it"},
+            {"Português", "pt"},
+            {"日本語", "ja"},
+            {"中文", "zh-CN"},
+            {"العربية", "ar"},
+            {"Русский", "ru"}
+        };
+        
+        Label translationLabel = new Label();
+        translationLabel.setWrapText(true);
+        translationLabel.setStyle("-fx-font-size: 12; -fx-text-fill: #333333; -fx-background-color: #e9ecef; -fx-padding: 10; -fx-border-radius: 4;");
+        translationLabel.setVisible(false);
+        translationLabel.setManaged(false);
+
+        for (String[] lang : languages) {
+            MenuItem item = new MenuItem(lang[0]);
+            item.setOnAction(e -> {
+                translationLabel.setText("Traduction en cours...");
+                translationLabel.setVisible(true);
+                translationLabel.setManaged(true);
+                new Thread(() -> {
+                    String translated = translateText(rep.getContenu(), lang[1]);
+                    javafx.application.Platform.runLater(() -> {
+                        translationLabel.setText("🌐 " + lang[0] + " :\n" + translated);
+                    });
+                }).start();
+            });
+            translateMenu.getItems().add(item);
+        }
+        
+        headerBox.getChildren().addAll(dateLabel, spacer, translateMenu);
         
         // Content
         Label contenu = new Label(rep.getContenu());
@@ -135,7 +180,7 @@ public class DetailReclamationControlleradmin {
         
         buttonBox.getChildren().addAll(editBtn, deleteBtn);
         
-        card.getChildren().addAll(headerBox, contenu, buttonBox);
+        card.getChildren().addAll(headerBox, contenu, translationLabel, buttonBox);
         return card;
     }
 
@@ -232,5 +277,112 @@ public class DetailReclamationControlleradmin {
     public void onBack() {
         Stage stage = (Stage) titre.getScene().getWindow();
         stage.close();
+    }
+
+    @FXML public void translateToEnglish() { performTranslation("en", "ANGLAIS"); }
+    @FXML public void translateToSpanish() { performTranslation("es", "ESPAGNOL"); }
+    @FXML public void translateToGerman() { performTranslation("de", "ALLEMAND"); }
+    @FXML public void translateToItalian() { performTranslation("it", "ITALIEN"); }
+    @FXML public void translateToPortuguese() { performTranslation("pt", "PORTUGAIS"); }
+    @FXML public void translateToJapanese() { performTranslation("ja", "JAPONAIS"); }
+    @FXML public void translateToChinese() { performTranslation("zh-CN", "CHINOIS"); }
+    @FXML public void translateToArabic() { performTranslation("ar", "ARABE"); }
+    @FXML public void translateToRussian() { performTranslation("ru", "RUSSE"); }
+
+    @FXML public void closeTranslation() {
+        translationContainer.setVisible(false);
+        translationContainer.setManaged(false);
+    }
+
+    private void performTranslation(String targetLang, String langName) {
+        if (r == null) return;
+        
+        translatedLangLabel.setText(langName);
+        
+        // Show loading state temporarily
+        translatedTitre.setText("Traduction en cours...");
+        translatedDescription.setText("Traduction en cours...");
+        translationContainer.setVisible(true);
+        translationContainer.setManaged(true);
+        
+        new Thread(() -> {
+            String titreTraduit = translateText(r.getTitre(), targetLang);
+            String descTraduit = translateText(r.getDescription(), targetLang);
+            
+            javafx.application.Platform.runLater(() -> {
+                translatedTitre.setText(titreTraduit);
+                translatedDescription.setText(descTraduit);
+            });
+        }).start();
+    }
+
+    private String translateText(String text, String targetLang) {
+        if (text == null || text.trim().isEmpty()) return "";
+        try {
+            String urlStr = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" + targetLang + "&dt=t&q=" + java.net.URLEncoder.encode(text, "UTF-8");
+            java.net.URL url = new java.net.URL(urlStr);
+            java.net.HttpURLConnection con = (java.net.HttpURLConnection) url.openConnection();
+            con.setRequestProperty("User-Agent", "Mozilla/5.0");
+            
+            java.io.BufferedReader in = new java.io.BufferedReader(new java.io.InputStreamReader(con.getInputStream(), "UTF-8"));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+            
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            
+            return extractTranslatedText(response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Erreur de traduction";
+        }
+    }
+
+    private String extractTranslatedText(String json) {
+        StringBuilder result = new StringBuilder();
+        try {
+            int arrayStart = json.indexOf("[[[");
+            if (arrayStart == -1) return json;
+            
+            int arrayEnd = json.indexOf("]],");
+            if (arrayEnd == -1) return json;
+            
+            String arrayContent = json.substring(arrayStart + 2, arrayEnd + 1);
+            
+            String[] parts = arrayContent.split("\\],\\[");
+            for (String part : parts) {
+                if (part.startsWith("[")) part = part.substring(1);
+                
+                boolean inString = false;
+                boolean escape = false;
+                StringBuilder str = new StringBuilder();
+                for (int i = 0; i < part.length(); i++) {
+                    char c = part.charAt(i);
+                    if (escape) {
+                        if (c == 'n') str.append('\n');
+                        else if (c == 'r') str.append('\r');
+                        else if (c == 't') str.append('\t');
+                        else str.append(c);
+                        escape = false;
+                    } else if (c == '\\') {
+                        escape = true;
+                    } else if (c == '"') {
+                        if (inString) {
+                            break; 
+                        } else {
+                            inString = true; 
+                        }
+                    } else if (inString) {
+                        str.append(c);
+                    }
+                }
+                result.append(str.toString());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result.toString();
     }
 }

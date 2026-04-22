@@ -2,6 +2,7 @@ package controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -9,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.Priority;
 import javafx.geometry.Insets;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import Model.Reclamation;
 import Service.ReclamationService;
@@ -18,8 +20,9 @@ import java.util.List;
 
 public class HomeReclamationController {
 
-    @FXML
-    private VBox container;
+    @FXML private Pagination pagination;
+    private final int ITEMS_PER_PAGE = 5;
+    private List<Reclamation> currentFilteredList;
 
     @FXML
     private TextField searchField;
@@ -56,12 +59,30 @@ public class HomeReclamationController {
     }
 
     private void displayReclamations(List<Reclamation> reclamations) {
-        container.getChildren().clear();
+        this.currentFilteredList = reclamations;
+        int pageCount = (int) Math.ceil((double) reclamations.size() / ITEMS_PER_PAGE);
+        pagination.setPageCount(pageCount == 0 ? 1 : pageCount);
+        pagination.setCurrentPageIndex(0);
+        pagination.setPageFactory(this::createPage);
+    }
 
-        for (Reclamation r : reclamations) {
-            VBox card = createReclamationCard(r);
-            container.getChildren().add(card);
+    private javafx.scene.Node createPage(int pageIndex) {
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setStyle("-fx-border-color: transparent; -fx-background-color: transparent;");
+        scrollPane.setFitToWidth(true);
+
+        VBox box = new VBox(15);
+        box.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
+
+        if (currentFilteredList != null) {
+            int fromIndex = pageIndex * ITEMS_PER_PAGE;
+            int toIndex = Math.min(fromIndex + ITEMS_PER_PAGE, currentFilteredList.size());
+            for (int i = fromIndex; i < toIndex; i++) {
+                box.getChildren().add(createReclamationCard(currentFilteredList.get(i)));
+            }
         }
+        scrollPane.setContent(box);
+        return scrollPane;
     }
 //hathi partie design
     private VBox createReclamationCard(Reclamation r) {
@@ -206,19 +227,48 @@ public class HomeReclamationController {
             e.printStackTrace();
         }
     }
-
+/*
     @FXML
     public void goBackToHomeAdmin() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/HomeAdmin.fxml"));
             Parent root = loader.load();
+
             Stage stage = (Stage) rootVBox.getScene().getWindow();
-            stage.setScene(new Scene(root));
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+
+            // نفس الطريقة اللي تخدم عندك
+            Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+
+            stage.setX(0);
+            stage.setY(0);
+            System.err.println("Width home reclamation  : " + screen.getWidth());
+            System.err.println("Height home reclamation  : " + screen.getHeight());
+            stage.setWidth(screen.getWidth());
+            stage.setHeight(screen.getHeight());
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }*/
+@FXML
+public void goBackToHomeAdmin() {
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/HomeAdmin.fxml"));
+        Parent root = loader.load();
+
+        Stage stage = (Stage) rootVBox.getScene().getWindow();
+
+        stage.setScene(new Scene(root));
+
+        stage.setMaximized(true); // فقط هذا
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
 
 
 }

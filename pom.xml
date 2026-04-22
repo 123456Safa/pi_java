@@ -39,6 +39,11 @@
             <artifactId>javafx-base</artifactId>
             <version>20.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-translate</artifactId>
+            <version>2.23.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
