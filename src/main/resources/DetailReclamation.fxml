@@ -5,7 +5,7 @@
 
 <VBox spacing="15" style="-fx-padding: 30; -fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DetailReclamationController">
 
-    <!-- Back Button -->
+    <!-- routour  Button -->
     <Button onAction="#onBack" style="-fx-font-size: 12; -fx-padding: 8 15; -fx-text-fill: #666666; -fx-background-color: white; -fx-border-color: #cccccc; -fx-border-radius: 4; -fx-cursor: hand;" text="← Retour à la Liste" />
 
     <!-- Main Card in ScrollPane -->
