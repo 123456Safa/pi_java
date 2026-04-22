@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Pagination?>
 <?import javafx.geometry.Insets?>
 
 <VBox xmlns="http://javafx.com/javafx"
@@ -29,9 +30,6 @@
     <Button text="+ Nouvelle Réclamation" onAction="#openAdd"
             style="-fx-font-size: 13; -fx-padding: 8 15; -fx-text-fill: #0066cc; -fx-background-color: transparent; -fx-border-color: transparent; -fx-cursor: hand;"/>
 
-    <!-- Reclamations Container with ScrollPane -->
-    <ScrollPane style="-fx-border-color: transparent; -fx-background-color: transparent;" fitToWidth="true">
-        <VBox fx:id="container" spacing="15" style="-fx-padding: 0; -fx-background-color: transparent;"/>
-    </ScrollPane>
+    <Pagination fx:id="pagination" VBox.vgrow="ALWAYS" />
 
 </VBox>

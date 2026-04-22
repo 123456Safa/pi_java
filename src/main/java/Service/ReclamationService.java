@@ -10,6 +10,7 @@ import java.util.List;
 public class ReclamationService {
 
     Connection cnx = MyConnection.getInstance();
+
     public void updateStatus(Reclamation r) {
         try {
             String sql = "UPDATE reclamation SET statut=? WHERE id=?";
@@ -21,6 +22,7 @@ public class ReclamationService {
             e.printStackTrace();
         }
     }
+
     public List<Reclamation> searchByTitre(String titre) {
 
         List<Reclamation> list = new ArrayList<>();
@@ -83,12 +85,13 @@ public class ReclamationService {
 
         return list;
     }
+
     public List<Reclamation> getAll() {
 
         List<Reclamation> list = new ArrayList<>();
 
         try {
-            String sql = "SELECT * FROM reclamation ORDER BY date_creation DESC";
+            String sql = "SELECT *FROM reclamation ORDER BY user_id DESC";
             PreparedStatement ps = cnx.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
@@ -108,7 +111,6 @@ public class ReclamationService {
 
         return list;
     }
-
 
     public void update(Reclamation r) {
         try {
@@ -143,6 +145,7 @@ public class ReclamationService {
             e.printStackTrace();
         }
     }
+
     public void add(Reclamation r) {
         try {
             String sql = "INSERT INTO reclamation (titre, description, date_creation, statut) VALUES (?, ?, ?, ?)";
@@ -153,7 +156,6 @@ public class ReclamationService {
             ps.setString(2, r.getDescription());
             ps.setDate(3, new java.sql.Date(r.getDateCreation().getTime()));
             ps.setString(4, r.getStatut());
-
 
             ps.executeUpdate();
 
