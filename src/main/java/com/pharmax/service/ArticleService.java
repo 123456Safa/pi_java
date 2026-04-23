@@ -1,82 +1,117 @@
 package com.pharmax.service;
 
 import com.pharmax.model.Article;
-import com.pharmax.model.Commentaire;
+import com.pharmax.util.DatabaseConnection;
 
+import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * ArticleService — CRUD operations for Article entities.
+ * ArticleService — CRUD operations for Article entities via JDBC.
  * Corresponds to PHP ArticleRepository + parts of
  * BlogController/ArticleController.
- * Uses in-memory storage (replace with JPA/Hibernate for DB persistence).
+ * Connected to the pharmax MySQL database (same as Symfony).
+ *
+ * Table: article
+ * Columns: id, titre, contenu, contenu_en, image, created_at, updated_at, likes, is_draft
  */
 public class ArticleService {
-
-    private final Map<Integer, Article> articles = new LinkedHashMap<>();
-    private final AtomicInteger idGenerator = new AtomicInteger(1);
 
     // ─── CREATE ────────────────────────────────────────────────
 
     /**
-     * Create and persist a new article.
+     * Create and persist a new article in the database.
      */
     public Article create(String titre, String contenu, String image) {
-        Article article = new Article();
-        article.setId(idGenerator.getAndIncrement());
-        article.setTitre(titre);
-        article.setContenu(contenu);
-        article.setImage(image);
-        article.setDateCreation(LocalDateTime.now());
-        article.setDateModification(LocalDateTime.now());
-        articles.put(article.getId(), article);
-        return article;
+        String sql = "INSERT INTO article (titre, contenu, image, created_at, updated_at, likes, is_draft) VALUES (?, ?, ?, ?, ?, 0, 1)";
+        try (Connection cnx = DatabaseConnection.getInstance();
+             PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+            ps.setString(1, titre);
+            ps.setString(2, contenu);
+            ps.setString(3, image);
+            ps.setTimestamp(4, now);
+            ps.setTimestamp(5, now);
+            ps.executeUpdate();
+
+            ResultSet keys = ps.getGeneratedKeys();
+            Article article = new Article();
+            if (keys.next()) {
+                article.setId(keys.getInt(1));
+            }
+            article.setTitre(titre);
+            article.setContenu(contenu);
+            article.setImage(image);
+            article.setDateCreation(LocalDateTime.now());
+            article.setDateModification(LocalDateTime.now());
+            return article;
+
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur création article: " + e.getMessage());
+            return null;
+        }
     }
 
-    // ─── READ ──────────────────────────────────────────────────
+    // ─── READ ───────────────────────────────  ───────────────────
 
     /**
      * Find an article by ID.
      */
     public Article find(int id) {
-        return articles.get(id);
+        String sql = "SELECT * FROM article WHERE id = ?";
+        try (Connection cnx = DatabaseConnection.getInstance();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return mapArticle(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur recherche article: " + e.getMessage());
+        }
+        return null;
     }
 
     /**
      * Find all articles.
      */
     public List<Article> findAll() {
-        return new ArrayList<>(articles.values());
+        String sql = "SELECT * FROM article ORDER BY created_at DESC";
+        return executeQueryList(sql);
     }
 
     /**
      * Find all published (non-draft) articles.
      */
     public List<Article> findPublished() {
-        return articles.values().stream()
-                .filter(a -> !a.isDraft())
-                .collect(Collectors.toList());
+        String sql = "SELECT * FROM article WHERE is_draft = 0 ORDER BY created_at DESC";
+        return executeQueryList(sql);
     }
 
     /**
      * Find published articles sorted by newest first, with pagination.
      */
     public List<Article> findPublishedPaginated(int page, int itemsPerPage) {
-        List<Article> published = findPublished();
-        published.sort((a, b) -> {
-            LocalDateTime dateA = a.getDateCreation() != null ? a.getDateCreation() : LocalDateTime.MIN;
-            LocalDateTime dateB = b.getDateCreation() != null ? b.getDateCreation() : LocalDateTime.MIN;
-            return dateB.compareTo(dateA);
-        });
+        String sql = "SELECT * FROM article WHERE is_draft = 0 ORDER BY created_at DESC LIMIT ? OFFSET ?";
+        List<Article> result = new ArrayList<>();
+        try (Connection cnx = DatabaseConnection.getInstance();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
 
-        int start = (page - 1) * itemsPerPage;
-        if (start >= published.size())
-            return Collections.emptyList();
-        int end = Math.min(start + itemsPerPage, published.size());
-        return published.subList(start, end);
+            ps.setInt(1, itemsPerPage);
+            ps.setInt(2, (page - 1) * itemsPerPage);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                result.add(mapArticle(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur pagination articles: " + e.getMessage());
+        }
+        return result;
     }
 
     /**
@@ -86,18 +121,40 @@ public class ArticleService {
         if (query == null || query.trim().isEmpty()) {
             return findPublished();
         }
-        String search = query.toLowerCase();
-        return findPublished().stream()
-                .filter(a -> (a.getTitre() != null && a.getTitre().toLowerCase().contains(search)) ||
-                        (a.getContenu() != null && a.getContenu().toLowerCase().contains(search)))
-                .collect(Collectors.toList());
+        String sql = "SELECT * FROM article WHERE is_draft = 0 AND (titre LIKE ? OR contenu LIKE ?) ORDER BY created_at DESC";
+        List<Article> result = new ArrayList<>();
+        try (Connection cnx = DatabaseConnection.getInstance();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+
+            String pattern = "%" + query + "%";
+            ps.setString(1, pattern);
+            ps.setString(2, pattern);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                result.add(mapArticle(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur recherche articles: " + e.getMessage());
+        }
+        return result;
     }
 
     /**
      * Get total count of published articles.
      */
     public int countPublished() {
-        return (int) articles.values().stream().filter(a -> !a.isDraft()).count();
+        String sql = "SELECT COUNT(*) FROM article WHERE is_draft = 0";
+        try (Connection cnx = DatabaseConnection.getInstance();
+             Statement st = cnx.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur comptage articles: " + e.getMessage());
+        }
+        return 0;
     }
 
     // ─── UPDATE ────────────────────────────────────────────────
@@ -106,61 +163,162 @@ public class ArticleService {
      * Update an existing article.
      */
     public Article update(int id, String titre, String contenu, String image) {
-        Article article = articles.get(id);
-        if (article == null)
-            return null;
+        String sql = "UPDATE article SET titre = ?, contenu = ?, image = ?, updated_at = ? WHERE id = ?";
+        try (Connection cnx = DatabaseConnection.getInstance();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
 
-        article.setTitre(titre);
-        article.setContenu(contenu);
-        article.setImage(image);
-        article.setDateModification(LocalDateTime.now());
-        return article;
+            ps.setString(1, titre);
+            ps.setString(2, contenu);
+            ps.setString(3, image);
+            ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
+            ps.setInt(5, id);
+            int affected = ps.executeUpdate();
+            if (affected > 0) {
+                return find(id);
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur mise à jour article: " + e.getMessage());
+        }
+        return null;
     }
 
     /**
      * Toggle publish/draft status.
      */
     public Article togglePublish(int id) {
-        Article article = articles.get(id);
-        if (article == null)
-            return null;
+        String sql = "UPDATE article SET is_draft = NOT is_draft, updated_at = ? WHERE id = ?";
+        try (Connection cnx = DatabaseConnection.getInstance();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
 
-        if (article.isDraft()) {
-            article.publish();
-        } else {
-            article.saveDraft();
+            ps.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
+            ps.setInt(2, id);
+            ps.executeUpdate();
+            return find(id);
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur toggle publish: " + e.getMessage());
         }
-        return article;
+        return null;
     }
 
     /**
      * Like an article.
      */
     public Article like(int id) {
-        Article article = articles.get(id);
-        if (article != null) {
-            article.incrementLikes();
+        String sql = "UPDATE article SET likes = likes + 1 WHERE id = ?";
+        try (Connection cnx = DatabaseConnection.getInstance();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            return find(id);
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur like article: " + e.getMessage());
         }
-        return article;
+        return null;
     }
 
     /**
      * Unlike an article.
      */
     public Article unlike(int id) {
-        Article article = articles.get(id);
-        if (article != null) {
-            article.decrementLikes();
+        String sql = "UPDATE article SET likes = GREATEST(likes - 1, 0) WHERE id = ?";
+        try (Connection cnx = DatabaseConnection.getInstance();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            return find(id);
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur unlike article: " + e.getMessage());
         }
-        return article;
+        return null;
     }
 
     // ─── DELETE ─────────────────────────────────────────────────
 
     /**
      * Delete an article by ID.
+     * Also deletes associated comments and archives to satisfy FK constraints.
      */
     public boolean delete(int id) {
-        return articles.remove(id) != null;
+        // 1️⃣ Delete associated archives (archive_de_commentaire.article_id)
+        String deleteArchives = "DELETE FROM archive_de_commentaire WHERE article_id = ?";
+        try (Connection cnx = DatabaseConnection.getInstance();
+             PreparedStatement ps = cnx.prepareStatement(deleteArchives)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("⚠ Erreur suppression archives liées: " + e.getMessage());
+        }
+
+        // 2️⃣ Delete associated comments (commentaire.article_id)
+        String deleteComments = "DELETE FROM commentaire WHERE article_id = ?";
+        try (Connection cnx = DatabaseConnection.getInstance();
+             PreparedStatement ps = cnx.prepareStatement(deleteComments)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("⚠ Erreur suppression commentaires liés: " + e.getMessage());
+        }
+
+        // 3️⃣ Delete the article itself
+        String sql = "DELETE FROM article WHERE id = ?";
+        try (Connection cnx = DatabaseConnection.getInstance();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur suppression article: " + e.getMessage());
+        }
+        return false;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // PRIVATE HELPERS
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Execute a simple query and return a list of articles.
+     */
+    private List<Article> executeQueryList(String sql) {
+        List<Article> result = new ArrayList<>();
+        try (Connection cnx = DatabaseConnection.getInstance();
+             Statement st = cnx.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                result.add(mapArticle(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur requête articles: " + e.getMessage());
+        }
+        return result;
+    }
+
+    /**
+     * Map a ResultSet row to an Article object.
+     * Column names match the Symfony/Doctrine schema.
+     */
+    private Article mapArticle(ResultSet rs) throws SQLException {
+        Article article = new Article();
+        article.setId(rs.getInt("id"));
+        article.setTitre(rs.getString("titre"));
+        article.setContenu(rs.getString("contenu"));
+        article.setContenuEn(rs.getString("contenu_en"));
+        article.setImage(rs.getString("image"));
+
+        Timestamp createdAt = rs.getTimestamp("created_at");
+        if (createdAt != null) {
+            article.setDateCreation(createdAt.toLocalDateTime());
+        }
+
+        Timestamp updatedAt = rs.getTimestamp("updated_at");
+        if (updatedAt != null) {
+            article.setDateModification(updatedAt.toLocalDateTime());
+        }
+
+        article.setLikes(rs.getInt("likes"));
+        article.setIsDraft(rs.getBoolean("is_draft"));
+        return article;
     }
 }

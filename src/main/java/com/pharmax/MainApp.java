@@ -42,7 +42,8 @@ public class MainApp extends Application {
         articleService = new ArticleService();
         commentaireService = new CommentaireService(
                 new com.pharmax.service.CommentValidationService(),
-                new com.pharmax.service.CommentModerationService()
+                new com.pharmax.service.CommentModerationService(),
+                articleService
         );
 
         seedSampleData();

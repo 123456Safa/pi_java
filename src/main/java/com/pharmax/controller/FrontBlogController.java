@@ -309,8 +309,8 @@ public class FrontBlogController {
             commentCard.setStyle("-fx-background-color: #f9f9f9; -fx-border-color: transparent transparent transparent #5ea96b; "
                     + "-fx-border-width: 0 0 0 4;");
 
-            // User + Date row
-            HBox userRow = new HBox(15);
+            // User + Date + Actions row (matching original show.html.twig)
+            HBox userRow = new HBox();
             userRow.setAlignment(Pos.CENTER_LEFT);
 
             Label userName = new Label("👤 " + (c.getUserName() != null ? c.getUserName() : "Utilisateur"));
@@ -319,9 +319,25 @@ public class FrontBlogController {
 
             Label commentDate = new Label(c.getDatePublication() != null
                     ? c.getDatePublication().format(DATE_FMT_FULL) : "");
-            commentDate.setStyle("-fx-font-size: 11; -fx-text-fill: #999;");
+            commentDate.setStyle("-fx-font-size: 11; -fx-text-fill: #999; -fx-padding: 0 0 0 15;");
 
-            userRow.getChildren().addAll(userName, commentDate);
+            Region actionSpacer = new Region();
+            HBox.setHgrow(actionSpacer, Priority.ALWAYS);
+
+            // ✏ Edit button (matching original green style)
+            Button btnEdit = new Button("✏ Edit");
+            btnEdit.setStyle("-fx-background-color: #5ea96b; -fx-text-fill: white; -fx-font-weight: bold; "
+                    + "-fx-font-size: 11; -fx-padding: 5 10; -fx-cursor: hand;");
+
+            // 🗑 Delete button (matching original brown style)
+            Button btnDelete = new Button("🗑 Delete");
+            btnDelete.setStyle("-fx-background-color: #8b7b6f; -fx-text-fill: white; -fx-font-weight: bold; "
+                    + "-fx-font-size: 11; -fx-padding: 5 10; -fx-cursor: hand;");
+
+            HBox actionButtons = new HBox(8, btnEdit, btnDelete);
+            actionButtons.setAlignment(Pos.CENTER_RIGHT);
+
+            userRow.getChildren().addAll(userName, commentDate, actionSpacer, actionButtons);
 
             // Comment text
             Label commentText = new Label(c.getContenu());
@@ -329,6 +345,69 @@ public class FrontBlogController {
             commentText.setStyle("-fx-font-size: 13; -fx-text-fill: #656565; -fx-line-spacing: 2;");
 
             commentCard.getChildren().addAll(userRow, commentText);
+
+            // ─── Edit action: inline editing ───
+            btnEdit.setOnAction(e -> {
+                // Replace label with TextArea for editing
+                TextArea editArea = new TextArea(c.getContenu());
+                editArea.setPrefRowCount(3);
+                editArea.setStyle("-fx-border-color: #5ea96b; -fx-border-width: 2; -fx-font-size: 13; -fx-padding: 8;");
+
+                Label editFeedback = new Label();
+                editFeedback.setWrapText(true);
+
+                Button btnSave = new Button("💾 Sauvegarder");
+                btnSave.setStyle("-fx-background-color: #5ea96b; -fx-text-fill: white; -fx-font-weight: bold; "
+                        + "-fx-font-size: 11; -fx-padding: 6 14; -fx-cursor: hand;");
+
+                Button btnCancel = new Button("Annuler");
+                btnCancel.setStyle("-fx-background-color: #d3d3d3; -fx-text-fill: #333; "
+                        + "-fx-font-size: 11; -fx-padding: 6 14; -fx-cursor: hand;");
+
+                HBox editButtons = new HBox(8, btnSave, btnCancel);
+                editButtons.setPadding(new Insets(5, 0, 0, 0));
+
+                // Replace comment text with edit form
+                int textIndex = commentCard.getChildren().indexOf(commentText);
+                commentCard.getChildren().remove(commentText);
+                commentCard.getChildren().add(textIndex, editArea);
+                commentCard.getChildren().add(textIndex + 1, editFeedback);
+                commentCard.getChildren().add(textIndex + 2, editButtons);
+
+                // Save action
+                btnSave.setOnAction(ev -> {
+                    String newText = editArea.getText().trim();
+                    if (newText.isEmpty()) {
+                        showFeedback(editFeedback, "Le commentaire ne peut pas être vide.", true);
+                        return;
+                    }
+                    if (newText.length() < 2) {
+                        showFeedback(editFeedback, "Le commentaire doit contenir au moins 2 caractères.", true);
+                        return;
+                    }
+                    commentaireService.update(c.getId(), newText, null);
+                    showArticleDetail(article); // Refresh
+                });
+
+                // Cancel action
+                btnCancel.setOnAction(ev -> {
+                    commentCard.getChildren().removeAll(editArea, editFeedback, editButtons);
+                    commentCard.getChildren().add(textIndex, commentText);
+                });
+            });
+
+            // ─── Delete action: confirmation dialog ───
+            btnDelete.setOnAction(e -> {
+                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                        "Supprimer ce commentaire ?", ButtonType.YES, ButtonType.NO);
+                confirm.showAndWait().ifPresent(response -> {
+                    if (response == ButtonType.YES) {
+                        commentaireService.delete(c.getId());
+                        showArticleDetail(article); // Refresh
+                    }
+                });
+            });
+
             commentsContainer.getChildren().add(commentCard);
         }
 

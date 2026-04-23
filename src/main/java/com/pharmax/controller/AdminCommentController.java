@@ -128,10 +128,6 @@ public class AdminCommentController {
         tv.setPlaceholder(new Label("Aucun commentaire"));
         tv.setPrefHeight(220);
 
-        TableColumn<Commentaire, Integer> colId = new TableColumn<>("ID");
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colId.setPrefWidth(50);
-
         TableColumn<Commentaire, String> colContenu = new TableColumn<>("Contenu");
         colContenu.setCellValueFactory(new PropertyValueFactory<>("contenu"));
         colContenu.setPrefWidth(300);
@@ -184,7 +180,7 @@ public class AdminCommentController {
             }
         });
 
-        tv.getColumns().addAll(colId, colContenu, colStatut, colArticle, colDate);
+        tv.getColumns().addAll(colContenu, colStatut, colArticle, colDate);
         return tv;
     }
 
@@ -193,10 +189,6 @@ public class AdminCommentController {
         TableView<CommentaireArchive> tv = new TableView<>();
         tv.setPlaceholder(new Label("Aucune archive"));
         tv.setPrefHeight(120);
-
-        TableColumn<CommentaireArchive, Integer> colId = new TableColumn<>("ID");
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colId.setPrefWidth(50);
 
         TableColumn<CommentaireArchive, String> colContenu = new TableColumn<>("Contenu");
         colContenu.setCellValueFactory(new PropertyValueFactory<>("contenu"));
@@ -221,7 +213,7 @@ public class AdminCommentController {
             }
         });
 
-        tv.getColumns().addAll(colId, colContenu, colUser, colReason, colDate);
+        tv.getColumns().addAll(colContenu, colUser, colReason, colDate);
         return tv;
     }
 

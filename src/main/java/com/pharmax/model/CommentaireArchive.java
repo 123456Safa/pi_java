@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
  * Entity CommentaireArchive — corresponds to PHP App\Entity\CommentaireArchive
  * Stores blocked/inappropriate comments for audit purposes.
  */
-public class CommentaireArchive {
+public class  CommentaireArchive {
 
     private Integer id;
     private String contenu;
