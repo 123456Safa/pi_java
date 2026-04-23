@@ -1,7 +1,7 @@
 package Test;
 
+import Controllers.UserController;
 import Models.User;
-import Services.ServiceUser;
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
@@ -12,12 +12,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextFormatter;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -30,338 +27,541 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.sql.SQLDataException;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
-import javafx.scene.control.TextInputControl;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends Application {
 
-    private final ServiceUser serviceUser = new ServiceUser();
+    private final UserController userController = new UserController();
     private final ObservableList<User> userData = FXCollections.observableArrayList();
+
+    private StackPane root;
+    private VBox loginPane;
+    private VBox registerPane;
+    private BorderPane appPane;
+
+    private User currentUser;
+    private Label currentUserLabel;
+
+    private TextField searchField;
+    private ComboBox<String> sortByCombo;
+    private ComboBox<String> directionCombo;
+
+    private Label totalUsersLabel;
+    private Label adminUsersLabel;
+    private Label normalUsersLabel;
 
     @Override
     public void start(Stage stage) {
-        BorderPane root = new BorderPane();
-        root.setPadding(new Insets(16));
-        root.setStyle("-fx-background-color: linear-gradient(to bottom, #eff6ff, #f8fafc);");
+        root = new StackPane();
 
-        StackPane content = new StackPane();
-        VBox createPane = buildCreatePane();
-        VBox readPane = buildReadPane();
-        VBox updatePane = buildUpdatePane();
-        VBox deletePane = buildDeletePane();
-        content.getChildren().addAll(createPane, readPane, updatePane, deletePane);
+        appPane = buildAppPane();
+        loginPane = buildLoginPane();
+        registerPane = buildRegisterPane();
 
-        Button createButton = buildNavigationButton("Create");
-        Button readButton = buildNavigationButton("Read");
-        Button updateButton = buildNavigationButton("Update");
-        Button deleteButton = buildNavigationButton("Delete");
+        root.getChildren().addAll(appPane, loginPane, registerPane);
 
-        createButton.setOnAction(event -> showSection(content, createPane));
-        readButton.setOnAction(event -> showSection(content, readPane));
-        updateButton.setOnAction(event -> showSection(content, updatePane));
-        deleteButton.setOnAction(event -> showSection(content, deletePane));
+        showLoginPane();
 
-        HBox navigation = new HBox(10, createButton, readButton, updateButton, deleteButton);
-        navigation.setAlignment(Pos.CENTER_LEFT);
-        navigation.setPadding(new Insets(0, 0, 14, 0));
+        Scene scene = new Scene(root, 1220, 820);
+        if (getClass().getResource("/styles/user-module.css") != null) {
+            scene.getStylesheets().add(getClass().getResource("/styles/user-module.css").toExternalForm());
+        }
 
-        root.setTop(navigation);
-        root.setCenter(content);
-
-        Scene scene = new Scene(root, 1120, 760);
+        stage.setTitle("User App - Login Required");
         stage.setScene(scene);
-        stage.setTitle("User CRUD - JavaFX + JDBC");
         stage.show();
-
-        showSection(content, createPane);
-        refreshUsers(null);
     }
 
-    private VBox buildCreatePane() {
-        VBox container = buildSectionContainer("Create User");
+    private VBox buildLoginPane() {
+        VBox screen = new VBox(14);
+        screen.setPadding(new Insets(24));
+        screen.setAlignment(Pos.CENTER);
+        screen.getStyleClass().add("single-window-root");
+
+        Label title = new Label("Login");
+        title.getStyleClass().add("single-window-title");
+
+        VBox card = buildSectionContainer("Connect to continue");
+        card.setMaxWidth(420);
+
+        TextField loginEmail = new TextField();
+        loginEmail.setPromptText("Email");
+
+        PasswordField loginPassword = new PasswordField();
+        loginPassword.setPromptText("Password");
+
+        Label loginStatus = new Label();
+
+        Button loginButton = new Button("Login");
+        loginButton.getStyleClass().add("btn-admin-view");
+        loginButton.setOnAction(event -> {
+            String validationMessage = validateLoginInputs(loginEmail.getText(), loginPassword.getText());
+            if (validationMessage != null) {
+                setError(loginStatus, validationMessage);
+                return;
+            }
+
+            try {
+                User loggedUser = userController.login(loginEmail.getText(), loginPassword.getText());
+                loginEmail.clear();
+                loginPassword.clear();
+                enterApp(loggedUser);
+            } catch (SQLDataException ex) {
+                setError(loginStatus, ex.getMessage());
+            } catch (Exception ex) {
+                setError(loginStatus, "Database unavailable: " + ex.getMessage());
+            }
+        });
+
+        Button toRegisterButton = new Button("Not registered? Create account");
+        toRegisterButton.getStyleClass().add("btn-back");
+        toRegisterButton.setOnAction(event -> showRegisterPane());
+
+        card.getChildren().addAll(loginEmail, loginPassword, loginButton, toRegisterButton, loginStatus);
+        screen.getChildren().addAll(title, card);
+        return screen;
+    }
+
+    private VBox buildRegisterPane() {
+        VBox screen = new VBox(14);
+        screen.setPadding(new Insets(24));
+        screen.setAlignment(Pos.CENTER);
+        screen.getStyleClass().add("single-window-root");
+
+        Label title = new Label("Register");
+        title.getStyleClass().add("single-window-title");
+
+        VBox card = buildSectionContainer("Create your account");
+        card.setMaxWidth(420);
+
+        TextField registerEmail = new TextField();
+        registerEmail.setPromptText("Email");
+
+        PasswordField registerPassword = new PasswordField();
+        registerPassword.setPromptText("Password (min 6)");
+
+        TextField registerFirstName = new TextField();
+        registerFirstName.setPromptText("First Name");
+
+        TextField registerLastName = new TextField();
+        registerLastName.setPromptText("Last Name (optional)");
+
+        Label registerStatus = new Label();
+
+        Button registerButton = new Button("Register");
+        registerButton.getStyleClass().add("btn-admin-create");
+        registerButton.setOnAction(event -> {
+            String validationMessage = validateRegisterInputs(
+                    registerEmail.getText(),
+                    registerPassword.getText(),
+                    registerFirstName.getText(),
+                    registerLastName.getText()
+            );
+            if (validationMessage != null) {
+                setError(registerStatus, validationMessage);
+                return;
+            }
+
+            try {
+                User createdUser = userController.register(
+                        registerEmail.getText(),
+                        registerPassword.getText(),
+                        registerFirstName.getText(),
+                        registerLastName.getText()
+                );
+                registerEmail.clear();
+                registerPassword.clear();
+                registerFirstName.clear();
+                registerLastName.clear();
+                // Auto-login immediately after successful registration
+                enterApp(createdUser);
+            } catch (SQLDataException ex) {
+                setError(registerStatus, ex.getMessage());
+            } catch (Exception ex) {
+                setError(registerStatus, "Database unavailable: " + ex.getMessage());
+            }
+        });
+
+        Button toLoginButton = new Button("Already have an account? Back to login");
+        toLoginButton.getStyleClass().add("btn-back");
+        toLoginButton.setOnAction(event -> showLoginPane());
+
+        card.getChildren().addAll(registerEmail, registerPassword, registerFirstName, registerLastName, registerButton, toLoginButton, registerStatus);
+        screen.getChildren().addAll(title, card);
+        return screen;
+    }
+
+    private BorderPane buildAppPane() {
+        BorderPane rootPane = new BorderPane();
+        rootPane.getStyleClass().add("single-window-root");
+
+        VBox top = new VBox(10);
+        top.setPadding(new Insets(14));
+        top.getStyleClass().add("single-window-header");
+
+        Label title = new Label("PharmaX - User Management");
+        title.getStyleClass().add("single-window-title");
+
+        currentUserLabel = new Label("Not connected");
+
+        Button logoutButton = new Button("Logout");
+        logoutButton.getStyleClass().add("btn-admin-delete");
+        logoutButton.setOnAction(event -> logout());
+
+        HBox titleRow = new HBox(10, title, currentUserLabel, logoutButton);
+        titleRow.setAlignment(Pos.CENTER_LEFT);
+
+        HBox filterBar = buildFilterBar();
+        HBox statsBar = buildStatsBar();
+
+        StackPane content = new StackPane();
+        VBox createSection = buildCreateSection();
+        VBox readSection = buildReadSection();
+        VBox updateSection = buildUpdateSection();
+        VBox deleteSection = buildDeleteSection();
+        content.getChildren().addAll(createSection, readSection, updateSection, deleteSection);
+
+        Button createButton = buildNavButton("Create", true);
+        Button readButton = buildNavButton("Read", false);
+        Button updateButton = buildNavButton("Update", false);
+        Button deleteButton = buildNavButton("Delete", false);
+
+        createButton.setOnAction(event -> activateSection(content, createSection, createButton, readButton, updateButton, deleteButton));
+        readButton.setOnAction(event -> activateSection(content, readSection, readButton, createButton, updateButton, deleteButton));
+        updateButton.setOnAction(event -> activateSection(content, updateSection, updateButton, createButton, readButton, deleteButton));
+        deleteButton.setOnAction(event -> activateSection(content, deleteSection, deleteButton, createButton, readButton, updateButton));
+
+        HBox navBar = new HBox(8, createButton, readButton, updateButton, deleteButton);
+        navBar.setAlignment(Pos.CENTER_LEFT);
+
+        top.getChildren().addAll(titleRow, filterBar, statsBar, navBar);
+        rootPane.setTop(top);
+        rootPane.setCenter(content);
+
+        activateSection(content, createSection, createButton, readButton, updateButton, deleteButton);
+        return rootPane;
+    }
+
+    private HBox buildFilterBar() {
+        searchField = new TextField();
+        searchField.setPromptText("Search email, name, role");
+        searchField.setPrefWidth(300);
+
+        sortByCombo = new ComboBox<>();
+        sortByCombo.getItems().addAll("ID", "Email", "First Name", "Last Name", "Role");
+        sortByCombo.setValue("ID");
+
+        directionCombo = new ComboBox<>();
+        directionCombo.getItems().addAll("Ascending", "Descending");
+        directionCombo.setValue("Ascending");
+
+        Button apply = new Button("Apply");
+        apply.getStyleClass().add("btn-admin-view");
+        apply.setOnAction(event -> refreshUsersAndStats(null, null));
+
+        Button reset = new Button("Reset");
+        reset.getStyleClass().add("btn-admin-create");
+        reset.setOnAction(event -> {
+            searchField.clear();
+            sortByCombo.setValue("ID");
+            directionCombo.setValue("Ascending");
+            refreshUsersAndStats(null, null);
+        });
+
+        HBox bar = new HBox(10,
+                new Label("Search"), searchField,
+                new Label("Sort"), sortByCombo,
+                new Label("Order"), directionCombo,
+                apply, reset
+        );
+        bar.setAlignment(Pos.CENTER_LEFT);
+        return bar;
+    }
+
+    private HBox buildStatsBar() {
+        totalUsersLabel = buildStatValue("0");
+        adminUsersLabel = buildStatValue("0");
+        normalUsersLabel = buildStatValue("0");
+
+        HBox bar = new HBox(12,
+                buildStatCard("Total Users", totalUsersLabel),
+                buildStatCard("Admin Users", adminUsersLabel),
+                buildStatCard("Normal Users", normalUsersLabel)
+        );
+        bar.setAlignment(Pos.CENTER_LEFT);
+        return bar;
+    }
+
+    private VBox buildStatCard(String title, Label valueLabel) {
+        Label titleLabel = new Label(title);
+        titleLabel.getStyleClass().add("stat-title");
+        VBox card = new VBox(4, titleLabel, valueLabel);
+        card.getStyleClass().add("stat-card");
+        return card;
+    }
+
+    private Label buildStatValue(String value) {
+        Label label = new Label(value);
+        label.getStyleClass().add("stat-value");
+        return label;
+    }
+
+    private Button buildNavButton(String text, boolean active) {
+        Button button = new Button(text);
+        button.getStyleClass().add("nav-btn");
+        if (active) {
+            button.getStyleClass().add("nav-btn-active");
+        }
+        return button;
+    }
+
+    private VBox buildCreateSection() {
+        VBox section = buildSectionContainer("Create User");
 
         TextField emailField = new TextField();
-        emailField.setPromptText("user@example.com");
-        TextField rolesField = new TextField("[\"ROLE_USER\"]");
-        rolesField.setPromptText("[\"ROLE_USER\", \"ROLE_ADMIN\"]");
         PasswordField passwordField = new PasswordField();
-        passwordField.setPromptText("Password");
         TextField firstNameField = new TextField();
-        firstNameField.setPromptText("First name");
         TextField lastNameField = new TextField();
-        lastNameField.setPromptText("Last name (optional)");
+
+        ComboBox<String> roleCombo = new ComboBox<>();
+        roleCombo.getItems().addAll(UserController.ROLE_ADMIN, UserController.ROLE_NORMAL_USER);
+        roleCombo.setValue(UserController.ROLE_NORMAL_USER);
 
         GridPane form = buildFormGrid();
         addFormRow(form, 0, "Email", emailField);
-        addFormRow(form, 1, "Roles", rolesField);
+        addFormRow(form, 1, "Role", roleCombo);
         addFormRow(form, 2, "Password", passwordField);
         addFormRow(form, 3, "First Name", firstNameField);
         addFormRow(form, 4, "Last Name", lastNameField);
 
-        // Attach live validation styles and tooltips
-        attachValidation(emailField, this::isValidEmail, "Enter a valid email (example: user@example.com)");
-        attachValidation(rolesField, this::isValidRolesJson, "Roles must be a JSON array text, e.g. [\"ROLE_USER\"]");
-        attachValidation(passwordField, this::isStrongPassword, "Password must be at least 6 characters");
-        attachValidation(firstNameField, this::isValidName, "First name is required and must contain letters");
-        attachValidation(lastNameField, s -> s == null || s.trim().isEmpty() || isValidName(s), "Last name must contain only letters or be empty");
-
-        Label hintLabel = new Label("Roles must be saved as JSON array text (example: [\"ROLE_USER\"]).");
-        hintLabel.setStyle("-fx-text-fill: #334155;");
-
-        Label statusLabel = new Label();
-        Button addButton = buildPrimaryButton("Add User");
-
-        // Disable Add button while form is invalid
-        BooleanBinding createInvalid = Bindings.createBooleanBinding(() ->
-                !isValidEmail(emailField.getText())
-                        || !isValidRolesJson(rolesField.getText())
-                        || !isStrongPassword(passwordField.getText())
-                        || !isValidName(firstNameField.getText()),
-                emailField.textProperty(), rolesField.textProperty(), passwordField.textProperty(), firstNameField.textProperty());
-        addButton.disableProperty().bind(createInvalid);
-        addButton.setOnAction(event -> {
-            String validationMessage = validateUserInputs(
+        Label status = new Label();
+        Button createButton = new Button("Create User");
+        createButton.getStyleClass().add("btn-admin-create");
+        createButton.setOnAction(event -> {
+            String validationMessage = validateUserFormInputs(
                     emailField.getText(),
-                    rolesField.getText(),
                     passwordField.getText(),
-                    firstNameField.getText()
+                    firstNameField.getText(),
+                    lastNameField.getText(),
+                    roleCombo.getValue()
             );
             if (validationMessage != null) {
-                setError(statusLabel, validationMessage);
+                setError(status, validationMessage);
                 return;
             }
 
             User user = new User(
-                    emailField.getText().trim(),
-                    normalizeRoles(rolesField.getText()),
+                    emailField.getText(),
+                    "",
                     passwordField.getText(),
-                    firstNameField.getText().trim(),
-                    normalizeNullable(lastNameField.getText())
+                    firstNameField.getText(),
+                    lastNameField.getText()
             );
 
             try {
-                serviceUser.ajouter(user);
+                userController.createUser(user, roleCombo.getValue());
+                setSuccess(status, "User created successfully.");
                 emailField.clear();
-                rolesField.setText("[\"ROLE_USER\"]");
                 passwordField.clear();
                 firstNameField.clear();
                 lastNameField.clear();
-                refreshUsers(null);
-                setSuccess(statusLabel, "User created successfully.");
-            } catch (SQLDataException e) {
-                setError(statusLabel, e.getMessage());
+                roleCombo.setValue(UserController.ROLE_NORMAL_USER);
+                refreshUsersAndStats(null, status);
+            } catch (SQLDataException ex) {
+                setError(status, ex.getMessage());
             }
         });
 
-        container.getChildren().addAll(form, hintLabel, addButton, statusLabel);
-        return container;
+        section.getChildren().addAll(form, createButton, status);
+        return section;
     }
 
-    private VBox buildReadPane() {
-        VBox container = buildSectionContainer("Read Users");
+    private VBox buildReadSection() {
+        VBox section = buildSectionContainer("Read Users");
         TableView<User> table = buildUserTable();
-        Label statusLabel = new Label();
+        Label status = new Label();
 
-        Button refreshButton = buildPrimaryButton("Refresh");
-        refreshButton.setOnAction(event -> refreshUsers(statusLabel));
+        Button refreshButton = new Button("Refresh");
+        refreshButton.getStyleClass().add("btn-admin-view");
+        refreshButton.setOnAction(event -> refreshUsersAndStats("Users loaded.", status));
 
         VBox.setVgrow(table, Priority.ALWAYS);
-        container.getChildren().addAll(table, refreshButton, statusLabel);
-        return container;
+        section.getChildren().addAll(table, refreshButton, status);
+        return section;
     }
 
-    private VBox buildUpdatePane() {
-        VBox container = buildSectionContainer("Update User");
+    private VBox buildUpdateSection() {
+        VBox section = buildSectionContainer("Update User");
 
-        TextField idField = new TextField();
-        idField.setPromptText("ID (manual or from selection)");
         TextField emailField = new TextField();
-        emailField.setPromptText("user@example.com");
-        TextField rolesField = new TextField();
-        rolesField.setPromptText("[\"ROLE_USER\"]");
         PasswordField passwordField = new PasswordField();
-        passwordField.setPromptText("Password");
         TextField firstNameField = new TextField();
-        firstNameField.setPromptText("First name");
         TextField lastNameField = new TextField();
-        lastNameField.setPromptText("Last name (optional)");
+
+        ComboBox<String> roleCombo = new ComboBox<>();
+        roleCombo.getItems().addAll(UserController.ROLE_ADMIN, UserController.ROLE_NORMAL_USER);
+        roleCombo.setValue(UserController.ROLE_NORMAL_USER);
 
         GridPane form = buildFormGrid();
-        addFormRow(form, 0, "ID", idField);
-
-        // ID: numeric-only formatter and live validation
-        idField.setTextFormatter(new TextFormatter<String>(change -> {
-            if (change.getControlNewText().matches("\\d{0,10}")) {
-                return change;
-            }
-            return null;
-        }));
-        attachValidation(idField, this::isPositiveInteger, "Enter a positive numeric id");
-        addFormRow(form, 1, "Email", emailField);
-        addFormRow(form, 2, "Roles", rolesField);
-        addFormRow(form, 3, "Password", passwordField);
-        addFormRow(form, 4, "First Name", firstNameField);
-        addFormRow(form, 5, "Last Name", lastNameField);
-
-        // ID: numeric-only formatter
-        idField.setTextFormatter(new TextFormatter<String>(change -> {
-            if (change.getControlNewText().matches("\\d{0,10}")) {
-                return change;
-            }
-            return null;
-        }));
-
-        // Live validations
-        attachValidation(emailField, this::isValidEmail, "Enter a valid email (example: user@example.com)");
-        attachValidation(rolesField, this::isValidRolesJson, "Roles must be a JSON array text, e.g. [\"ROLE_USER\"]");
-        attachValidation(passwordField, this::isStrongPassword, "Password must be at least 6 characters");
-        attachValidation(firstNameField, this::isValidName, "First name is required and must contain letters");
-        attachValidation(lastNameField, s -> s == null || s.trim().isEmpty() || isValidName(s), "Last name must contain only letters or be empty");
+        addFormRow(form, 0, "Email", emailField);
+        addFormRow(form, 1, "Role", roleCombo);
+        addFormRow(form, 2, "Password", passwordField);
+        addFormRow(form, 3, "First Name", firstNameField);
+        addFormRow(form, 4, "Last Name", lastNameField);
 
         TableView<User> table = buildUserTable();
-        table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, selectedUser) -> {
-            if (selectedUser == null) {
+        User[] selectedHolder = new User[1];
+
+        table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, selected) -> {
+            selectedHolder[0] = selected;
+            if (selected == null) {
                 return;
             }
-            fillUpdateFields(selectedUser, idField, emailField, rolesField, passwordField, firstNameField, lastNameField);
+
+            emailField.setText(selected.getEmail());
+            passwordField.setText(selected.getPassword());
+            firstNameField.setText(selected.getFirstName());
+            lastNameField.setText(selected.getLastName() == null ? "" : selected.getLastName());
+            roleCombo.setValue(userController.toRoleLabel(selected.getRoles()));
         });
 
-        Label statusLabel = new Label();
+        Label status = new Label();
 
-        Button useSelectedButton = buildPrimaryButton("Use Selected Row");
-        useSelectedButton.setOnAction(event -> {
-            User selectedUser = table.getSelectionModel().getSelectedItem();
-            if (selectedUser == null) {
-                setError(statusLabel, "Select a user from the table first.");
+        Button useSelected = new Button("Use Selected");
+        useSelected.getStyleClass().add("btn-admin-view");
+        useSelected.setOnAction(event -> {
+            User selected = table.getSelectionModel().getSelectedItem();
+            if (selected == null) {
+                setError(status, "Select a row first.");
                 return;
             }
-            fillUpdateFields(selectedUser, idField, emailField, rolesField, passwordField, firstNameField, lastNameField);
-            setSuccess(statusLabel, "Form filled from selected row.");
+            selectedHolder[0] = selected;
+            emailField.setText(selected.getEmail());
+            passwordField.setText(selected.getPassword());
+            firstNameField.setText(selected.getFirstName());
+            lastNameField.setText(selected.getLastName() == null ? "" : selected.getLastName());
+            roleCombo.setValue(userController.toRoleLabel(selected.getRoles()));
+            setSuccess(status, "Form filled from selected row.");
         });
 
-        Button updateButton = buildPrimaryButton("Update User");
+        Button updateButton = new Button("Update User");
+        updateButton.getStyleClass().add("btn-admin-edit");
         updateButton.setOnAction(event -> {
-            Integer resolvedId = resolveTargetId(idField.getText(), table.getSelectionModel().getSelectedItem());
-            if (resolvedId == null) {
-                setError(statusLabel, "Provide a valid id or select a row in the table.");
+            User selected = selectedHolder[0];
+            if (selected == null || selected.getId() <= 0) {
+                setError(status, "Select a row to update.");
                 return;
             }
 
-            String validationMessage = validateUserInputs(
+            String validationMessage = validateUserFormInputs(
                     emailField.getText(),
-                    rolesField.getText(),
                     passwordField.getText(),
-                    firstNameField.getText()
+                    firstNameField.getText(),
+                    lastNameField.getText(),
+                    roleCombo.getValue()
             );
             if (validationMessage != null) {
-                setError(statusLabel, validationMessage);
+                setError(status, validationMessage);
                 return;
             }
 
             User user = new User(
-                    resolvedId,
-                    emailField.getText().trim(),
-                    normalizeRoles(rolesField.getText()),
+                    selected.getId(),
+                    emailField.getText(),
+                    "",
                     passwordField.getText(),
-                    firstNameField.getText().trim(),
-                    normalizeNullable(lastNameField.getText())
+                    firstNameField.getText(),
+                    lastNameField.getText()
             );
 
             try {
-                serviceUser.modifier(user);
-                refreshUsers(null);
-                setSuccess(statusLabel, "User updated successfully.");
-            } catch (SQLDataException e) {
-                setError(statusLabel, e.getMessage());
+                userController.updateUser(user, roleCombo.getValue());
+                setSuccess(status, "User updated successfully.");
+                refreshUsersAndStats(null, status);
+            } catch (SQLDataException ex) {
+                setError(status, ex.getMessage());
             }
         });
 
-        // Disable update button when form invalid or id invalid when provided
-        BooleanBinding updateInvalid = Bindings.createBooleanBinding(() ->
-                !isValidEmail(emailField.getText())
-                        || !isValidRolesJson(rolesField.getText())
-                        || !isStrongPassword(passwordField.getText())
-                        || !isValidName(firstNameField.getText())
-                        || (!idField.getText().trim().isEmpty() && !isPositiveInteger(idField.getText())),
-                emailField.textProperty(), rolesField.textProperty(), passwordField.textProperty(), firstNameField.textProperty(), idField.textProperty());
-        updateButton.disableProperty().bind(updateInvalid);
+        Button refreshButton = new Button("Refresh");
+        refreshButton.getStyleClass().add("btn-admin-view");
+        refreshButton.setOnAction(event -> refreshUsersAndStats("Users loaded.", status));
 
-        Button refreshButton = buildPrimaryButton("Refresh Table");
-        refreshButton.setOnAction(event -> refreshUsers(statusLabel));
-
-        HBox actions = new HBox(10, useSelectedButton, updateButton, refreshButton);
+        HBox actions = new HBox(10, useSelected, updateButton, refreshButton);
         actions.setAlignment(Pos.CENTER_LEFT);
 
         VBox.setVgrow(table, Priority.ALWAYS);
-        container.getChildren().addAll(form, actions, table, statusLabel);
+        section.getChildren().addAll(form, actions, table, status);
+        return section;
+    }
+
+    private VBox buildDeleteSection() {
+        VBox section = buildSectionContainer("Delete User");
+
+        TableView<User> table = buildUserTable();
+        Label status = new Label();
+
+        Button deleteButton = new Button("Delete Selected User");
+        deleteButton.getStyleClass().add("btn-admin-delete");
+        deleteButton.setOnAction(event -> {
+            User selected = table.getSelectionModel().getSelectedItem();
+            if (selected == null || selected.getId() <= 0) {
+                setError(status, "Select a row to delete.");
+                return;
+            }
+
+            try {
+                userController.deleteUserById(selected.getId());
+                setSuccess(status, "User deleted successfully.");
+                refreshUsersAndStats(null, status);
+            } catch (SQLDataException ex) {
+                setError(status, ex.getMessage());
+            }
+        });
+
+        Button refreshButton = new Button("Refresh");
+        refreshButton.getStyleClass().add("btn-admin-view");
+        refreshButton.setOnAction(event -> refreshUsersAndStats("Users loaded.", status));
+
+        HBox actions = new HBox(10, deleteButton, refreshButton);
+        actions.setAlignment(Pos.CENTER_LEFT);
+
+        VBox.setVgrow(table, Priority.ALWAYS);
+        section.getChildren().addAll(table, actions, status);
+        return section;
+    }
+
+    private VBox buildSectionContainer(String title) {
+        Label titleLabel = new Label(title);
+        titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #0f172a;");
+
+        VBox container = new VBox(12, titleLabel);
+        container.setPadding(new Insets(14));
+        container.getStyleClass().addAll("user-card", "admin-form");
         return container;
     }
 
-    private VBox buildDeletePane() {
-        VBox container = buildSectionContainer("Delete User");
+    private GridPane buildFormGrid() {
+        GridPane gridPane = new GridPane();
+        gridPane.setVgap(8);
+        gridPane.setHgap(12);
+        return gridPane;
+    }
 
-        TextField idField = new TextField();
-        idField.setPromptText("ID (manual or from selection)");
+    private void addFormRow(GridPane gridPane, int rowIndex, String labelText, Node field) {
+        Label label = new Label(labelText + " :");
+        label.setMinWidth(120);
+        gridPane.add(label, 0, rowIndex);
 
-        GridPane form = buildFormGrid();
-        addFormRow(form, 0, "ID", idField);
+        if (field instanceof TextField) {
+            ((TextField) field).setPrefWidth(380);
+        }
+        if (field instanceof ComboBox) {
+            ((ComboBox<?>) field).setPrefWidth(380);
+        }
 
-        TableView<User> table = buildUserTable();
-        table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, selectedUser) -> {
-            if (selectedUser != null) {
-                idField.setText(String.valueOf(selectedUser.getId()));
-            }
-        });
-
-        Label statusLabel = new Label();
-
-        Button useSelectedButton = buildPrimaryButton("Use Selected Row");
-        useSelectedButton.setOnAction(event -> {
-            User selectedUser = table.getSelectionModel().getSelectedItem();
-            if (selectedUser == null) {
-                setError(statusLabel, "Select a user from the table first.");
-                return;
-            }
-            idField.setText(String.valueOf(selectedUser.getId()));
-            setSuccess(statusLabel, "Delete id filled from selected row.");
-        });
-
-        Button deleteButton = buildPrimaryButton("Delete User");
-        deleteButton.setOnAction(event -> {
-            Integer resolvedId = resolveTargetId(idField.getText(), table.getSelectionModel().getSelectedItem());
-            if (resolvedId == null) {
-                setError(statusLabel, "Provide a valid id or select a row in the table.");
-                return;
-            }
-
-            User user = new User();
-            user.setId(resolvedId);
-
-            try {
-                serviceUser.supprimer(user);
-                idField.clear();
-                table.getSelectionModel().clearSelection();
-                refreshUsers(null);
-                setSuccess(statusLabel, "User deleted successfully.");
-            } catch (SQLDataException e) {
-                setError(statusLabel, e.getMessage());
-            }
-        });
-
-        // Disable delete button when id is not a positive integer
-        BooleanBinding deleteInvalid = Bindings.createBooleanBinding(() -> !isPositiveInteger(idField.getText()), idField.textProperty());
-        deleteButton.disableProperty().bind(deleteInvalid);
-
-        Button refreshButton = buildPrimaryButton("Refresh Table");
-        refreshButton.setOnAction(event -> refreshUsers(statusLabel));
-
-        HBox actions = new HBox(10, useSelectedButton, deleteButton, refreshButton);
-        actions.setAlignment(Pos.CENTER_LEFT);
-
-        VBox.setVgrow(table, Priority.ALWAYS);
-        container.getChildren().addAll(form, actions, table, statusLabel);
-        return container;
+        gridPane.add(field, 1, rowIndex);
     }
 
     private TableView<User> buildUserTable() {
@@ -374,8 +574,8 @@ public class Main extends Application {
         TableColumn<User, String> emailColumn = new TableColumn<>("Email");
         emailColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
 
-        TableColumn<User, String> rolesColumn = new TableColumn<>("Roles");
-        rolesColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRoles()));
+        TableColumn<User, String> roleColumn = new TableColumn<>("Role");
+        roleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(userController.toRoleLabel(cellData.getValue().getRoles())));
 
         TableColumn<User, String> passwordColumn = new TableColumn<>("Password");
         passwordColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPassword()));
@@ -386,247 +586,189 @@ public class Main extends Application {
         TableColumn<User, String> lastNameColumn = new TableColumn<>("Last Name");
         lastNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLastName()));
 
-        table.getColumns().add(idColumn);
-        table.getColumns().add(emailColumn);
-        table.getColumns().add(rolesColumn);
-        table.getColumns().add(passwordColumn);
-        table.getColumns().add(firstNameColumn);
-        table.getColumns().add(lastNameColumn);
+        table.getColumns().addAll(idColumn, emailColumn, roleColumn, passwordColumn, firstNameColumn, lastNameColumn);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        table.setPrefHeight(420);
+        table.setPrefHeight(430);
         return table;
     }
 
-    private VBox buildSectionContainer(String title) {
-        Label titleLabel = new Label(title);
-        titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #0f172a;");
-
-        VBox container = new VBox(12, titleLabel);
-        container.setPadding(new Insets(14));
-        container.setStyle(
-                "-fx-background-color: rgba(255,255,255,0.92);" +
-                        "-fx-background-radius: 12;" +
-                        "-fx-border-color: #cbd5e1;" +
-                        "-fx-border-radius: 12;"
-        );
-        return container;
-    }
-
-    private GridPane buildFormGrid() {
-        GridPane gridPane = new GridPane();
-        gridPane.setVgap(8);
-        gridPane.setHgap(12);
-        return gridPane;
-    }
-
-    private void addFormRow(GridPane gridPane, int rowIndex, String labelText, TextField field) {
-        Label label = new Label(labelText + " :");
-        label.setMinWidth(120);
-        gridPane.add(label, 0, rowIndex);
-        field.setPrefWidth(380);
-        gridPane.add(field, 1, rowIndex);
-    }
-
-    private Button buildPrimaryButton(String text) {
-        Button button = new Button(text);
-        button.setStyle(
-                "-fx-background-color: #2563eb;" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 8 14 8 14;"
-        );
-        return button;
-    }
-
-    private Button buildNavigationButton(String text) {
-        Button button = new Button(text);
-        button.setStyle(
-                "-fx-background-color: #0f172a;" +
-                        "-fx-text-fill: #e2e8f0;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 8 16 8 16;" +
-                        "-fx-font-weight: bold;"
-        );
-        return button;
-    }
-
-    private void showSection(StackPane stackPane, Node targetSection) {
+    private void activateSection(StackPane stackPane, Node active, Button activeButton, Button... inactiveButtons) {
         for (Node section : stackPane.getChildren()) {
-            boolean active = section == targetSection;
-            section.setVisible(active);
-            section.setManaged(active);
+            boolean visible = section == active;
+            section.setVisible(visible);
+            section.setManaged(visible);
+        }
+
+        activeButton.getStyleClass().remove("nav-btn-active");
+        activeButton.getStyleClass().add("nav-btn-active");
+        for (Button button : inactiveButtons) {
+            button.getStyleClass().remove("nav-btn-active");
         }
     }
 
-    private void refreshUsers(Label statusLabel) {
+    private void refreshUsersAndStats(String successMessage, Label statusLabel) {
         try {
-            userData.setAll(serviceUser.recuperer());
+            boolean ascending = "Ascending".equalsIgnoreCase(directionCombo.getValue());
+            userData.setAll(userController.searchAndSortUsers(searchField.getText(), sortByCombo.getValue(), ascending));
+
+            int[] stats = userController.getStatistics();
+            totalUsersLabel.setText(String.valueOf(stats[0]));
+            adminUsersLabel.setText(String.valueOf(stats[1]));
+            normalUsersLabel.setText(String.valueOf(stats[2]));
+
+            if (statusLabel != null && successMessage != null) {
+                setSuccess(statusLabel, successMessage);
+            }
+        } catch (SQLDataException ex) {
             if (statusLabel != null) {
-                setSuccess(statusLabel, "Loaded " + userData.size() + " users.");
+                setError(statusLabel, ex.getMessage());
             }
-        } catch (SQLDataException e) {
+        } catch (Exception ex) {
             if (statusLabel != null) {
-                setError(statusLabel, e.getMessage());
+                setError(statusLabel, "Database unavailable: " + ex.getMessage());
             }
         }
     }
 
-    private String validateUserInputs(String email, String roles, String password, String firstName) {
-        if (email == null || email.trim().isEmpty()) {
-            return "Email is required.";
-        }
-        if (roles == null || roles.trim().isEmpty()) {
-            return "Roles is required.";
-        }
-        if (password == null || password.isEmpty()) {
-            return "Password is required.";
-        }
-        if (firstName == null || firstName.trim().isEmpty()) {
-            return "First name is required.";
-        }
-        return null;
+    private void enterApp(User user) {
+        currentUser = user;
+        currentUserLabel.setText("Connected as: " + user.getEmail());
+
+        loginPane.setVisible(false);
+        loginPane.setManaged(false);
+        registerPane.setVisible(false);
+        registerPane.setManaged(false);
+
+        appPane.setVisible(true);
+        appPane.setManaged(true);
+
+        refreshUsersAndStats(null, null);
     }
 
-    // --- Validation utilities and UI helpers ---
-    private void attachValidation(TextInputControl field, Predicate<String> validator, String message) {
-        Tooltip tip = new Tooltip(message);
-        field.setTooltip(tip);
-        field.textProperty().addListener((obs, oldV, newV) -> {
-            boolean ok = validator.test(newV == null ? "" : newV);
-            if (ok) {
-                field.setStyle("-fx-border-color: #16a34a; -fx-border-radius: 4;");
-            } else {
-                field.setStyle("-fx-border-color: #ef4444; -fx-border-radius: 4;");
-            }
-        });
-        // initialise style
-        boolean ok = validator.test(field.getText() == null ? "" : field.getText());
-        if (ok) field.setStyle("-fx-border-color: #16a34a; -fx-border-radius: 4;");
-        else field.setStyle("-fx-border-color: #ef4444; -fx-border-radius: 4;");
+    private void showLoginPane() {
+        currentUser = null;
+        appPane.setVisible(false);
+        appPane.setManaged(false);
+        registerPane.setVisible(false);
+        registerPane.setManaged(false);
+        loginPane.setVisible(true);
+        loginPane.setManaged(true);
     }
 
-    private boolean isValidEmail(String email) {
-        if (email == null) return false;
-        String e = email.trim();
-        if (e.isEmpty()) return false;
-        String regex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
-        return Pattern.compile(regex).matcher(e).matches();
+    private void showRegisterPane() {
+        appPane.setVisible(false);
+        appPane.setManaged(false);
+        loginPane.setVisible(false);
+        loginPane.setManaged(false);
+        registerPane.setVisible(true);
+        registerPane.setManaged(true);
     }
 
-    private boolean isValidRolesJson(String roles) {
-        if (roles == null) return false;
-        String t = roles.trim();
-        if (t.isEmpty()) return false;
-        if (t.equals("[]")) return true;
-        if (!(t.startsWith("[") && t.endsWith("]"))) return false;
-        // minimal check: should contain at least one quoted token
-        return t.contains("\"");
-    }
-
-    private boolean isStrongPassword(String password) {
-        if (password == null) return false;
-        return password.length() >= 6;
-    }
-
-    private boolean isValidName(String name) {
-        if (name == null) return false;
-        String t = name.trim();
-        if (t.isEmpty()) return false;
-        // allow unicode letters, spaces, hyphen and apostrophe
-        return Pattern.compile("^[\\p{L} '-]{1,50}$").matcher(t).matches();
-    }
-
-    private boolean isPositiveInteger(String s) {
-        if (s == null) return false;
-        String t = s.trim();
-        if (t.isEmpty()) return false;
-        try {
-            return Integer.parseInt(t) > 0;
-        } catch (NumberFormatException ex) {
-            return false;
-        }
-    }
-
-    private Integer resolveTargetId(String idText, User selectedUser) {
-        if (idText != null && !idText.trim().isEmpty()) {
-            try {
-                int parsedId = Integer.parseInt(idText.trim());
-                if (parsedId > 0) {
-                    return parsedId;
-                }
-            } catch (NumberFormatException ignored) {
-            }
-        }
-
-        if (selectedUser != null && selectedUser.getId() > 0) {
-            return selectedUser.getId();
-        }
-
-        return null;
-    }
-
-    private String normalizeRoles(String rawRoles) {
-        String value = rawRoles == null ? "" : rawRoles.trim();
-        if (value.isEmpty()) {
-            return "[]";
-        }
-
-        if (value.startsWith("[") && value.endsWith("]")) {
-            return value;
-        }
-
-        String[] tokens = value.split(",");
-        StringBuilder builder = new StringBuilder("[");
-
-        for (String token : tokens) {
-            String role = token.trim();
-            if (role.isEmpty()) {
-                continue;
-            }
-            if (builder.length() > 1) {
-                builder.append(", ");
-            }
-            builder.append('"').append(role.replace("\"", "\\\"")).append('"');
-        }
-
-        builder.append(']');
-        return builder.toString();
-    }
-
-    private String normalizeNullable(String text) {
-        if (text == null) {
-            return null;
-        }
-        String value = text.trim();
-        return value.isEmpty() ? null : value;
-    }
-
-    private void fillUpdateFields(
-            User user,
-            TextField idField,
-            TextField emailField,
-            TextField rolesField,
-            PasswordField passwordField,
-            TextField firstNameField,
-            TextField lastNameField
-    ) {
-        idField.setText(String.valueOf(user.getId()));
-        emailField.setText(user.getEmail());
-        rolesField.setText(user.getRoles());
-        passwordField.setText(user.getPassword());
-        firstNameField.setText(user.getFirstName());
-        lastNameField.setText(user.getLastName() == null ? "" : user.getLastName());
+    private void logout() {
+        currentUser = null;
+        currentUserLabel.setText("Not connected");
+        showLoginPane();
     }
 
     private void setSuccess(Label label, String message) {
-        label.setStyle("-fx-text-fill: #166534; -fx-font-weight: bold;");
+        label.getStyleClass().removeAll("feedback-error", "feedback-success");
+        label.getStyleClass().add("feedback-success");
         label.setText(message);
     }
 
     private void setError(Label label, String message) {
-        label.setStyle("-fx-text-fill: #b91c1c; -fx-font-weight: bold;");
+        label.getStyleClass().removeAll("feedback-error", "feedback-success");
+        label.getStyleClass().add("feedback-error");
         label.setText(message);
+    }
+
+    private String validateLoginInputs(String email, String password) {
+        List<String> errors = new ArrayList<>();
+
+        if (email == null || email.trim().isEmpty()) {
+            errors.add("Email: required.");
+        } else if (!userController.isValidEmail(email)) {
+            errors.add("Email: invalid format (example: user@example.com).");
+        }
+
+        if (password == null || password.isEmpty()) {
+            errors.add("Password: required.");
+        }
+
+        return buildValidationMessage(errors);
+    }
+
+    private String validateRegisterInputs(String email, String password, String firstName, String lastName) {
+        List<String> errors = new ArrayList<>();
+
+        if (email == null || email.trim().isEmpty()) {
+            errors.add("Email: required.");
+        } else if (!userController.isValidEmail(email)) {
+            errors.add("Email: invalid format (example: user@example.com).");
+        }
+
+        if (password == null || password.isEmpty()) {
+            errors.add("Password: required.");
+        } else if (!userController.isStrongPassword(password)) {
+            errors.add("Password: must contain at least 6 characters.");
+        }
+
+        if (firstName == null || firstName.trim().isEmpty()) {
+            errors.add("First name: required.");
+        } else if (!userController.isValidName(firstName)) {
+            errors.add("First name: letters/spaces/hyphen/apostrophe only (1-50 chars).");
+        }
+
+        if (lastName != null && !lastName.trim().isEmpty() && !userController.isValidName(lastName)) {
+            errors.add("Last name: letters/spaces/hyphen/apostrophe only (1-50 chars), or leave empty.");
+        }
+
+        return buildValidationMessage(errors);
+    }
+
+    private String validateUserFormInputs(String email, String password, String firstName, String lastName, String role) {
+        List<String> errors = new ArrayList<>();
+
+        if (email == null || email.trim().isEmpty()) {
+            errors.add("Email: required.");
+        } else if (!userController.isValidEmail(email)) {
+            errors.add("Email: invalid format (example: user@example.com).");
+        }
+
+        if (password == null || password.isEmpty()) {
+            errors.add("Password: required.");
+        } else if (!userController.isStrongPassword(password)) {
+            errors.add("Password: must contain at least 6 characters.");
+        }
+
+        if (firstName == null || firstName.trim().isEmpty()) {
+            errors.add("First name: required.");
+        } else if (!userController.isValidName(firstName)) {
+            errors.add("First name: letters/spaces/hyphen/apostrophe only (1-50 chars).");
+        }
+
+        if (lastName != null && !lastName.trim().isEmpty() && !userController.isValidName(lastName)) {
+            errors.add("Last name: letters/spaces/hyphen/apostrophe only (1-50 chars), or leave empty.");
+        }
+
+        if (role == null || role.trim().isEmpty()) {
+            errors.add("Role: required (Admin or Normal User).");
+        }
+
+        return buildValidationMessage(errors);
+    }
+
+    private String buildValidationMessage(List<String> errors) {
+        if (errors.isEmpty()) {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder("Please fix the following:\n");
+        for (String error : errors) {
+            builder.append("- ").append(error).append('\n');
+        }
+
+        return builder.toString().trim();
     }
 
     public static void main(String[] args) {
