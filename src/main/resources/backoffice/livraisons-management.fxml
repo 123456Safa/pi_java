@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.LivraisonController"
+      spacing="16" style="-fx-padding: 24; -fx-background-color: #f6f7fb;">
+
+    <Label text="Gestion des Livraisons"
+           style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #243248;"/>
+
+    <Label fx:id="countLabel" text="0 livraison(s)"
+           style="-fx-font-size: 14; -fx-text-fill: #6b7280;"/>
+
+    <TableView fx:id="livraisonsTable" prefHeight="500">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="commandeIdColumn" text="Cmd ID" prefWidth="60"/>
+            <TableColumn fx:id="lastNameColumn" text="Nom" prefWidth="120"/>
+            <TableColumn fx:id="firstNameColumn" text="Prenom" prefWidth="120"/>
+            <TableColumn fx:id="emailColumn" text="Email" prefWidth="150"/>
+            <TableColumn fx:id="adresseColumn" text="Adresse" prefWidth="200"/>
+            <TableColumn fx:id="telColumn" text="Tel" prefWidth="100"/>
+            <TableColumn fx:id="createdAtColumn" text="Date" prefWidth="140"/>
+        </columns>
+    </TableView>
+</VBox>

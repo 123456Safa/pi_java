@@ -23,7 +23,7 @@ public class CatalogueController {
     @FXML
     private ScrollPane cataloguePane;
 
-    private final ProduitService produitService = new ProduitService();
+    private ProduitService produitService;
 
     @FXML
     public void initialize() {
@@ -32,10 +32,16 @@ public class CatalogueController {
 
     private void loadProduits() {
         try {
+            if (produitService == null) {
+                produitService = new ProduitService();
+            }
             List<Produit> produits = produitService.select();
 
-            VBox container = new VBox(16);
-            container.setPadding(new Insets(4));
+            javafx.scene.layout.TilePane container = new javafx.scene.layout.TilePane();
+            container.setPrefColumns(3); // Attempt to show 3 cards per row
+            container.setHgap(20);
+            container.setVgap(20);
+            container.setPadding(new Insets(20));
             container.getStyleClass().add("catalogue-list");
 
             if (produits.isEmpty()) {
@@ -61,15 +67,18 @@ public class CatalogueController {
         }
     }
 
-    private HBox createProductCard(Produit produit) {
-        HBox card = new HBox(18);
+    private VBox createProductCard(Produit produit) {
+        VBox card = new VBox(12);
         card.setPadding(new Insets(18));
         card.getStyleClass().add("product-card");
+        card.setPrefWidth(240); // Fixed width for a uniform grid
+        card.setMaxWidth(240);
 
         VBox imageBox = new VBox();
-        imageBox.setPrefWidth(92);
-        imageBox.setPrefHeight(92);
+        imageBox.setPrefHeight(140);
+        imageBox.setMinHeight(140);
         imageBox.getStyleClass().add("product-card-media");
+        imageBox.setAlignment(javafx.geometry.Pos.CENTER);
 
         String initial = produit.getNom() == null || produit.getNom().isBlank()
                 ? "+"
@@ -79,16 +88,18 @@ public class CatalogueController {
         imageBox.getChildren().add(imagePlaceholder);
 
         VBox details = new VBox(8);
-        HBox.setHgrow(details, Priority.ALWAYS);
+        VBox.setVgrow(details, Priority.ALWAYS);
 
         Label nomLabel = new Label(produit.getNom());
         nomLabel.getStyleClass().add("product-card-title");
+        nomLabel.setWrapText(true);
 
         Label descriptionLabel = new Label(produit.getDescription() == null || produit.getDescription().isBlank()
                 ? "Produit de parapharmacie"
                 : produit.getDescription());
         descriptionLabel.getStyleClass().add("product-card-description");
         descriptionLabel.setWrapText(true);
+        descriptionLabel.setPrefHeight(40); // keep description height uniform
 
         Label prixLabel = new Label(String.format("%.2f DT", produit.getPrix()));
         prixLabel.getStyleClass().add("product-card-price");
@@ -97,6 +108,7 @@ public class CatalogueController {
 
         Button ajouterBtn = new Button("Ajouter au panier");
         ajouterBtn.getStyleClass().addAll("fo-action-button", "fo-action-primary");
+        ajouterBtn.setMaxWidth(Double.MAX_VALUE); // Full width button
 
         Label addedMessageLabel = new Label("Ajoute au panier");
         addedMessageLabel.getStyleClass().add("cart-inline-message");
@@ -112,12 +124,9 @@ public class CatalogueController {
         ajouterBtn.setOnAction(e -> ajouterAuPanier(produit, addedMessageLabel, messageDelay));
 
         VBox actionBox = new VBox(8, addedMessageLabel, ajouterBtn);
-        actionBox.setFillWidth(false);
+        actionBox.setAlignment(javafx.geometry.Pos.BOTTOM_CENTER);
 
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        card.getChildren().addAll(imageBox, details, spacer, actionBox);
+        card.getChildren().addAll(imageBox, details, actionBox);
         return card;
     }
 
@@ -131,5 +140,37 @@ public class CatalogueController {
         );
         PanierService.ajouterAuPanier(item);
 
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/frontoffice/add_to_cart_dialog.fxml"));
+            javafx.scene.Parent root = loader.load();
+            AddToCartDialogController controller = loader.getController();
+
+            Runnable onContinue = () -> {
+                // Do nothing, just stay on catalogue
+            };
+            Runnable onCheckout = () -> {
+                // Navigate to Cart
+                javafx.scene.control.Button panierBtn = (javafx.scene.control.Button) cataloguePane.getScene().lookup("#panierButton");
+                if (panierBtn != null) {
+                    panierBtn.fire();
+                }
+            };
+
+            controller.setDialogData(produit, onContinue, onCheckout);
+
+            javafx.stage.Stage stage = new javafx.stage.Stage(javafx.stage.StageStyle.TRANSPARENT);
+            javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+            try {
+                scene.getStylesheets().add(getClass().getResource("/frontoffice/frontoffice.css").toExternalForm());
+            } catch (Exception e) {}
+            stage.setScene(scene);
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.initOwner(cataloguePane.getScene().getWindow());
+            stage.showAndWait();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

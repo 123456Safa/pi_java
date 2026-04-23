@@ -19,7 +19,13 @@ import models.LigneCommandes;
 import services.CommandeService;
 import services.LigneCommandeService;
 
+import javafx.scene.Cursor;
 import java.sql.SQLException;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
@@ -31,19 +37,32 @@ public class HistoriqueController {
     private static final int CURRENT_USER_ID = 1;
 
     @FXML
-    private TilePane commandesContainer;
+    private VBox commandesContainer;
     @FXML
     private TextField searchField;
     @FXML
     private Label resultsLabel;
+    @FXML
+    private Button prevButton;
+    @FXML
+    private Button nextButton;
+    @FXML
+    private HBox pageNumbersContainer;
 
     private final CommandeService commandeService = new CommandeService();
     private final LigneCommandeService ligneCommandeService = new LigneCommandeService();
+    private final services.UtilisateurService utilisateurService = new services.UtilisateurService();
     private List<Commandes> allCommandes = new ArrayList<>();
+    
+    private int currentPage = 0;
+    private static final int ITEMS_PER_PAGE = 8;
 
     @FXML
     public void initialize() {
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> refreshCommandes());
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            currentPage = 0;
+            refreshCommandes();
+        });
         loadCommandes();
     }
 
@@ -66,65 +85,155 @@ public class HistoriqueController {
                 .filter(commande -> matchesSearch(commande, query))
                 .collect(Collectors.toList());
 
-        for (Commandes commande : filteredCommandes) {
-            commandesContainer.getChildren().add(createCommandeCard(commande));
+        int totalItems = filteredCommandes.size();
+        int totalPages = (int) Math.ceil((double) totalItems / ITEMS_PER_PAGE);
+
+        if (currentPage >= totalPages && totalPages > 0) {
+            currentPage = totalPages - 1;
+        }
+        if (currentPage < 0) {
+            currentPage = 0;
         }
 
+        int fromIndex = currentPage * ITEMS_PER_PAGE;
+        int toIndex = Math.min(fromIndex + ITEMS_PER_PAGE, totalItems);
+
+        if (fromIndex < totalItems) {
+            List<Commandes> pagedCommandes = filteredCommandes.subList(fromIndex, toIndex);
+            for (Commandes commande : pagedCommandes) {
+                commandesContainer.getChildren().add(createCommandeCard(commande));
+            }
+        }
+
+        updatePaginationUI(totalPages);
+
         if (resultsLabel != null) {
-            int count = filteredCommandes.size();
-            resultsLabel.setText(count + (count > 1 ? " commandes" : " commande"));
+            resultsLabel.setText(totalItems + (totalItems > 1 ? " commandes" : " commande"));
         }
     }
 
-    private VBox createCommandeCard(Commandes commande) {
-        VBox card = new VBox(14);
-        card.setPrefWidth(520);
-        card.setPadding(new Insets(18));
-        card.setStyle("-fx-background-color: white; -fx-background-radius: 20; "
-                + "-fx-border-color: #e7edf6; -fx-border-radius: 20; "
-                + "-fx-effect: dropshadow(gaussian, rgba(36,50,72,0.08), 20, 0, 0, 5);");
+    private void updatePaginationUI(int totalPages) {
+        if (prevButton == null || nextButton == null || pageNumbersContainer == null) return;
 
-        HBox header = new HBox();
-        Label title = new Label("Commande #" + commande.getId());
-        title.setStyle("-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #243248;");
+        prevButton.setDisable(currentPage == 0);
+        nextButton.setDisable(currentPage >= totalPages - 1 || totalPages == 0);
 
-        Label badge = new Label(commande.getStatut());
-        badge.setStyle("-fx-background-color: #eef2ff; -fx-text-fill: #5d4df1; -fx-font-size: 13; "
-                + "-fx-font-weight: bold; -fx-background-radius: 999; -fx-padding: 7 14;");
+        pageNumbersContainer.getChildren().clear();
+        
+        // Only show pagination if there's more than 1 page
+        if (totalPages <= 1) return;
+
+        for (int i = 0; i < totalPages; i++) {
+            final int pageIndex = i;
+            Button pageBtn = new Button(String.valueOf(i + 1));
+            pageBtn.setCursor(Cursor.HAND);
+            
+            if (i == currentPage) {
+                pageBtn.setStyle("-fx-background-color: #6d5dfc; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-min-width: 35; -fx-padding: 8;");
+            } else {
+                pageBtn.setStyle("-fx-background-color: white; -fx-border-color: #e5e7eb; -fx-text-fill: #374151; -fx-background-radius: 8; -fx-border-radius: 8; -fx-min-width: 35; -fx-padding: 8;");
+            }
+            
+            pageBtn.setOnAction(e -> {
+                currentPage = pageIndex;
+                refreshCommandes();
+            });
+            
+            pageNumbersContainer.getChildren().add(pageBtn);
+        }
+    }
+
+    @FXML
+    private void handlePrevPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            refreshCommandes();
+        }
+    }
+
+    @FXML
+    private void handleNextPage() {
+        currentPage++;
+        refreshCommandes();
+    }
+
+    private HBox createCommandeCard(Commandes commande) {
+        HBox row = new HBox(20);
+        row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        row.setPadding(new Insets(12, 20, 12, 20));
+        row.setStyle("-fx-background-color: white; -fx-background-radius: 10; "
+                + "-fx-border-color: #f1f5f9; -fx-border-width: 1; -fx-border-radius: 10; "
+                + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.02), 8, 0, 0, 2);");
+
+        // 1. Order Info Column (ID & Date)
+        VBox idBlock = new VBox(2);
+        idBlock.setMinWidth(120);
+        idBlock.setPrefWidth(120);
+        Label idLabel = new Label("#ORD-" + commande.getId());
+        idLabel.setStyle("-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #1e293b;");
+        Label dateLabel = new Label(formatDate(commande.getCreatedAt()).substring(0, 10)); // Keep only date part
+        dateLabel.setStyle("-fx-font-size: 12; -fx-text-fill: #94a3b8;");
+        idBlock.getChildren().addAll(idLabel, dateLabel);
+
+        // 2. Status Badge Column
+        HBox statusContainer = new HBox();
+        statusContainer.setMinWidth(100);
+        statusContainer.setPrefWidth(100);
+        statusContainer.setAlignment(javafx.geometry.Pos.CENTER);
+        Label statusBadge = new Label(commande.getStatut().toUpperCase());
+        String baseStatusStyle = "-fx-font-size: 11; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 4 10;";
+        if ("LIVRÉ".equalsIgnoreCase(commande.getStatut()) || "Payé".equalsIgnoreCase(commande.getStatut())) {
+            statusBadge.setStyle(baseStatusStyle + "-fx-background-color: #dcfce7; -fx-text-fill: #15803d;");
+        } else if ("ANNULÉ".equalsIgnoreCase(commande.getStatut())) {
+            statusBadge.setStyle(baseStatusStyle + "-fx-background-color: #fee2e2; -fx-text-fill: #b91c1c;");
+        } else {
+            statusBadge.setStyle(baseStatusStyle + "-fx-background-color: #e0f2fe; -fx-text-fill: #0369a1;");
+        }
+        statusContainer.getChildren().add(statusBadge);
+
+        // 3. Articles Count Column
+        Label artValue = new Label(countArticles(commande.getId()) + " articles");
+        artValue.setMinWidth(100);
+        artValue.setPrefWidth(100);
+        artValue.setStyle("-fx-font-size: 14; -fx-text-fill: #475569;");
+
+        // 4. Total Price Column
+        Label totalValue = new Label(String.format("%.2f DT", commande.getTotales()));
+        totalValue.setMinWidth(120);
+        totalValue.setPrefWidth(120);
+        totalValue.setStyle("-fx-font-size: 15; -fx-font-weight: bold; -fx-text-fill: #0f172a;");
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        header.getChildren().addAll(title, spacer, badge);
 
-        Label date = new Label(formatDate(commande.getCreatedAt()));
-        date.setStyle("-fx-font-size: 14; -fx-text-fill: #6b7280;");
-
-        int articleCount = countArticles(commande.getId());
-
-        VBox leftBlock = new VBox(4);
-        Label leftCaption = new Label("Nombre d'articles");
-        leftCaption.setStyle("-fx-font-size: 14; -fx-text-fill: #6b7280;");
-        Label leftValue = new Label(String.valueOf(articleCount));
-        leftValue.setStyle("-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #111827;");
-        leftBlock.getChildren().addAll(leftCaption, leftValue);
-
-        VBox rightBlock = new VBox(4);
-        Label rightCaption = new Label("Montant total");
-        rightCaption.setStyle("-fx-font-size: 14; -fx-text-fill: #6b7280;");
-        Label rightValue = new Label(String.format("%.2f DT", commande.getTotales()));
-        rightValue.setStyle("-fx-font-size: 17; -fx-font-weight: bold; -fx-text-fill: #0f9f67;");
-        rightBlock.getChildren().addAll(rightCaption, rightValue);
-
-        HBox stats = new HBox(120, leftBlock, rightBlock);
-
-        Button voirDetails = new Button("Voir details");
-        voirDetails.setMaxWidth(Double.MAX_VALUE);
-        voirDetails.setStyle("-fx-background-color: linear-gradient(to right, #6d5dfc, #5b4be9); -fx-text-fill: white; -fx-font-size: 14; "
-                + "-fx-font-weight: bold; -fx-background-radius: 14; -fx-padding: 11 16; -fx-cursor: hand;");
+        // 5. Actions Column
+        Button voirDetails = new Button("Détails");
+        voirDetails.setCursor(Cursor.HAND);
+        voirDetails.setMinWidth(100);
+        voirDetails.setPrefWidth(100);
+        voirDetails.setStyle("-fx-background-color: transparent; -fx-border-color: #6d5dfc; -fx-border-radius: 6; "
+                + "-fx-text-fill: #6d5dfc; -fx-font-weight: bold; -fx-padding: 6 0;");
         voirDetails.setOnAction(event -> showCommandeDetails(commande));
+        
+        // Button hover
+        voirDetails.setOnMouseEntered(e -> voirDetails.setStyle("-fx-background-color: #6d5dfc; -fx-text-fill: white; -fx-background-radius: 6; -fx-font-weight: bold; -fx-padding: 6 0;"));
+        voirDetails.setOnMouseExited(e -> voirDetails.setStyle("-fx-background-color: transparent; -fx-border-color: #6d5dfc; -fx-border-radius: 6; -fx-text-fill: #6d5dfc; -fx-font-weight: bold; -fx-padding: 6 0;"));
 
-        card.getChildren().addAll(header, date, stats, voirDetails);
-        return card;
+        row.getChildren().addAll(idBlock, statusContainer, artValue, totalValue, spacer, voirDetails);
+        
+        // Row hover effect
+        row.setOnMouseEntered(e -> {
+            row.setStyle("-fx-background-color: #f8fafc; -fx-background-radius: 10; "
+                + "-fx-border-color: #cbd5e1; -fx-border-width: 1; -fx-border-radius: 10; "
+                + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);");
+        });
+        row.setOnMouseExited(e -> {
+            row.setStyle("-fx-background-color: white; -fx-background-radius: 10; "
+                + "-fx-border-color: #f1f5f9; -fx-border-width: 1; -fx-border-radius: 10; "
+                + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.02), 8, 0, 0, 2);");
+        });
+
+        return row;
     }
 
     private boolean matchesSearch(Commandes commande, String query) {
@@ -168,15 +277,17 @@ public class HistoriqueController {
         try {
             List<LigneCommandes> lignes = getLignesForCommande(commande);
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
-            alert.setTitle("Details de la commande");
-            alert.setHeaderText("Commandes / #" + commande.getId());
-            alert.getDialogPane().setPrefWidth(760);
-            alert.getDialogPane().setPrefHeight(560);
-            alert.getDialogPane().setContent(buildDetailsContent(commande, lignes));
-            alert.showAndWait();
+            javafx.scene.Scene scene = new javafx.scene.Scene(buildDetailsContent(commande, lignes), 1200, 800);
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("Détails de la commande #" + commande.getId());
+            stage.setScene(scene);
+            
+            // On le met en plein écran / maximisé
+            stage.setMaximized(true);
+            
+            stage.show();
         } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Impossible d'afficher les details de la commande.", ButtonType.OK);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Impossible d'afficher les détails de la commande.", ButtonType.OK);
             alert.setTitle("Erreur");
             alert.setHeaderText(null);
             alert.showAndWait();
@@ -204,21 +315,44 @@ public class HistoriqueController {
 
     private ScrollPane buildDetailsContent(Commandes commande, List<LigneCommandes> lignes) {
         VBox root = new VBox(18);
-        root.setPadding(new Insets(18));
-        root.setStyle("-fx-background-color: #f6f7fb;");
+        root.setPadding(new Insets(24));
+        root.setStyle("-fx-background-color: #f8fafc;");
 
-        VBox infoCard = new VBox(18);
-        infoCard.setPadding(new Insets(18));
-        infoCard.setStyle("-fx-background-color: white; -fx-background-radius: 14; "
-                + "-fx-border-color: #e5e7eb; -fx-border-radius: 14;");
+        // Barre d'actions supérieure
+        HBox actionBar = new HBox(15);
+        actionBar.setPadding(new Insets(0, 0, 10, 0));
+        actionBar.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-        Label infoTitle = new Label("Informations de la Commande");
-        infoTitle.setStyle("-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #374151;");
+        Button btnRetour = new Button("← Retour à la liste");
+        btnRetour.setCursor(Cursor.HAND);
+        btnRetour.setStyle("-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-padding: 8 16; -fx-font-weight: bold;");
+        btnRetour.setOnAction(e -> ((javafx.stage.Stage) root.getScene().getWindow()).close());
 
-        HBox infoGrid = new HBox(90,
-                createInfoBlock("Numero de commande", "#" + commande.getId()),
-                createInfoBlock("Date de creation", formatDate(commande.getCreatedAt())),
-                createInfoBlock("Client", "Client Anonyme")
+        Region actionSpacer = new Region();
+        HBox.setHgrow(actionSpacer, Priority.ALWAYS);
+
+        Button btnPdf = new Button("Télécharger PDF");
+        btnPdf.setCursor(Cursor.HAND);
+        btnPdf.setStyle("-fx-background-color: #0f172a; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 8 20; -fx-font-weight: bold;");
+        btnPdf.setOnAction(e -> handleDownloadPdf(commande, lignes));
+
+        actionBar.getChildren().addAll(btnRetour, actionSpacer, btnPdf);
+
+        VBox infoCard = new VBox(20);
+        infoCard.setPadding(new Insets(24));
+        infoCard.setStyle("-fx-background-color: white; -fx-background-radius: 16; "
+                + "-fx-border-color: #e2e8f0; -fx-border-radius: 16; "
+                + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.02), 15, 0, 0, 5);");
+
+        Label infoTitle = new Label("Résumé de la Commande");
+        infoTitle.setStyle("-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #0f172a;");
+
+        String nomClient = getClientName(commande.getUtilisateurId());
+
+        HBox infoGrid = new HBox(100,
+                createInfoBlock("NUMÉRO DE COMMANDE", "#ORD-" + commande.getId()),
+                createInfoBlock("DATE DE CRÉATION", formatDate(commande.getCreatedAt())),
+                createInfoBlock("CLIENT", nomClient.toUpperCase())
         );
 
         VBox statutBlock = new VBox(8);
@@ -275,7 +409,7 @@ public class HistoriqueController {
 
         produitsCard.getChildren().addAll(produitsTitle, table, totalRow);
 
-        root.getChildren().addAll(infoCard, produitsCard);
+        root.getChildren().addAll(actionBar, infoCard, produitsCard);
 
         ScrollPane scrollPane = new ScrollPane(root);
         scrollPane.setFitToWidth(true);
@@ -414,6 +548,94 @@ public class HistoriqueController {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
             return 1;
+        }
+    }
+
+    private String getClientName(int id) {
+        try {
+            return utilisateurService.select().stream()
+                    .filter(u -> u.getId() == id)
+                    .map(models.Utilisateur::getNom)
+                    .findFirst()
+                    .orElse("Client Inconnu");
+        } catch (SQLException e) {
+            return "Client Anonyme";
+        }
+    }
+
+    private void handleDownloadPdf(Commandes commande, List<LigneCommandes> lignes) {
+        String fileName = "Facture_" + commande.getId() + ".pdf";
+        Document document = new Document();
+        try {
+            PdfWriter.getInstance(document, new FileOutputStream(fileName));
+            document.open();
+
+            // Font styles
+            Font titleFont = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD, BaseColor.BLACK);
+            Font headFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
+            Font normalFont = new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, BaseColor.BLACK);
+
+            // Title
+            Paragraph title = new Paragraph("FACTURE PHARMAX", titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            title.setSpacingAfter(30);
+            document.add(title);
+
+            // Order Info
+            document.add(new Paragraph("Commande #: ORD-" + commande.getId(), normalFont));
+            document.add(new Paragraph("Date: " + formatDate(commande.getCreatedAt()), normalFont));
+            document.add(new Paragraph("Client: " + getClientName(commande.getUtilisateurId()), normalFont));
+            document.add(new Paragraph("Statut: " + commande.getStatut(), normalFont));
+            document.add(new Paragraph(" ")); // Spacer
+
+            // Table
+            PdfPTable table = new PdfPTable(4);
+            table.setWidthPercentage(100);
+            table.setSpacingBefore(10);
+            table.setSpacingAfter(10);
+
+            // Headers
+            String[] headers = {"Produit", "Prix Unitaire", "Quantite", "Sous-total"};
+            for (String header : headers) {
+                PdfPCell cell = new PdfPCell(new Phrase(header, headFont));
+                cell.setBackgroundColor(new BaseColor(109, 93, 252)); // Purple color from app
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell.setPadding(8);
+                table.addCell(cell);
+            }
+
+            // Body
+            for (LigneCommandes l : lignes) {
+                table.addCell(new PdfPCell(new Phrase(l.getNom(), normalFont)));
+                table.addCell(new PdfPCell(new Phrase(String.format("%.2f", l.getPrix()), normalFont)));
+                table.addCell(new PdfPCell(new Phrase(String.valueOf(l.getQuantite()), normalFont)));
+                table.addCell(new PdfPCell(new Phrase(String.format("%.2f", l.getSousTotal()), normalFont)));
+            }
+            document.add(table);
+
+            // Total
+            Paragraph total = new Paragraph("TOTAL: " + String.format("%.2f DT", commande.getTotales()), 
+                                           new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD));
+            total.setAlignment(Element.ALIGN_RIGHT);
+            document.add(total);
+
+            document.close();
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Succès");
+            alert.setHeaderText("Facture PDF générée");
+            alert.setContentText("Le fichier '" + fileName + "' a été créé à la racine du projet.");
+            alert.show();
+
+            // Optionnel: ouvrir le fichier automatiquement
+            if (java.awt.Desktop.isDesktopSupported()) {
+                java.awt.Desktop.getDesktop().open(new java.io.File(fileName));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Erreur lors de la génération du PDF: " + e.getMessage(), ButtonType.OK);
+            alert.show();
         }
     }
 

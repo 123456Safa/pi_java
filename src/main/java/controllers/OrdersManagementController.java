@@ -82,6 +82,17 @@ public class OrdersManagementController {
             }
         });
         totalColumn.setCellValueFactory(new PropertyValueFactory<>("totales"));
+        totalColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("%.3f DT", item));
+                }
+            }
+        });
         statutColumn.setCellValueFactory(new PropertyValueFactory<>("statut"));
         statutColumn.setCellFactory(column -> new TableCell<>() {
             @Override
@@ -254,17 +265,23 @@ public class OrdersManagementController {
 
     private void configureActionsColumn() {
         actionsColumn.setCellFactory(column -> new TableCell<>() {
-            private final Button detailsButton = new Button("View Details");
+            private final Button detailsButton = new Button("👁");
             private final ComboBox<String> statusBox = new ComboBox<>();
-            private final Button deleteButton = new Button("Delete Order");
-            private final HBox container = new HBox(8);
+            private final Button deleteButton = new Button("🗑");
+            private final HBox container = new HBox(5);
 
             {
                 detailsButton.getStyleClass().addAll("action-button", "secondary-action");
                 deleteButton.getStyleClass().addAll("action-button", "danger-action");
+                
+                // Add tooltips since we removed text
+                detailsButton.setTooltip(new javafx.scene.control.Tooltip("Voir détails"));
+                deleteButton.setTooltip(new javafx.scene.control.Tooltip("Supprimer"));
+                
                 statusBox.getItems().setAll("En attente", "Confirmee", "Livree", "Annulee");
-                statusBox.setPromptText("Change Status");
+                statusBox.setPromptText("Statut");
                 statusBox.getStyleClass().add("status-combo");
+                statusBox.setPrefWidth(120);
 
                 detailsButton.setOnAction(event -> {
                     Commandes commande = getTableView().getItems().get(getIndex());

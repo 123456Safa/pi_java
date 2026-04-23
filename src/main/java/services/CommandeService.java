@@ -5,6 +5,8 @@ import models.CommandeConfirmation;
 import models.Commandes;
 import models.LigneCommandes;
 import models.PanierItem;
+import services.IService;
+import services.LigneCommandeService;
 import utils.MyConnection;
 
 import java.sql.Connection;
@@ -23,15 +25,17 @@ public class CommandeService implements IService<Commandes> {
 
     private final Connection cnx;
     private final LigneCommandeService ligneCommandeService;
+    private final LivraisonService livraisonService;
 
     public CommandeService() {
         cnx = MyConnection.getInstance().getConnection();
         ligneCommandeService = new LigneCommandeService();
+        livraisonService = new LivraisonService();
     }
 
     @Override
     public void add(Commandes commande) throws SQLException {
-        String sql = "INSERT INTO commandes (produits, totales, statut, created_at, utilisateur_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO commandes (produits, totales, statut, created_date, utilisateur_id) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, commande.getProduits());
             ps.setDouble(2, commande.getTotales());
@@ -44,7 +48,7 @@ public class CommandeService implements IService<Commandes> {
 
     @Override
     public void update(Commandes commande) throws SQLException {
-        String sql = "UPDATE commandes SET produits=?, totales=?, statut=?, created_at=?, utilisateur_id=? WHERE id=?";
+        String sql = "UPDATE commandes SET produits=?, totales=?, statut=?, created_date=?, utilisateur_id=? WHERE id=?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, commande.getProduits());
             ps.setDouble(2, commande.getTotales());
@@ -62,6 +66,7 @@ public class CommandeService implements IService<Commandes> {
         cnx.setAutoCommit(false);
 
         try {
+            livraisonService.deleteByCommandeId(id);
             ligneCommandeService.deleteByCommandeId(id);
 
             String sql = "DELETE FROM commandes WHERE id=?";
@@ -91,7 +96,7 @@ public class CommandeService implements IService<Commandes> {
                         rs.getString("produits"),
                         rs.getDouble("totales"),
                         rs.getString("statut"),
-                        rs.getString("created_at"),
+                        rs.getString("created_date"),
                         rs.getInt("utilisateur_id")
                 ));
             }
@@ -123,6 +128,26 @@ public class CommandeService implements IService<Commandes> {
         try {
             int commandeId = insertCommande(commande);
             List<LigneCommandes> lignes = insererLignesCommande(commandeId, panierItems);
+            
+            // Insert Livraison Details
+            models.Livraison livraison = new models.Livraison();
+            // Try splitting nom to firstName and lastName
+            String[] parts = client.getNom().trim().split(" ", 2);
+            if(parts.length > 1) {
+                livraison.setFirstName(parts[0]);
+                livraison.setLastName(parts[1]);
+            } else {
+                livraison.setFirstName(client.getNom());
+                livraison.setLastName(client.getNom());
+            }
+            livraison.setEmail(client.getEmail());
+            livraison.setAdresse(client.getAdresse());
+            livraison.setTel(client.getTelephone());
+            livraison.setCreatedAt(createdAt);
+            livraison.setCommandeId(commandeId);
+            
+            livraisonService.add(livraison);
+            
             cnx.commit();
 
             return new CommandeConfirmation(
@@ -144,7 +169,7 @@ public class CommandeService implements IService<Commandes> {
     }
 
     private int insertCommande(Commandes commande) throws SQLException {
-        String sql = "INSERT INTO commandes (produits, totales, statut, created_at, utilisateur_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO commandes (produits, totales, statut, created_date, utilisateur_id) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, commande.getProduits());

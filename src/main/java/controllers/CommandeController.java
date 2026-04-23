@@ -11,6 +11,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import models.Commandes;
 import services.CommandeService;
 
+import java.time.LocalDate;
+
 public class CommandeController {
 
     @FXML
@@ -69,28 +71,28 @@ public class CommandeController {
     @FXML
     public void ajouterCommande() {
         try {
+            String dateStr = dpDate.getValue() != null ? dpDate.getValue().toString() : "";
+
             Commandes c;
             if (selectedCommandes != null) {
                 c = selectedCommandes;
                 c.setProduits(tfProduits.getText());
                 c.setTotales(Double.parseDouble(tfTotales.getText()));
                 c.setStatut(tfStatut.getText());
-                c.setCreatedAt(dpDate.getValue().toString());
+                c.setCreatedAt(dateStr);
                 c.setUtilisateurId(Integer.parseInt(tfUtilisateurId.getText()));
 
                 service.update(c);
-                System.out.println("✏️ commande modifiée");
             } else {
                 c = new Commandes();
 
                 c.setProduits(tfProduits.getText());
                 c.setTotales(Double.parseDouble(tfTotales.getText()));
                 c.setStatut(tfStatut.getText());
-                c.setCreatedAt(dpDate.getValue().toString());
+                c.setCreatedAt(dateStr);
                 c.setUtilisateurId(Integer.parseInt(tfUtilisateurId.getText()));
 
                 service.add(c);
-                System.out.println("✅ commande ajoutée");
             }
 
             loadCommandes();
@@ -129,8 +131,13 @@ public class CommandeController {
             tfProduits.setText(selectedCommandes.getProduits());
             tfTotales.setText(String.valueOf(selectedCommandes.getTotales()));
             tfStatut.setText(selectedCommandes.getStatut());
-            // Assuming date is string, but DatePicker needs LocalDate
-            // For simplicity, skip date for now
+            if (selectedCommandes.getCreatedAt() != null && !selectedCommandes.getCreatedAt().isEmpty()) {
+                try {
+                    dpDate.setValue(LocalDate.parse(selectedCommandes.getCreatedAt().substring(0, 10)));
+                } catch (Exception e) {
+                    // Date format may not be parseable, skip
+                }
+            }
             tfUtilisateurId.setText(String.valueOf(selectedCommandes.getUtilisateurId()));
         }
     }
@@ -144,7 +151,7 @@ public class CommandeController {
                 loadCommandes();
                 clearFields();
                 selectedCommandes = null;
-                System.out.println("🗑️ commande supprimée");
+                System.out.println("commande supprimée");
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -21,9 +21,11 @@ import javafx.scene.layout.VBox;
 import models.Client;
 import models.PanierItem;
 import services.CommandeService;
+import services.FormHistoryService;
 import services.PanierService;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class PanierController {
     @FXML private VBox panierList;
@@ -46,7 +48,9 @@ public class PanierController {
 
     private final PanierService panierService = PanierService.getInstance();
     private final CommandeService commandeService = new CommandeService();
+    private final FormHistoryService formHistory = FormHistoryService.getInstance();
     private final ObservableList<PanierItem> panier = panierService.getPanier();
+    private final java.util.List<javafx.scene.control.ContextMenu> autocompleteMenus = new java.util.ArrayList<>();
     private Runnable onContinuerAchats;
 
     @FXML
@@ -73,6 +77,12 @@ public class PanierController {
 
         afficherPanier();
         majResume();
+
+        // Attach autocomplete history to each checkout field
+        attachAutocomplete(nomField,     "nom");
+        attachAutocomplete(emailField,   "email");
+        attachAutocomplete(adresseField, "adresse");
+        attachAutocomplete(telField,     "tel");
     }
 
     public void setOnContinuerAchats(Runnable onContinuerAchats) {
@@ -234,10 +244,6 @@ public class PanierController {
 
     @FXML
     public void confirmerCommande() {
-        validerCommande();
-    }
-
-    private void validerCommande() {
         if (panier.isEmpty()) {
             showError("Panier vide", "Ajoutez au moins un produit avant de confirmer la commande.");
             return;
@@ -245,27 +251,97 @@ public class PanierController {
 
         Client client = validerEtConstruireClient();
         if (client == null) {
-            return;
+            return; // Les messages d'erreur sont déjà gérés dans la méthode
         }
 
+        String modePaiement = paiementBox.getValue();
+        if ("Carte bancaire".equals(modePaiement)) {
+            afficherPopupStripeLink(client);
+        } else {
+            // Paiement à la livraison
+            validerCommande(client);
+        }
+    }
+
+    private void afficherPopupStripeLink(Client client) {
         try {
-            commandeService.enregistrerCommande(
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/frontoffice/stripe_link.fxml"));
+            javafx.scene.Parent root = loader.load();
+
+            StripeLinkController controller = loader.getController();
+            
+            // Calculer le total TTC
+            double sousTotal = panierService.getSousTotal();
+            double total = sousTotal + (sousTotal * 0.19);
+            
+            controller.initData(client.getEmail(), total, 
+                () -> validerCommande(client), // Succès
+                () -> System.out.println("Paiement Stripe Link annulé") // Annulation
+            );
+
+            javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("Stripe Checkout");
+            stage.setScene(scene);
+            
+            javafx.stage.Stage owner = (javafx.stage.Stage) confirmerBtn.getScene().getWindow();
+            stage.initOwner(owner);
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            
+            stage.setWidth(450);
+            stage.setResizable(false);
+            stage.showAndWait();
+
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+            showError("Erreur d'affichage", "Impossible d'afficher l'interface de paiement.");
+        }
+    }
+
+    private void validerCommande(Client client) {
+        System.out.println("=== DÉBUT VALIDATION COMMANDE ===");
+        System.out.println("✅ Client validé: " + client.getNom());
+
+        try {
+            System.out.println("📦 Enregistrement de la commande...");
+            System.out.println("   Panier items: " + PanierService.getPanierStatic().size());
+            System.out.println("   Total: " + panierService.getTotal());
+            System.out.println("   Mode paiement: " + paiementBox.getValue());
+
+            models.CommandeConfirmation confirmation = commandeService.enregistrerCommande(
                     client,
                     PanierService.getPanierStatic(),
                     paiementBox.getValue()
             );
 
-            Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Commande enregistree avec succes.", ButtonType.OK);
-            successAlert.setTitle("Succes");
-            successAlert.setHeaderText(null);
-            successAlert.showAndWait();
+            System.out.println("✅ Commande enregistrée avec succès!");
+
+            // Fermer tous les menus d'autocomplete avant d'ouvrir la facture
+            hideAllAutocompleteMenus();
+            afficherFacture(confirmation);
+
+            // Save form values to history for future autocomplete
+            formHistory.saveValue("nom",     nomField.getText().trim());
+            formHistory.saveValue("email",   emailField.getText().trim());
+            formHistory.saveValue("adresse", adresseField.getText().trim());
+            formHistory.saveValue("tel",     telField.getText().trim());
+
+            // Send HTML confirmation email (non-blocking background thread)
+            String recipientEmail = emailField.getText().trim();
+            services.EmailService.sendConfirmationAsync(confirmation, recipientEmail);
 
             panierService.viderPanier();
             resetClientFields();
             afficherPanier();
             majResume();
         } catch (SQLException e) {
+            System.out.println("❌ ERREUR SQL: " + e.getMessage());
+            e.printStackTrace();
             showError("Erreur base de donnees", "La commande n'a pas pu etre enregistree.\n" + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("❌ ERREUR GÉNÉRALE: " + e.getMessage());
+            e.printStackTrace();
+            showError("Erreur", "Une erreur inattendue s'est produite:\n" + e.getMessage());
         }
     }
 
@@ -338,6 +414,105 @@ public class PanierController {
         adresseErrorLabel.setManaged(false);
         telErrorLabel.setVisible(false);
         telErrorLabel.setManaged(false);
+    }
+
+    private void hideAllAutocompleteMenus() {
+        autocompleteMenus.forEach(javafx.scene.control.ContextMenu::hide);
+    }
+
+    /**
+     * Attaches a history-based autocomplete ContextMenu to a TextField.
+     * The menu is shown when the field is clicked or its text changes.
+     */
+    private void attachAutocomplete(javafx.scene.control.TextField field, String historyKey) {
+        javafx.scene.control.ContextMenu menu = new javafx.scene.control.ContextMenu();
+        autocompleteMenus.add(menu); // track for later hiding
+        menu.setStyle("-fx-background-radius: 8; -fx-background-color: white; "
+                + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 14, 0, 0, 4);");
+
+        Runnable refreshMenu = () -> {
+            String typed = field.getText().toLowerCase().trim();
+            List<String> history = formHistory.getHistory(historyKey);
+
+            List<String> filtered = history.stream()
+                    .filter(v -> typed.isBlank() || v.toLowerCase().contains(typed))
+                    .toList();
+
+            menu.getItems().clear();
+
+            if (filtered.isEmpty()) {
+                menu.hide();
+                return;
+            }
+
+            for (String value : filtered) {
+                javafx.scene.control.MenuItem item = new javafx.scene.control.MenuItem();
+
+                javafx.scene.layout.HBox content = new javafx.scene.layout.HBox(10);
+                content.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+                Label clockIcon = new Label("🕐");
+                clockIcon.setStyle("-fx-font-size: 12; -fx-text-fill: #94a3b8;");
+                Label valueLabel = new Label(value);
+                valueLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #1e293b;");
+                content.getChildren().addAll(clockIcon, valueLabel);
+                item.setGraphic(content);
+
+                item.setOnAction(e -> {
+                    field.setText(value);
+                    field.positionCaret(value.length());
+                    menu.hide();
+                });
+                menu.getItems().add(item);
+            }
+
+            if (!menu.isShowing() && field.getScene() != null) {
+                menu.show(field, javafx.geometry.Side.BOTTOM, 0, 2);
+            }
+        };
+
+        // Show on click (show all history)
+        field.setOnMouseClicked(e -> {
+            if (!formHistory.getHistory(historyKey).isEmpty()) {
+                refreshMenu.run();
+            }
+        });
+
+        // Filter as user types
+        field.textProperty().addListener((obs, oldVal, newVal) -> refreshMenu.run());
+
+        // Hide when field loses focus
+        field.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+            if (!isFocused) menu.hide();
+        });
+    }
+
+    private void afficherFacture(models.CommandeConfirmation confirmation) {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/frontoffice/facture.fxml"));
+            javafx.scene.Parent root = loader.load();
+
+            FactureController controller = loader.getController();
+            controller.setConfirmation(confirmation);
+
+            javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("Facture - PHARMAX");
+            stage.setScene(scene);
+            stage.setMaximized(true);
+
+            // APPLICATION_MODAL bloque toute l'application (y compris les popups ContextMenu)
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+
+            // Différer l'ouverture au prochain pulse JavaFX pour que les popups se ferment d'abord
+            javafx.application.Platform.runLater(() -> {
+                stage.show();
+                stage.toFront();
+            });
+
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+            showError("Erreur d'affichage", "Impossible d'afficher la facture.");
+        }
     }
 
     private void showError(String title, String message) {

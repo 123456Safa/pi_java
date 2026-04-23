@@ -23,7 +23,7 @@
 
 .brand-subtitle {
     -fx-font-size: 13px;
-    -fx-text-fill: rgba(255,255,255,0.82);
+    -fx-text-fill: rgba(255, 255, 255, 0.82);
 }
 
 .menu-box {
@@ -114,7 +114,7 @@
     -fx-fit-to-width: true;
 }
 
-.content-scroll > .viewport {
+.content-scroll>.viewport {
     -fx-background-color: transparent;
 }
 
@@ -323,4 +323,66 @@
 .table-cell {
     -fx-padding: 12 10 12 10;
     -fx-font-size: 14px;
+}
+
+/* Pagination Styling */
+.pagination {
+    -fx-page-information-visible: false;
+}
+
+.pagination .pagination-control {
+    -fx-background-color: transparent;
+}
+
+.pagination .pagination-control .control-box {
+    -fx-spacing: 8;
+}
+
+.pagination .pagination-control .control-box .number-button,
+.pagination .pagination-control .control-box .bullet-button,
+.pagination .pagination-control .control-box .left-arrow-button,
+.pagination .pagination-control .control-box .right-arrow-button {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #d9e0eb;
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-cursor: hand;
+    -fx-text-fill: #49566a;
+    -fx-font-weight: bold;
+}
+
+.pagination .pagination-control .control-box .number-button:selected {
+    -fx-background-color: #6d5dfc;
+    -fx-text-fill: white;
+    -fx-border-color: #6d5dfc;
+}
+
+/* Status Badges */
+.status-badge {
+    -fx-background-radius: 12;
+    -fx-padding: 6 12 6 12;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.status-pending {
+    -fx-background-color: #fef3c7;
+    -fx-text-fill: #92400e;
+}
+
+.status-confirmed {
+    -fx-background-color: #e0e7ff;
+    -fx-text-fill: #3730a3;
+}
+
+.status-delivered {
+    -fx-background-color: #ccfbf1;
+    -fx-text-fill: #115e59;
+}
+
+.status-cancelled {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #991b1b;
 }

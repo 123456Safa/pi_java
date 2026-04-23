@@ -82,6 +82,12 @@ public class FrontOfficeMainController {
             updateActiveButton(activeButton);
         } catch (Exception e) {
             e.printStackTrace();
+            System.err.println("ERREUR CHARGEMENT VUE: " + fxml);
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+            alert.setTitle("Erreur de chargement");
+            alert.setHeaderText("Impossible de charger la vue : " + fxml);
+            alert.setContentText(e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+            alert.show();
         }
     }
 

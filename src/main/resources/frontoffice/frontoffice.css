@@ -1,59 +1,58 @@
 .fo-root {
-    -fx-background-color: linear-gradient(to bottom right, #f4f8ff, #eef6f2);
-    -fx-font-family: "Segoe UI";
+    -fx-background-color: #f7f9fc;
+    -fx-font-family: "Inter", "Segoe UI", sans-serif;
 }
 
 .fo-topbar {
-    -fx-background-color: rgba(255,255,255,0.94);
-    -fx-border-color: #e5ebf4;
-    -fx-border-width: 0 0 1 0;
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 15, 0, 0, 2);
+    -fx-border-width: 0;
 }
 
 .fo-brand-title {
-    -fx-font-size: 28px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #17324d;
+    -fx-font-size: 26px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #1a1f36;
     -fx-cursor: hand;
+    -fx-letter-spacing: -0.5;
 }
 
 .fo-brand-title:hover {
-    -fx-text-fill: #5d4df1;
+    -fx-text-fill: #635bff;
 }
 
 .fo-brand-subtitle {
-    -fx-font-size: 13px;
-    -fx-text-fill: #6e7d92;
+    -fx-font-size: 11px;
+    -fx-text-fill: #8792a2;
 }
 
 .fo-nav-button {
-    -fx-background-color: white;
-    -fx-text-fill: #526173;
-    -fx-background-radius: 16;
-    -fx-border-radius: 16;
-    -fx-border-color: #dfe7f2;
+    -fx-background-color: transparent;
+    -fx-text-fill: #424770;
+    -fx-background-radius: 8;
     -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-padding: 11 18 11 18;
+    -fx-font-weight: 600;
+    -fx-padding: 8 16 8 16;
     -fx-cursor: hand;
 }
 
 .fo-nav-button:hover {
-    -fx-background-color: #edf2ff;
-    -fx-text-fill: #5d4df1;
+    -fx-background-color: #f3f6f8;
+    -fx-text-fill: #1a1f36;
 }
 
 .fo-nav-button-active {
-    -fx-background-color: linear-gradient(to right, #6d5dfc, #5b4be9);
-    -fx-border-color: transparent;
-    -fx-text-fill: white;
+    -fx-background-color: #f3f6f8;
+    -fx-text-fill: #635bff;
 }
 
 .fo-user-chip {
-    -fx-background-color: #e9faf2;
+    -fx-background-color: #e3e8ee;
     -fx-background-radius: 999;
-    -fx-padding: 10 16 10 16;
-    -fx-text-fill: #118a58;
+    -fx-padding: 8 16 8 16;
+    -fx-text-fill: #1a1f36;
     -fx-font-weight: bold;
+    -fx-font-size: 13px;
 }
 
 .fo-content-placeholder {
@@ -63,7 +62,7 @@
 .fo-placeholder-title {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
-    -fx-text-fill: #243248;
+    -fx-text-fill: #1a1f36;
 }
 
 .catalogue-page,
@@ -116,7 +115,13 @@
     -fx-background-radius: 22;
     -fx-border-color: #e7edf6;
     -fx-border-radius: 22;
-    -fx-effect: dropshadow(gaussian, rgba(36,50,72,0.08), 20, 0, 0, 5);
+    -fx-effect: dropshadow(gaussian, rgba(36,50,72,0.06), 15, 0, 0, 4);
+    -fx-cursor: hand;
+}
+
+.product-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(36,50,72,0.15), 25, 0, 0, 8);
+    -fx-border-color: #c9d8eb;
 }
 
 .product-card-media {
@@ -207,4 +212,5 @@
     -fx-min-width: 18;
     -fx-alignment: center;
 }
+
 

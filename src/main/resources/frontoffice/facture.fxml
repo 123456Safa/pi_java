@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import java.net.URL?>
+
+<BorderPane xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.frontoffice.FactureController"
+            style="-fx-background-color: #e8ecf0;">
+
+    <stylesheets>
+        <URL value="@facture.css"/>
+    </stylesheets>
+
+    <!-- ═══ TOP NAVIGATION BAR ═══ -->
+    <top>
+        <HBox styleClass="nav-bar" alignment="CENTER_LEFT" spacing="0">
+            <padding><Insets top="0" right="32" bottom="0" left="32"/></padding>
+
+            <!-- Brand -->
+            <VBox alignment="CENTER_LEFT" spacing="2">
+                <padding><Insets top="14" bottom="14"/></padding>
+                <Label text="⚕  PHARMAX" styleClass="nav-brand"/>
+                <Label text="E-Pharmacie en ligne" styleClass="nav-tagline"/>
+            </VBox>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Status pill -->
+            <HBox styleClass="status-pill" alignment="CENTER" spacing="8">
+                <Label text="✓" styleClass="status-check"/>
+                <Label text="Commande confirmée" styleClass="status-text"/>
+            </HBox>
+
+            <Region prefWidth="24"/>
+
+            <!-- Buttons -->
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="✕  Fermer" styleClass="btn-ghost" onAction="#handleClose"/>
+                <Button text="⬇  Télécharger PDF" styleClass="btn-dark" onAction="#handleDownloadPdf"/>
+            </HBox>
+        </HBox>
+    </top>
+
+    <!-- ═══ MAIN SCROLL AREA ═══ -->
+    <center>
+        <ScrollPane styleClass="page-scroll" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+            <content>
+                <VBox alignment="TOP_CENTER" style="-fx-background-color: #e8ecf0;">
+                    <padding><Insets top="36" right="0" bottom="48" left="0"/></padding>
+
+                    <!-- ── SUCCESS BANNER ── -->
+                    <HBox styleClass="success-banner" alignment="CENTER" spacing="14" maxWidth="820">
+                        <StackPane styleClass="check-circle">
+                            <Label text="✓" styleClass="check-icon"/>
+                        </StackPane>
+                        <VBox spacing="3">
+                            <Label text="Merci pour votre commande !" styleClass="banner-title"/>
+                            <Label fx:id="bannerSubtitle" text="Votre commande a été enregistrée avec succès." styleClass="banner-sub"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- ── INVOICE PAPER ── -->
+                    <VBox styleClass="paper" maxWidth="820" spacing="0">
+                        <padding><Insets top="0" right="0" bottom="0" left="0"/></padding>
+
+                        <!-- Paper Header (dark band) -->
+                        <HBox styleClass="paper-header" alignment="CENTER_LEFT" spacing="0">
+                            <padding><Insets top="28" right="36" bottom="28" left="36"/></padding>
+                            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                <Label text="PHARMAX" styleClass="paper-brand"/>
+                                <Label text="E-Pharmacie · Santé &amp; Bien-être" styleClass="paper-brand-sub"/>
+                            </VBox>
+                            <VBox alignment="CENTER_RIGHT" spacing="4">
+                                <Label text="FACTURE" styleClass="paper-invoice-word"/>
+                                <HBox alignment="CENTER_RIGHT" spacing="6">
+                                    <Label text="N°" styleClass="paper-id-prefix"/>
+                                    <Label fx:id="commandeIdLabel" text="—" styleClass="paper-invoice-id"/>
+                                </HBox>
+                            </VBox>
+                        </HBox>
+
+                        <!-- Meta row: Date + Status + Client + QR -->
+                        <HBox styleClass="meta-row" spacing="0">
+                            <!-- Date block -->
+                            <VBox styleClass="meta-block" spacing="5" HBox.hgrow="ALWAYS">
+                                <Label text="DATE D'ÉMISSION" styleClass="meta-label"/>
+                                <Label fx:id="dateLabel" text="—" styleClass="meta-value"/>
+                            </VBox>
+                            <Separator orientation="VERTICAL" styleClass="meta-sep"/>
+                            <!-- Status block -->
+                            <VBox styleClass="meta-block" spacing="5" HBox.hgrow="ALWAYS">
+                                <Label text="STATUT" styleClass="meta-label"/>
+                                <Label fx:id="statutLabel" text="✓  PAYÉE" styleClass="badge-confirmed"/>
+                            </VBox>
+                            <Separator orientation="VERTICAL" styleClass="meta-sep"/>
+                            <!-- Mode paiement -->
+                            <VBox styleClass="meta-block" spacing="5" HBox.hgrow="ALWAYS">
+                                <Label text="MODE DE PAIEMENT" styleClass="meta-label"/>
+                                <Label fx:id="modePaiementLabel" text="—" styleClass="meta-value"/>
+                            </VBox>
+                            <Separator orientation="VERTICAL" styleClass="meta-sep"/>
+                            <!-- QR -->
+                            <VBox styleClass="meta-block" spacing="5" alignment="CENTER">
+                                <ImageView fx:id="qrCodeImage" fitWidth="80" fitHeight="80" preserveRatio="true"/>
+                                <Label text="Scanner le QR" styleClass="meta-label"/>
+                            </VBox>
+                        </HBox>
+
+                        <!-- Client Section -->
+                        <HBox styleClass="client-section" spacing="0">
+                            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                <Label text="FACTURÉ À" styleClass="section-label"/>
+                                <Label fx:id="clientNomLabel" text="—" styleClass="client-name-big"/>
+                            </VBox>
+                        </HBox>
+
+                        <!-- Items Table -->
+                        <VBox styleClass="table-wrapper" spacing="0">
+                            <!-- Table Header -->
+                            <HBox styleClass="table-head-row" alignment="CENTER_LEFT">
+                                <padding><Insets top="11" right="28" bottom="11" left="28"/></padding>
+                                <Label text="PRODUIT" styleClass="col-head" prefWidth="300"/>
+                                <Label text="PRIX UNIT." styleClass="col-head-center" prefWidth="140"/>
+                                <Label text="QTÉ" styleClass="col-head-center" prefWidth="80"/>
+                                <Label text="SOUS-TOTAL" styleClass="col-head-right" HBox.hgrow="ALWAYS"/>
+                            </HBox>
+
+                            <!-- Dynamic rows injected by controller -->
+                            <VBox fx:id="lignesContainer"/>
+                        </VBox>
+
+                        <!-- Totals section -->
+                        <HBox styleClass="totals-section" alignment="TOP_RIGHT">
+                            <VBox spacing="0" prefWidth="320">
+                                <HBox styleClass="total-line" alignment="CENTER">
+                                    <Label text="Sous-total (HT)" styleClass="total-label" HBox.hgrow="ALWAYS"/>
+                                    <Label fx:id="sousTotalLabel" text="0.00 DT" styleClass="total-val"/>
+                                </HBox>
+                                <HBox styleClass="total-line" alignment="CENTER">
+                                    <Label text="TVA (19%)" styleClass="total-label" HBox.hgrow="ALWAYS"/>
+                                    <Label fx:id="tvaLabel" text="0.00 DT" styleClass="total-val"/>
+                                </HBox>
+                                <HBox styleClass="grand-total-line" alignment="CENTER">
+                                    <Label text="TOTAL TTC" styleClass="grand-total-label" HBox.hgrow="ALWAYS"/>
+                                    <Label fx:id="totalLabel" text="0.00 DT" styleClass="grand-total-val"/>
+                                </HBox>
+                            </VBox>
+                        </HBox>
+
+                        <!-- Paper Footer -->
+                        <HBox styleClass="paper-footer" alignment="CENTER" spacing="8">
+                            <Label text="Merci pour votre confiance · pharmax.tn · support@pharmax.tn" styleClass="footer-text"/>
+                        </HBox>
+
+                    </VBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
