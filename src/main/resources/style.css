@@ -136,3 +136,79 @@
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
+
+/* ===== NOTIFICATIONS ===== */
+
+.notification-list {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.notification-list .list-cell {
+    -fx-padding: 12;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #e2e8f0;
+    -fx-font-size: 13;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+.notification-list .list-cell:last-child {
+    -fx-border-width: 0;
+}
+
+.notification-list .list-cell:hover {
+    -fx-background-color: #f1f5f9;
+}
+
+.notification-list .list-cell:selected {
+    -fx-background-color: #dbeafe;
+}
+
+/* Styles pour les niveaux d'urgence */
+.notification-urgent {
+    -fx-background-color: #fef3c7;
+    -fx-text-fill: #92400e;
+    -fx-border-color: #f59e0b;
+}
+
+.notification-critical {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #991b1b;
+    -fx-border-color: #ef4444;
+}
+
+.notification-info {
+    -fx-background-color: #dbeafe;
+    -fx-text-fill: #1e40af;
+    -fx-border-color: #3b82f6;
+}
+
+/* Dialog personnalisé */
+.dialog-pane {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 16;
+}
+
+.dialog-pane .content {
+    -fx-padding: 20;
+}
+
+.dialog-pane .button-bar {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 12 20;
+}

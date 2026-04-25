@@ -15,7 +15,7 @@ public class CategorieService {
     }
 
     public void ajouter(Categorie c) throws SQLException {
-        String req = "INSERT INTO categorie (nom, description, created_at) VALUES (?, ?, ?)";
+        String req = "INSERT INTO categorie (nom, description, created_at) VALUES (/?, ?, ?)";
         PreparedStatement ps = cnx.prepareStatement(req);
         ps.setString(1, c.getNom());
         ps.setString(2, c.getDescription());

@@ -147,9 +147,7 @@ public class ProduitFormController {
 
             if (produitToEdit.getDateExpiration() != null) {
                 try {
-                    LocalDate localDate = produitToEdit.getDateExpiration().toInstant()
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate();
+                    LocalDate localDate = ((java.sql.Date) produitToEdit.getDateExpiration()).toLocalDate();
                     dpDateExpiration.setValue(localDate);
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -90,5 +90,28 @@ public class ProduitService {
         ps.setInt(1, id);
         ps.executeUpdate();
     }
-}
 
+    public List<Produit> getExpiringProducts(int days) throws SQLException {
+        List<Produit> list = new ArrayList<>();
+        String req = "SELECT * FROM produit WHERE date_expiration IS NOT NULL AND date_expiration <= DATE_ADD(CURDATE(), INTERVAL ? DAY) AND date_expiration >= CURDATE()";
+        PreparedStatement ps = cnx.prepareStatement(req);
+        ps.setInt(1, days);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Produit p = new Produit(
+                rs.getInt("id"),
+                rs.getString("nom"),
+                rs.getString("description"),
+                rs.getDouble("prix"),
+                rs.getString("image"),
+                rs.getDate("date_expiration"),
+                rs.getString("statut"),
+                rs.getTimestamp("created_at"),
+                rs.getInt("quantite"),
+                rs.getInt("categorie_id")
+            );
+            list.add(p);
+        }
+        return list;
+    }
+}

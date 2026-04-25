@@ -8,6 +8,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import utils.*;
@@ -27,6 +28,11 @@ public class Main extends Application {
             FXMLLoader sidebarLoader = new FXMLLoader(getClass().getResource("/Sidebar.fxml"));
             VBox sidebarPane = sidebarLoader.load();
             root.setLeft(sidebarPane);
+
+            // Charger l'app bar
+            FXMLLoader appBarLoader = new FXMLLoader(getClass().getResource("/AppBar.fxml"));
+            HBox appBar = appBarLoader.load();
+            root.setTop(appBar);
 
             // Définir le BorderPane principal et la sidebar dans le SidebarController
             SidebarController.setMainLayout(root);
