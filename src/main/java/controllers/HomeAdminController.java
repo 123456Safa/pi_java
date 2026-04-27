@@ -1,7 +1,9 @@
 package controllers;
 
 import Model.Reclamation;
+import Model.Reponse;
 import Service.ReclamationService;
+import Service.ReponseService;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,6 +17,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -35,38 +40,75 @@ public class HomeAdminController {
     private ComboBox<String> sortByField;
     @FXML
     private ComboBox<String> sortOrder;
+    @FXML
+    private Label totalReclamationsLabel;
+    @FXML
+    private Label enAttenteLabel;
+    @FXML
+    private Label enCoursLabel;
+    @FXML
+    private Label resolueLabel;
 
     @FXML
     private TableView<Reclamation> table;
     @FXML
     private TableColumn<Reclamation, String> colTitre;
     @FXML
+    private TableColumn<Reclamation, String> colUser;
+    @FXML
     private TableColumn<Reclamation, String> colStatut;
     @FXML
     private TableColumn<Reclamation, Date> colDate;
     @FXML
+    private TableColumn<Reclamation, Integer> colReponses;
+    @FXML
+    private TableColumn<Reclamation, String> colMessage;
+    @FXML
     private TableColumn<Reclamation, Void> colAction;
 
     private final ReclamationService service = new ReclamationService();
+    private final ReponseService reponseService = new ReponseService();
     private List<Reclamation> allReclamations;
 
     @FXML
     private Pagination pagination;
     private final int ITEMS_PER_PAGE = 5;
     private List<Reclamation> currentFilteredList = new ArrayList<>();
+    private PauseTransition searchDebounce;
 
     @FXML
     public void initialize() {
         // Load all reclamations
         allReclamations = service.getAll();
 
-        // yorbit tab bi reclamation
+        // Configuration des colonnes
         colTitre.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTitre()));
+        colUser.setCellValueFactory(data -> new SimpleStringProperty(
+                data.getValue().getUserId() == 0 ? "-" : "User #" + data.getValue().getUserId()));
         colStatut.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getStatut()));
         colDate.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getDateCreation()));
 
+        colReponses.setCellValueFactory(data -> {
+            int count = reponseService.getByReclamationId(data.getValue().getId()).size();
+            return new SimpleObjectProperty<>(count);
+        });
+
+        colMessage.setCellValueFactory(data -> {
+            List<Reponse> reponses = reponseService.getByReclamationId(data.getValue().getId());
+            if (!reponses.isEmpty()) {
+                return new SimpleStringProperty(reponses.get(reponses.size() - 1).getContenu());
+            }
+            return new SimpleStringProperty("-");
+        });
+
+        setupUserColumn();
+        setupStatusColumn();
+        setupReponsesColumn();
+        setupDateColumn();
+
         // status filter
-        statusFilter.getItems().addAll("Tous", "EN ATTENTE", "EN COURS", "RÉSOLUE");
+        statusFilter.getItems().addAll("-- Tous --", "EN ATTENTE", "EN COURS", "RÉSOLUE");
+        statusFilter.setValue("-- Tous --");
 
         // sort bi options
         sortByField.getItems().addAll("Date (défaut)", "Titre", "Statut");
@@ -80,14 +122,34 @@ public class HomeAdminController {
         pagination.currentPageIndexProperty().addListener((obs, oldVal, newVal) -> {
             updateTablePage(newVal.intValue());
         });
-        // Add listeners for real-time search
-        searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFiltersAndSort());
+        // Ajax-style live search with 300ms debounce
+        searchDebounce = new PauseTransition(Duration.millis(300));
+        searchDebounce.setOnFinished(e -> applyFiltersAndSort());
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            searchDebounce.playFromStart();
+        });
         statusFilter.valueProperty().addListener((obs, oldVal, newVal) -> applyFiltersAndSort());
         dateFilter.valueProperty().addListener((obs, oldVal, newVal) -> applyFiltersAndSort());
         sortByField.valueProperty().addListener((obs, oldVal, newVal) -> applyFiltersAndSort());
         sortOrder.valueProperty().addListener((obs, oldVal, newVal) -> applyFiltersAndSort());
 
+        updateStatistics();
         applyFiltersAndSort();
+    }
+
+    private void updateStatistics() {
+        if (allReclamations == null)
+            return;
+
+        long total = allReclamations.size();
+        long enAttente = allReclamations.stream().filter(r -> "EN ATTENTE".equals(r.getStatut())).count();
+        long enCours = allReclamations.stream().filter(r -> "EN COURS".equals(r.getStatut())).count();
+        long resolue = allReclamations.stream().filter(r -> "RÉSOLUE".equals(r.getStatut())).count();
+
+        totalReclamationsLabel.setText(String.valueOf(total));
+        enAttenteLabel.setText(String.valueOf(enAttente));
+        enCoursLabel.setText(String.valueOf(enCours));
+        resolueLabel.setText(String.valueOf(resolue));
     }
 
     private void applyFiltersAndSort() {
@@ -101,7 +163,7 @@ public class HomeAdminController {
 
                     // Filter by status - ignore if "Tous" or null
                     String status = statusFilter.getValue();
-                    if (status != null && !status.isEmpty() && !status.equals("Tous")
+                    if (status != null && !status.isEmpty() && !status.contains("Tous")
                             && !r.getStatut().equals(status)) {
                         return false;
                     }
@@ -189,37 +251,154 @@ public class HomeAdminController {
         table.getItems().setAll(currentFilteredList.subList(fromIndex, toIndex));
     }
 
-    private void addButtons() {
-        colAction.setCellFactory(param -> new TableCell<>() {
-            private final Button voir = new Button("👁️ Voir");
-            private final Button editer = new Button("✏️ Éditer");
-            private final Button supprimer = new Button("🗑️ Supprimer");
+     private void setupUserColumn() {
+         colUser.setCellFactory(column -> new TableCell<>() {
+             @Override
+             protected void updateItem(String item, boolean empty) {
+                 super.updateItem(item, empty);
+                 if (empty || item == null || item.equals("-")) {
+                     setGraphic(new Label("-"));
+                     setStyle("-fx-padding: 0;");
+                 } else {
+                     HBox box = new HBox(12);
+                     box.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+                     
+                     // Avatar circle background
+                     Label icon = new Label("👤");
+                     icon.setStyle("-fx-font-size: 20;");
+                     
+                     VBox textVBox = new VBox(2);
+                     textVBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+                     
+                     Label nameLabel = new Label("Utilisateur");
+                     nameLabel.setStyle("-fx-font-weight: 600; -fx-font-size: 12; -fx-text-fill: #1e293b;");
+                     
+                     Label emailLabel = new Label("user" + getIndex() + "@example.com");
+                     emailLabel.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11;");
+                     
+                     textVBox.getChildren().addAll(nameLabel, emailLabel);
+                     box.getChildren().addAll(icon, textVBox);
+                     setGraphic(box);
+                     setStyle("-fx-padding: 8 0;");
+                 }
+             }
+         });
+     }
 
-            {
-                voir.setStyle(
-                        "-fx-font-size: 11; -fx-padding: 6 12; -fx-background-color: #00bcd4; -fx-text-fill: white; -fx-border-radius: 3; -fx-cursor: hand;");
-                editer.setStyle(
-                        "-fx-font-size: 11; -fx-padding: 6 12; -fx-background-color: #FFA500; -fx-text-fill: white; -fx-border-radius: 3; -fx-cursor: hand;");
-                supprimer.setStyle(
-                        "-fx-font-size: 11; -fx-padding: 6 12; -fx-background-color: #FF4444; -fx-text-fill: white; -fx-border-radius: 3; -fx-cursor: hand;");
+     private void setupDateColumn() {
+         colDate.setCellFactory(column -> new TableCell<>() {
+             private final java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm");
 
-                voir.setOnAction(e -> openDetail(getTableView().getItems().get(getIndex())));
-                editer.setOnAction(e -> openModifier(getTableView().getItems().get(getIndex())));
-                supprimer.setOnAction(e -> delete(getTableView().getItems().get(getIndex())));
-            }
+             @Override
+             protected void updateItem(Date item, boolean empty) {
+                 super.updateItem(item, empty);
+                 if (empty || item == null) {
+                     setText(null);
+                     setStyle("-fx-padding: 0;");
+                 } else {
+                     setText("📅 " + format.format(item));
+                     setStyle("-fx-text-fill: #64748b; -fx-font-size: 11; -fx-padding: 8 0;");
+                 }
+             }
+         });
+     }
 
-            private final HBox box = new HBox(8, voir, editer, supprimer);
+     private void setupStatusColumn() {
+         colStatut.setCellFactory(column -> new TableCell<>() {
+             @Override
+             protected void updateItem(String item, boolean empty) {
+                 super.updateItem(item, empty);
+                 if (empty || item == null) {
+                     setGraphic(null);
+                     setStyle("-fx-padding: 0;");
+                 } else {
+                     Label label = new Label(item);
+                     label.getStyleClass().add("status-label");
+                     String color = "#64748b";
+                     String bgColor = "#f1f5f9";
 
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                setGraphic(empty ? null : box);
-            }
-        });
-    }
+                     if ("RÉSOLUE".equals(item)) {
+                         color = "#15803d";
+                         bgColor = "#dcfce7";
+                     } else if ("EN ATTENTE".equals(item)) {
+                         color = "#92400e";
+                         bgColor = "#fef3c7";
+                     } else if ("EN COURS".equals(item)) {
+                         color = "#7c3aed";
+                         bgColor = "#f3e8ff";
+                     }
+
+                     label.setStyle("-fx-background-color: " + bgColor + "; -fx-text-fill: " + color
+                             + "; -fx-padding: 6 14; -fx-border-radius: 20; -fx-background-radius: 20; -fx-font-weight: 600; -fx-font-size: 11;");
+                     setGraphic(label);
+                     setAlignment(javafx.geometry.Pos.CENTER);
+                     setStyle("-fx-padding: 8 0;");
+                 }
+             }
+         });
+     }
+
+     private void setupReponsesColumn() {
+         colReponses.setCellFactory(column -> new TableCell<>() {
+             @Override
+             protected void updateItem(Integer item, boolean empty) {
+                 super.updateItem(item, empty);
+                 if (empty || item == null) {
+                     setGraphic(null);
+                     setStyle("-fx-padding: 0;");
+                 } else {
+                     Label label = new Label(String.valueOf(item));
+                     label.setStyle(
+                             "-fx-background-color: #e0e7ff; -fx-text-fill: #4f46e5; -fx-padding: 4 10; -fx-background-radius: 12; -fx-font-weight: 600; -fx-font-size: 11;");
+                     setGraphic(label);
+                     setAlignment(javafx.geometry.Pos.CENTER);
+                     setStyle("-fx-padding: 8 0;");
+                 }
+             }
+         });
+     }
+
+     private void addButtons() {
+         colAction.setCellFactory(param -> new TableCell<>() {
+             private final Button voir = new Button("Détails");
+             private final Button editer = new Button("Éditer");
+             private final Button supprimer = new Button("🗑");
+
+             {
+                 voir.setStyle(
+                         "-fx-background-color: white; -fx-border-color: #6366f1; -fx-border-width: 1.5; -fx-border-radius: 7; -fx-background-radius: 7; -fx-text-fill: #6366f1; -fx-font-size: 11; -fx-font-weight: 600; -fx-cursor: hand; -fx-padding: 6 16;");
+                 editer.setStyle(
+                         "-fx-background-color: white; -fx-border-color: #f59e0b; -fx-border-width: 1.5; -fx-border-radius: 7; -fx-background-radius: 7; -fx-text-fill: #f59e0b; -fx-font-size: 11; -fx-font-weight: 600; -fx-cursor: hand; -fx-padding: 6 16;");
+                 supprimer.setStyle(
+                         "-fx-background-color: white; -fx-border-color: #ef4444; -fx-border-width: 1.5; -fx-border-radius: 7; -fx-background-radius: 7; -fx-text-fill: #ef4444; -fx-font-size: 12; -fx-font-weight: 600; -fx-cursor: hand; -fx-padding: 6 12;");
+
+                 // Textes boutons
+                 voir.setText("Détails");
+                 editer.setText("Éditer");
+                 supprimer.setText("🗑");
+
+                 voir.setOnAction(e -> openDetail(getTableView().getItems().get(getIndex())));
+                 editer.setOnAction(e -> openModifier(getTableView().getItems().get(getIndex())));
+                 supprimer.setOnAction(e -> delete(getTableView().getItems().get(getIndex())));
+             }
+
+             private final HBox box = new HBox(6, voir, editer, supprimer);
+             {
+                 box.setAlignment(javafx.geometry.Pos.CENTER);
+             }
+
+             @Override
+             protected void updateItem(Void item, boolean empty) {
+                 super.updateItem(item, empty);
+                 setGraphic(empty ? null : box);
+                 setStyle("-fx-padding: 8 0;");
+             }
+         });
+     }
 
     public void refresh() {
         allReclamations = service.getAll();
+        updateStatistics();
         applyFiltersAndSort();
     }
 

@@ -4,83 +4,141 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="25" style="-fx-padding: 30; -fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.HomeAdminController">
+<VBox spacing="0" style="-fx-background-color: #f8f9fa;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.HomeAdminController" stylesheets="@pagination.css">
 
-    <!-- Header -->
-    <Label style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #333333;" text="📊 Gestion des Réclamations" />
+    <!-- Main Content Wrapper -->
+    <VBox spacing="24" style="-fx-padding: 40 45 40 45;">
 
-    <!-- Filters Section -->
-    <VBox spacing="15" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+        <!-- Header Section -->
+        <VBox spacing="8">
+            <Label style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #0f172a;" text="Mes Réclamations" />
+            <Label style="-fx-font-size: 14; -fx-text-fill: #64748b;" text="Consultez et gérez toutes les réclamations" />
+        </VBox>
 
-        <!-- Title -->
-        <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #555555;" text="Filtres et Recherche" />
-
-        <!-- Filter Row 1 -->
-        <HBox prefHeight="76.0" prefWidth="1109.0" spacing="20" style="-fx-alignment: top-left;">
-
-            <!-- Search by Title -->
-            <VBox spacing="8" style="-fx-min-width: 350; -fx-pref-width: 350;">
-                <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #333333;" text="TITRE / UTILISATEUR *" />
-                <TextField fx:id="searchField" prefHeight="50.0" prefWidth="350.0" promptText="Rechercher par titre ou utilisateur..." style="-fx-font-size: 12; -fx-padding: 12; -fx-border-color: #d0d0d0; -fx-border-radius: 5; -fx-border-width: 1;" />
+        <!-- Statistics Cards Grid -->
+        <HBox spacing="20" alignment="CENTER_LEFT">
+            <!-- Total Reclamations -->
+            <VBox spacing="12" alignment="TOP_LEFT"
+                  style="-fx-background-color: white; -fx-padding: 26 28; -fx-border-radius: 12; -fx-background-radius: 12; -fx-pref-width: 240; -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.08), 12, 0, 0, 4); -fx-border-color: #e2e8f0; -fx-border-width: 1;">
+                <Label text="📄" style="-fx-font-size: 24;" />
+                <VBox spacing="4">
+                    <Label text="Réclamations Totales" style="-fx-font-size: 13; -fx-text-fill: #64748b; -fx-font-weight: 600;" />
+                    <Label fx:id="totalReclamationsLabel" text="0" style="-fx-font-size: 36; -fx-font-weight: bold; -fx-text-fill: #0f172a;" />
+                </VBox>
             </VBox>
 
-            <!-- Filter by Status -->
-            <VBox spacing="8" style="-fx-min-width: 220;">
-                <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #333333;" text="STATUT" />
-                <ComboBox fx:id="statusFilter" prefHeight="50.0" prefWidth="128.0" promptText="Tous" style="-fx-font-size: 12; -fx-padding: 12; -fx-border-radius: 5;" />
+            <!-- En Attente -->
+            <VBox spacing="12" alignment="TOP_LEFT"
+                  style="-fx-background-color: white; -fx-padding: 26 28; -fx-border-radius: 12; -fx-background-radius: 12; -fx-pref-width: 240; -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.08), 12, 0, 0, 4); -fx-border-color: #fed7aa; -fx-border-width: 2;">
+                <Label text="🕒" style="-fx-font-size: 24;" />
+                <VBox spacing="4">
+                    <Label text="En Attente" style="-fx-font-size: 13; -fx-text-fill: #92400e; -fx-font-weight: 600;" />
+                    <Label fx:id="enAttenteLabel" text="0" style="-fx-font-size: 36; -fx-font-weight: bold; -fx-text-fill: #ea580c;" />
+                </VBox>
             </VBox>
 
-            <!-- Filter by Date -->
-            <VBox spacing="8" style="-fx-min-width: 220;">
-                <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #333333;" text="DATE" />
-                <DatePicker fx:id="dateFilter" prefHeight="50.0" prefWidth="166.0" promptText="jj/mm/aaaa" style="-fx-font-size: 12; -fx-padding: 12; -fx-border-radius: 5;" />
+            <!-- En Cours -->
+            <VBox spacing="12" alignment="TOP_LEFT"
+                  style="-fx-background-color: white; -fx-padding: 26 28; -fx-border-radius: 12; -fx-background-radius: 12; -fx-pref-width: 240; -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.08), 12, 0, 0, 4); -fx-border-color: #a5f3fc; -fx-border-width: 2;">
+                <Label text="🔄" style="-fx-font-size: 24;" />
+                <VBox spacing="4">
+                    <Label text="En Cours" style="-fx-font-size: 13; -fx-text-fill: #164e63; -fx-font-weight: 600;" />
+                    <Label fx:id="enCoursLabel" text="0" style="-fx-font-size: 36; -fx-font-weight: bold; -fx-text-fill: #0891b2;" />
+                </VBox>
             </VBox>
-            <Button onAction="#resetFilters" prefHeight="59.0" prefWidth="126.0" style="-fx-font-size: 12; -fx-padding: 12 20; -fx-background-color: white; -fx-text-fill: #666666; -fx-border-radius: 5; -fx-cursor: hand; -fx-font-weight: bold; -fx-border-color: #cccccc;" text="Réinitialiser">
-                <HBox.margin>
-                    <Insets top="20.0" />
-                </HBox.margin>
-            </Button>
 
-            <!-- Search Button -->
-            <VBox spacing="8" style="-fx-pref-width: 80; -fx-alignment: bottom-left;" />
-
+            <!-- Résolue -->
+            <VBox spacing="12" alignment="TOP_LEFT"
+                  style="-fx-background-color: white; -fx-padding: 26 28; -fx-border-radius: 12; -fx-background-radius: 12; -fx-pref-width: 240; -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.08), 12, 0, 0, 4); -fx-border-color: #86efac; -fx-border-width: 2;">
+                <Label text="✅" style="-fx-font-size: 24;" />
+                <VBox spacing="4">
+                    <Label text="Résolu" style="-fx-font-size: 13; -fx-text-fill: #15803d; -fx-font-weight: 600;" />
+                    <Label fx:id="resolueLabel" text="0" style="-fx-font-size: 36; -fx-font-weight: bold; -fx-text-fill: #16a34a;" />
+                </VBox>
+            </VBox>
         </HBox>
 
-        <!-- Filter Row 2 - Sort -->
-        <HBox spacing="20" style="-fx-alignment: center-left;">
 
-            <!-- Sort By -->
-            <VBox spacing="8" style="-fx-min-width: 200;">
-                <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #333333;" text="TRIER PAR" />
-                <ComboBox fx:id="sortByField" prefHeight="38.0" prefWidth="162.0" promptText="Date (défaut)" style="-fx-font-size: 12; -fx-padding: 10; -fx-border-radius: 5;" />
-            </VBox>
+        <!-- Main Card: Search + Filters + Table + Pagination -->
+        <VBox spacing="0" style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-border-radius: 14; -fx-background-radius: 14; -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.09), 14, 0, 0, 6);">
 
-            <!-- Sort Order (ASC/DESC) -->
-            <VBox spacing="8" style="-fx-min-width: 160;">
-                <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #333333;" text="ORDRE" />
-                <ComboBox fx:id="sortOrder" prefHeight="46.0" prefWidth="132.0" promptText="↓ DESC" style="-fx-font-size: 12; -fx-padding: 10; -fx-border-radius: 5;" />
-            </VBox>
+            <!-- Search Bar Row with Enhanced Design -->
+            <HBox spacing="12" alignment="CENTER_LEFT" style="-fx-padding: 22 26; -fx-border-color: transparent transparent #f1f5f9 transparent; -fx-border-width: 0 0 1 0; -fx-background-color: #ffffff;">
+                <Label text="🔍" style="-fx-font-size: 16; -fx-text-fill: #64748b;" />
+                <TextField fx:id="searchField"
+                           promptText="Rechercher par numéro, statut, date, total ou produit"
+                           prefHeight="44"
+                           HBox.hgrow="ALWAYS"
+                           style="-fx-font-size: 13; -fx-text-fill: #1e293b; -fx-prompt-text-fill: #cbd5e1; -fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 0 14; -fx-font-family: 'Segoe UI', 'Ubuntu';" />
+                <Label text="— réclamations"
+                       style="-fx-font-size: 12; -fx-text-fill: #64748b; -fx-font-weight: 600;" />
+            </HBox>
 
-        </HBox>
+            <!-- Filters Row Enhanced Design -->
+            <HBox spacing="16" alignment="CENTER_LEFT" style="-fx-padding: 18 26; -fx-border-color: transparent transparent #f1f5f9 transparent; -fx-border-width: 0 0 1 0; -fx-background-color: #f8fafc;">
+                <VBox spacing="6">
+                    <Label text="STATUT" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #475569;" />
+                    <ComboBox fx:id="statusFilter" prefWidth="150" prefHeight="38"
+                              style="-fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-font-size: 12; -fx-padding: 8 12; -fx-background-color: white;" />
+                </VBox>
 
-    </VBox>
+                <VBox spacing="6">
+                    <Label text="DATE" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #475569;" />
+                    <DatePicker fx:id="dateFilter" prefWidth="160" prefHeight="38"
+                                style="-fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-font-size: 12; -fx-padding: 8 12; -fx-background-color: white;" />
+                </VBox>
 
-    <!-- Table Section -->
-    <VBox spacing="10" VBox.vgrow="ALWAYS" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+                <VBox spacing="6">
+                    <Label text="TRIER PAR" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #475569;" />
+                    <ComboBox fx:id="sortByField" prefWidth="160" prefHeight="38"
+                              style="-fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-font-size: 12; -fx-padding: 8 12; -fx-background-color: white;" />
+                </VBox>
 
-        <TableView fx:id="table" VBox.vgrow="ALWAYS" style="-fx-font-size: 12; -fx-table-cell-border-color: #f0f0f0;">
-            <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-            </columnResizePolicy>
-            <columns>
-                <TableColumn fx:id="colTitre" prefWidth="300" text="TITRE" />
-                <TableColumn fx:id="colDate" prefWidth="150" text="DATE" />
-                <TableColumn fx:id="colStatut" prefWidth="130" text="STATUT" />
-                <TableColumn fx:id="colAction" prefWidth="220" text="ACTIONS" />
-            </columns>
-        </TableView>
+                <VBox spacing="6">
+                    <Label text="ORDRE" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #475569;" />
+                    <ComboBox fx:id="sortOrder" prefWidth="130" prefHeight="38"
+                              style="-fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-font-size: 12; -fx-padding: 8 12; -fx-background-color: white;" />
+                </VBox>
 
-        <Pagination fx:id="pagination" VBox.vgrow="NEVER" maxHeight="50" minHeight="50" prefHeight="50" maxPageIndicatorCount="5" />
+                <Region HBox.hgrow="ALWAYS" />
+
+                <Button onAction="#resetFilters" prefHeight="38" prefWidth="140"
+                        style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-width: 1.5; -fx-border-radius: 8; -fx-background-radius: 8; -fx-text-fill: #475569; -fx-cursor: hand; -fx-font-size: 12; -fx-font-weight: bold; -fx-padding: 0 16;"
+                        text="↺  Réinitialiser" />
+            </HBox>
+
+            <!-- Table with Enhanced Styling -->
+            <TableView fx:id="table" VBox.vgrow="ALWAYS"
+                       style="-fx-font-size: 12; -fx-background-color: transparent; -fx-table-cell-border-color: #f1f5f9; -fx-fixed-cell-size: 66; -fx-border-color: transparent; -fx-padding: 0; -fx-font-family: 'Segoe UI', 'Ubuntu';">
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
+                <columns>
+                    <TableColumn fx:id="colTitre" prefWidth="180" text="RÉCLAMATION"
+                                 style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #475569; -fx-padding: 12 0;" />
+                    <TableColumn fx:id="colUser" prefWidth="155" text="UTILISATEUR"
+                                 style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #475569; -fx-padding: 12 0;" />
+                    <TableColumn fx:id="colStatut" prefWidth="120" text="STATUT"
+                                 style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #475569; -fx-padding: 12 0;" />
+                    <TableColumn fx:id="colDate" prefWidth="140" text="DATE"
+                                 style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #475569; -fx-padding: 12 0;" />
+                    <TableColumn fx:id="colReponses" prefWidth="90" text="RÉPONSES"
+                                 style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #475569; -fx-padding: 12 0;" />
+                    <TableColumn fx:id="colMessage" prefWidth="190" text="DERNIER MESSAGE"
+                                 style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #475569; -fx-padding: 12 0;" />
+                    <TableColumn fx:id="colAction" prefWidth="200" text="ACTIONS"
+                                 style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #475569; -fx-padding: 12 0;" />
+                </columns>
+            </TableView>
+
+            <!-- Pagination -->
+            <HBox alignment="CENTER" style="-fx-padding: 20 0 24 0; -fx-border-color: #f1f5f9 transparent transparent transparent; -fx-border-width: 1 0 0 0; -fx-background-color: #ffffff;">
+                <Pagination fx:id="pagination"
+                            maxPageIndicatorCount="7"
+                            style="-fx-page-information-visible: false; -fx-font-size: 12;" />
+            </HBox>
+
+        </VBox>
 
     </VBox>
 
