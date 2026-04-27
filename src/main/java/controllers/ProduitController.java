@@ -38,6 +38,7 @@ public class ProduitController {
     @FXML private TableColumn<Produit, Integer> colQuantite;
     @FXML private TableColumn<Produit, String> colCategorieId;
     @FXML private TableColumn<Produit, Void> colActions;
+    @FXML private Pagination pagination;
     @FXML private Button btnAjouter;
 
     @FXML private TextField tfRechercheProduit;
@@ -48,6 +49,7 @@ public class ProduitController {
     @FXML private ComboBox<String> cbOrdreProduit;
 
     private ObservableList<Produit> produitsList = FXCollections.observableArrayList();
+    private static final int ITEMS_PER_PAGE = 3;
 
     @FXML
     public void initialize() {
@@ -115,6 +117,9 @@ public class ProduitController {
             cbOrdreProduit.setValue("↓ Décroissant");
             cbOrdreProduit.setOnAction(e -> appliquerTri());
 
+            // Configurer la pagination
+            pagination.setPageFactory(this::createPage);
+
             // Charger les données de la table
             rafraichirTable();
         } catch (Exception e) {
@@ -125,15 +130,21 @@ public class ProduitController {
 
      private void addActionButtons() {
          colActions.setCellFactory(col -> new TableCell<Produit, Void>() {
-             private final Button btnDetail = new Button("👁️");
-             private final Button btnModifier = new Button("✏️");
-             private final Button btnSupprimer = new Button("🗑️");
-             private final HBox box = new HBox(8);
+             private final Button btnDetail   = new Button("👁  Voir");
+             private final Button btnModifier  = new Button("✏  Modifier");
+             private final Button btnSupprimer = new Button("🗑  Supprimer");
+             private final HBox box = new HBox(6);
 
             {
+                // Styles
                 btnDetail.getStyleClass().addAll("action-btn", "action-btn-detail");
                 btnModifier.getStyleClass().addAll("action-btn", "action-btn-edit");
                 btnSupprimer.getStyleClass().addAll("action-btn", "action-btn-delete");
+
+                // Tooltips
+                btnDetail.setTooltip(new Tooltip("Voir le détail du produit"));
+                btnModifier.setTooltip(new Tooltip("Modifier ce produit"));
+                btnSupprimer.setTooltip(new Tooltip("Supprimer ce produit"));
 
                 box.setAlignment(Pos.CENTER);
                 box.getChildren().addAll(btnDetail, btnModifier, btnSupprimer);
@@ -155,14 +166,38 @@ public class ProduitController {
          });
      }
 
-     public void rafraichirTable() {
-         try {
-             produitsList.setAll(produitService.afficher());
-             tableProduits.setItems(produitsList);
-         } catch (SQLException e) {
-             e.printStackTrace();
-         }
-     }
+      public void rafraichirTable() {
+          try {
+              produitsList.setAll(produitService.afficher());
+              updatePagination();
+          } catch (SQLException e) {
+              e.printStackTrace();
+          }
+      }
+
+      private void updatePagination() {
+          int count = produitsList.size();
+          int pageCount = (count / ITEMS_PER_PAGE) + (count % ITEMS_PER_PAGE > 0 ? 1 : 0);
+          pagination.setPageCount(Math.max(1, pageCount));
+          pagination.setCurrentPageIndex(0);
+          updateTableForPage(0);
+      }
+
+      private javafx.scene.Node createPage(int pageIndex) {
+          updateTableForPage(pageIndex);
+          return new Label(""); // On retourne un noeud vide car on met à jour la table directement
+      }
+
+      private void updateTableForPage(int pageIndex) {
+          int fromIndex = pageIndex * ITEMS_PER_PAGE;
+          int toIndex = Math.min(fromIndex + ITEMS_PER_PAGE, produitsList.size());
+          
+          if (fromIndex < produitsList.size()) {
+              tableProduits.setItems(FXCollections.observableArrayList(produitsList.subList(fromIndex, toIndex)));
+          } else {
+              tableProduits.setItems(FXCollections.observableArrayList());
+          }
+      }
 
      private void chargerCategories() {
          try {
@@ -331,7 +366,8 @@ public class ProduitController {
                 }
             }
 
-            tableProduits.setItems(resultatRecherche);
+            produitsList.setAll(resultatRecherche);
+            updatePagination();
         } catch (SQLException e) {
             e.printStackTrace();
             showError("Erreur", "Erreur lors de la recherche: " + e.getMessage());
@@ -401,7 +437,8 @@ public class ProduitController {
                 }
             }
 
-            tableProduits.setItems(FXCollections.observableArrayList(produits));
+            produitsList.setAll(produits);
+            updatePagination();
         } catch (Exception e) {
             e.printStackTrace();
             showError("Erreur", "Une erreur s'est produite lors du tri: " + e.getMessage());

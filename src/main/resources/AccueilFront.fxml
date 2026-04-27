@@ -2,69 +2,226 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.geometry.Insets?>
 
-<VBox xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AccueilFrontController" stylesheets="@AccueilFront.css" spacing="0" VBox.vgrow="ALWAYS">
-    <VBox spacing="0" style="-fx-background-color: #ffffff;">
+<VBox xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.AccueilFrontController"
+      stylesheets="@AccueilFront.css"
+      spacing="0" VBox.vgrow="ALWAYS">
 
-        <!-- En-tête principal PHARMAX -->
-        <HBox style="-fx-background: linear-gradient(to right, #0f766e, #1a9999); -fx-padding: 30 30 20 30;" spacing="50" alignment="CENTER_LEFT">
-            <VBox spacing="5">
-                <Label text="PHARMAX" style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: #6366f1; -fx-text-fill: white;" />
-                <Label text="Catalogue de produits pharmaceutiques" style="-fx-font-size: 12; -fx-text-fill: #17BD43;" />
-            </VBox>
-            <Region HBox.hgrow="ALWAYS" />
+    <!-- ═══ TOP BAR VERTE ═══ -->
+    <HBox styleClass="top-bar" alignment="CENTER_LEFT" spacing="10">
+        <Label text="📖  BLOG" styleClass="top-bar-link"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="✦  LIVRAISON GRATUITE DÈS 99 DT D'ACHAT !!" styleClass="top-bar-promo"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="Contact" styleClass="top-bar-link"/>
+    </HBox>
+
+    <!-- ═══ HEADER BLANC ═══ -->
+    <HBox styleClass="main-header" alignment="CENTER" spacing="20">
+        <Label text="Pharmax." styleClass="logo-text"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <HBox styleClass="search-wrapper" alignment="CENTER" spacing="0" HBox.hgrow="ALWAYS">
+            <TextField fx:id="searchNomField"
+                       promptText="Cherchez le produit qui vous convient"
+                       styleClass="search-field" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnRechercher" text="Rechercher" styleClass="btn-search"/>
         </HBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <HBox spacing="12" alignment="CENTER">
+            <Button text="👤  Connexion" styleClass="btn-header-action"/>
+            <Button text="🛒  0  Panier" styleClass="btn-header-panier"/>
+        </HBox>
+    </HBox>
 
-        <!-- Section de recherche et filtres -->
-        <VBox style="-fx-background-color: #f5f5f5; -fx-padding: 20 30;" spacing="15">
-            <Label text="Rechercher &amp; Filtrer" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #1A17BD;" />
+    <!-- ═══ NAV DORÉE ═══ -->
+    <HBox styleClass="nav-bar" alignment="CENTER_LEFT" spacing="0">
+        <Label text="Promos" styleClass="nav-item"/>
+        <Label text="Nouveautés" styleClass="nav-item"/>
+        <Label text="Bons Plans" styleClass="nav-item"/>
+        <Label text="Marques" styleClass="nav-item"/>
+        <Label text="Nos coffrets" styleClass="nav-item"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="💄  Maquillage" styleClass="nav-badge-pink"/>
+        <Label text="💪  Nutrition Sportive" styleClass="nav-badge-dark"/>
+        <Label text="🐾  Animalerie" styleClass="nav-badge-orange"/>
+    </HBox>
 
-            <HBox spacing="15" alignment="CENTER_LEFT">
-                <!-- Barre de recherche par nom -->
-                <VBox spacing="5" HBox.hgrow="ALWAYS">
-                    <Label text="Nom du produit" style="-fx-font-size: 11; -fx-text-fill: #10427E;" />
-                    <TextField fx:id="searchNomField" promptText="Rechercher par nom..." style="-fx-padding: 8; -fx-font-size: 12;" />
-                </VBox>
+    <!-- ═══ SOUS-NAV ═══ -->
+    <HBox styleClass="sub-nav" alignment="CENTER_LEFT" spacing="0">
+        <Label text="👶  BÉBÉ ET MAMAN" styleClass="sub-nav-active"/>
+        <Label text="Visage" styleClass="sub-nav-item"/>
+        <Label text="Cheveux" styleClass="sub-nav-item"/>
+        <Label text="Corps" styleClass="sub-nav-item"/>
+        <Label text="Compléments alimentaires" styleClass="sub-nav-item"/>
+        <Label text="Hygiène" styleClass="sub-nav-item"/>
+        <Label text="Solaires" styleClass="sub-nav-item"/>
+        <Label text="Bio &amp; naturel" styleClass="sub-nav-item"/>
+        <Label text="Matériel médical" styleClass="sub-nav-item"/>
+        <Label text="Homme" styleClass="sub-nav-item"/>
+    </HBox>
 
-                <!-- Filtre par catégorie -->
-                <VBox spacing="5">
-                    <Label text="Catégorie" style="-fx-font-size: 11; -fx-text-fill: #10427E;" />
-                    <ComboBox fx:id="categorieComboBox" promptText="Toutes les catégories" style="-fx-min-width: 180;" />
-                </VBox>
+    <!-- ═══ HERO BANNER ═══ -->
+    <StackPane styleClass="hero-banner" prefHeight="260" minHeight="240">
+        <HBox alignment="CENTER" spacing="0">
+            <Button text="❮" styleClass="hero-arrow-btn"/>
+            <VBox alignment="CENTER" spacing="18" HBox.hgrow="ALWAYS" styleClass="hero-content">
+                <Label text="🌿  Votre santé, notre priorité" styleClass="hero-title"/>
+                <Label text="Découvrez notre sélection de produits pharmaceutiques &amp; bien-être"
+                       styleClass="hero-subtitle" wrapText="true"/>
+                <Button text="Découvrir maintenant  →" styleClass="hero-cta-btn"/>
+            </VBox>
+            <Button text="❯" styleClass="hero-arrow-btn"/>
+        </HBox>
+    </StackPane>
 
-                <!-- Filtre par prix minimum -->
-                <VBox spacing="5">
-                    <Label text="Prix min (DT)" style="-fx-font-size: 11; -fx-text-fill: #10427E;" />
-                    <TextField fx:id="prixMinField" promptText="0" style="-fx-padding: 8; -fx-font-size: 12; -fx-pref-width: 120;" />
-                </VBox>
+    <!-- ═══ CONTENU SCROLLABLE ═══ -->
+    <ScrollPane fitToWidth="true" styleClass="content-scroll" VBox.vgrow="ALWAYS">
+        <VBox spacing="0" styleClass="scroll-content">
 
-                <!-- Filtre par prix maximum -->
-                <VBox spacing="5">
-                    <Label text="Prix max (DT)" style="-fx-font-size: 11; -fx-text-fill: #10427E;" />
-                    <TextField fx:id="prixMaxField" promptText="10000" style="-fx-padding: 8; -fx-font-size: 12; -fx-pref-width: 120;" />
-                </VBox>
-
-                <!-- Boutons d'action -->
-                <VBox spacing="5" alignment="BOTTOM_CENTER">
-                    <HBox spacing="10">
-                        <Button fx:id="btnRechercher" text="Rechercher" style="-fx-background-color: #1A17BD; -fx-text-fill: white; -fx-padding: 8 20; -fx-font-weight: bold; -fx-cursor: hand;" />
-                        <Button fx:id="btnReinitialiser" text="Réinitialiser" style="-fx-background-color: #e0e0e0; -fx-text-fill: #333; -fx-padding: 8 20; -fx-font-weight: bold; -fx-cursor: hand;" />
-                    </HBox>
-                </VBox>
+            <!-- HOT DEAL BAR + FILTRES -->
+            <HBox styleClass="hot-deal-bar" alignment="CENTER_LEFT" spacing="10">
+                <Label text="👍  Hot deal" styleClass="hot-deal-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Catégorie :" styleClass="filter-label-inline"/>
+                <ComboBox fx:id="categorieComboBox" promptText="Toutes" styleClass="filter-combo-inline" prefWidth="135"/>
+                <TextField fx:id="prixMinField" promptText="Prix min" styleClass="filter-field-inline" prefWidth="80"/>
+                <TextField fx:id="prixMaxField" promptText="Prix max" styleClass="filter-field-inline" prefWidth="80"/>
+                <Button fx:id="btnReinitialiser" text="✕" styleClass="btn-reset-inline"/>
+                <Separator orientation="VERTICAL" styleClass="bar-sep"/>
+                <Button text="◀  Précédent" styleClass="btn-nav-prev"/>
+                <Button text="Suivant  ▶" styleClass="btn-nav-next"/>
             </HBox>
-        </VBox>
 
-        <!-- Section promotion "Catalogue sante & bien-etre" -->
-        <HBox style="-fx-background: linear-gradient(to right, #0f766e, #1a9999); -fx-padding: 20 30; -fx-margin: 0;" spacing="20">
-            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                <Label text="Catalogue sante &amp; bien-etre" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: white;" />
-                <Label text="Découvrez une sélection claire, moderne et accessible de produits pharmaceutiques." style="-fx-font-size: 12; -fx-text-fill: #e0e0e0;" wrapText="true" />
+            <!-- PRODUITS DYNAMIQUES (conservé pour le contrôleur) -->
+            <FlowPane fx:id="vboxProduitsAccueil" hgap="16" vgap="16"
+                      styleClass="products-flow" alignment="TOP_LEFT"/>
+
+            <!-- ═══ NOS TOP PROMOS ═══ -->
+            <VBox styleClass="section-block" spacing="14">
+                <Label text="Nos top promos" styleClass="section-heading"/>
+                <FlowPane hgap="16" vgap="16" styleClass="products-flow" alignment="TOP_LEFT">
+
+                    <VBox styleClass="promo-card" spacing="7" prefWidth="210">
+                        <StackPane prefHeight="165" styleClass="card-img-green">
+                            <Label text="-15%" styleClass="badge-discount" StackPane.alignment="TOP_LEFT"/>
+                        </StackPane>
+                        <Label text="AVENE" styleClass="card-brand"/>
+                        <Label text="Avene Cicalfate+ Crème Réparatrice Protectrice" styleClass="card-name" wrapText="true"/>
+                        <Label text="32 589 TND TTC" styleClass="card-price"/>
+                        <Label text="38 340 TND" styleClass="card-old-price"/>
+                        <HBox spacing="6">
+                            <Button text="Ajouter au panier 🛒" styleClass="btn-add-cart" HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                            <Button text="♡" styleClass="btn-wish"/>
+                        </HBox>
+                    </VBox>
+
+                    <VBox styleClass="promo-card" spacing="7" prefWidth="210">
+                        <StackPane prefHeight="165" styleClass="card-img-blue">
+                            <Label text="-20%" styleClass="badge-discount" StackPane.alignment="TOP_LEFT"/>
+                        </StackPane>
+                        <Label text="BIOHEALTH" styleClass="card-brand"/>
+                        <Label text="Biohealth Mare Mag 60 Gélules" styleClass="card-name" wrapText="true"/>
+                        <Label text="23 774 TND TTC" styleClass="card-price"/>
+                        <Label text="29 718 TND" styleClass="card-old-price"/>
+                        <HBox spacing="6">
+                            <Button text="Ajouter au panier 🛒" styleClass="btn-add-cart" HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                            <Button text="♡" styleClass="btn-wish"/>
+                        </HBox>
+                    </VBox>
+
+                    <VBox styleClass="promo-card" spacing="7" prefWidth="210">
+                        <StackPane prefHeight="165" styleClass="card-img-pink">
+                            <Label text="-10%" styleClass="badge-discount" StackPane.alignment="TOP_LEFT"/>
+                        </StackPane>
+                        <Label text="ACM" styleClass="card-brand"/>
+                        <Label text="ACM Depiwhite Mousse Nettoyante Éclaircissante..." styleClass="card-name" wrapText="true"/>
+                        <Label text="50 773 TND TTC" styleClass="card-price"/>
+                        <Label text="58 414 TND" styleClass="card-old-price"/>
+                        <HBox spacing="6">
+                            <Button text="Ajouter au panier 🛒" styleClass="btn-add-cart" HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                            <Button text="♡" styleClass="btn-wish"/>
+                        </HBox>
+                    </VBox>
+
+                    <VBox styleClass="promo-card" spacing="7" prefWidth="210">
+                        <StackPane prefHeight="165" styleClass="card-img-teal">
+                            <Label text="-15%" styleClass="badge-discount" StackPane.alignment="TOP_LEFT"/>
+                        </StackPane>
+                        <Label text="DERMEDIC" styleClass="card-brand"/>
+                        <Label text="Dermedic Hydrain 3 Eau Micellaire 500ml" styleClass="card-name" wrapText="true"/>
+                        <Label text="26 946 TND TTC" styleClass="card-price"/>
+                        <Label text="31 701 TND" styleClass="card-old-price"/>
+                        <HBox spacing="6">
+                            <Button text="Ajouter au panier 🛒" styleClass="btn-add-cart" HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                            <Button text="♡" styleClass="btn-wish"/>
+                        </HBox>
+                    </VBox>
+
+                </FlowPane>
             </VBox>
-        </HBox>
-    </VBox>
-    <ScrollPane fitToWidth="true" style="-fx-background: #fafafa;" VBox.vgrow="ALWAYS">
-        <FlowPane fx:id="vboxProduitsAccueil" hgap="20" vgap="20" style="-fx-padding: 30 30 40 30; -fx-background-color: #fafafa;" alignment="TOP_LEFT" />
+
+            <!-- ═══ SECTION VISAGE ═══ -->
+            <VBox styleClass="section-block" spacing="14">
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <Label text="Visage" styleClass="section-heading"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="SOLAIRES" styleClass="sub-tab-active"/>
+                    <Label text="Peaux grasses" styleClass="sub-tab-item"/>
+                    <Label text="Soins anti-âge" styleClass="sub-tab-item"/>
+                    <Label text="Soins Anti-Taches" styleClass="sub-tab-item"/>
+                    <Button text="❮" styleClass="btn-mini-arrow"/>
+                    <Button text="❯" styleClass="btn-mini-arrow"/>
+                </HBox>
+                <HBox spacing="16" alignment="TOP_LEFT">
+                    <!-- Image catégorie -->
+                    <StackPane styleClass="category-img-card" prefWidth="200" prefHeight="230">
+                        <VBox alignment="BOTTOM_LEFT" styleClass="category-overlay">
+                            <Label text="→ VISAGE" styleClass="category-label"/>
+                        </VBox>
+                    </StackPane>
+
+                    <VBox styleClass="promo-card" spacing="7" prefWidth="210">
+                        <StackPane prefHeight="165" styleClass="card-img-orange">
+                            <Label text="-20%" styleClass="badge-discount" StackPane.alignment="TOP_LEFT"/>
+                            <Label text="JE DÉCOUVRE" styleClass="card-overlay-text" StackPane.alignment="CENTER"/>
+                        </StackPane>
+                        <Label text="SVR" styleClass="card-brand"/>
+                        <Label text="SVR Sun Secure Brume SPF50+ 200ML" styleClass="card-name" wrapText="true"/>
+                        <Label text="58 998 TND TTC" styleClass="card-price"/>
+                        <HBox spacing="6">
+                            <Button text="Ajouter au panier 🛒" styleClass="btn-add-cart" HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                            <Button text="♡" styleClass="btn-wish"/>
+                        </HBox>
+                    </VBox>
+
+                    <VBox styleClass="promo-card" spacing="7" prefWidth="210">
+                        <StackPane prefHeight="165" styleClass="card-img-orange2">
+                            <Label text="-15%" styleClass="badge-discount" StackPane.alignment="TOP_LEFT"/>
+                        </StackPane>
+                        <Label text="SVR" styleClass="card-brand"/>
+                        <Label text="SVR Sun Secure Blur Teinte SPF50+ 50ML" styleClass="card-name" wrapText="true"/>
+                        <Label text="59 794 TND TTC" styleClass="card-price"/>
+                        <HBox spacing="6">
+                            <Button text="Ajouter au panier 🛒" styleClass="btn-add-cart" HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                            <Button text="♡" styleClass="btn-wish"/>
+                        </HBox>
+                    </VBox>
+
+                    <VBox styleClass="promo-card" spacing="7" prefWidth="210">
+                        <StackPane prefHeight="165" styleClass="card-img-beige"/>
+                        <Label text="AVENE" styleClass="card-brand"/>
+                        <Label text="Avene B-Protect SPF 50+ 30ML" styleClass="card-name" wrapText="true"/>
+                        <Label text="47 199 TND TTC" styleClass="card-price"/>
+                        <HBox spacing="6">
+                            <Button text="Ajouter au panier 🛒" styleClass="btn-add-cart" HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                            <Button text="♡" styleClass="btn-wish"/>
+                        </HBox>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+        </VBox>
     </ScrollPane>
 </VBox>

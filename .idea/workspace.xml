@@ -5,12 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42332132-b611-4429-ab64-8d6caab07312" name="Changes" comment="gestion_produit">
-      <change beforePath="$PROJECT_DIR$/.idea/copilotDiffState.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/copilotDiffState.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/CategorieController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/CategorieController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/ProduitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/ProduitController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controllers/ProduitFormController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/ProduitFormController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/service/CategorieService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/CategorieService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/ProduitService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ProduitService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/AccueilFront.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/AccueilFront.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/AccueilFront.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/AccueilFront.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/Categorie.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Categorie.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/CategorieForm.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/CategorieForm.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/Dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Dashboard.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/Produit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Produit.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/ProduitDetail.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/ProduitDetail.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/ProduitForm.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/ProduitForm.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/Sidebar.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Sidebar.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/categoriefront.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/categoriefront.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/produitdetail.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/produitdetail.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/produitfront.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/produitfront.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -172,7 +184,12 @@
       <workItem from="1776457014465" duration="109000" />
       <workItem from="1776935072485" duration="1348000" />
       <workItem from="1777146496028" duration="532000" />
-      <workItem from="1777147148659" duration="2308000" />
+      <workItem from="1777147148659" duration="2948000" />
+      <workItem from="1777317669950" duration="206000" />
+      <workItem from="1777317891509" duration="353000" />
+      <workItem from="1777318257024" duration="742000" />
+      <workItem from="1777319278463" duration="6573000" />
+      <workItem from="1777325958002" duration="7304000" />
     </task>
     <task id="LOCAL-00001" summary="vesrion_1">
       <option name="closed" value="true" />
@@ -238,7 +255,15 @@
       <option name="project" value="LOCAL" />
       <updated>1776284399199</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="gestion_produit">
+      <option name="closed" value="true" />
+      <created>1777149580101</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1777149580101</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

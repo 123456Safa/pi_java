@@ -316,6 +316,60 @@ public class ProduitFormController {
     }
 
     @FXML
+    private void onGenerateClick(ActionEvent event) {
+        String nom = tfNom.getText().trim();
+        
+        if (nom.isEmpty()) {
+            showError("Attention", "Veuillez d'abord entrer un nom de produit pour générer la description.");
+            tfNom.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+            return;
+        }
+
+        // Désactiver le bouton pendant la requête
+        Button sourceBtn = null;
+        if (event.getSource() instanceof Button) {
+            sourceBtn = (Button) event.getSource();
+            sourceBtn.setDisable(true);
+        }
+
+        // Afficher un état de chargement
+        taDescription.setPromptText("Chargement en cours avec Gemini IA...");
+        taDescription.setText("");
+
+        // Utilisation propre de Task JavaFX
+        javafx.concurrent.Task<String> task = new javafx.concurrent.Task<>() {
+            @Override
+            protected String call() throws Exception {
+                String response = service.GeminiService.generateDescription(nom);
+                if (response != null && response.startsWith("Erreur")) {
+                    throw new Exception(response);
+                }
+                return service.GeminiService.extractText(response);
+            }
+        };
+
+        Button finalSourceBtn = sourceBtn;
+
+        task.setOnSucceeded(e -> {
+            if (finalSourceBtn != null) finalSourceBtn.setDisable(false);
+            taDescription.setText(task.getValue());
+            taDescription.setStyle(""); // Réinitialiser le style en cas de succès
+            validerDescription();
+        });
+
+        task.setOnFailed(e -> {
+            if (finalSourceBtn != null) finalSourceBtn.setDisable(false);
+            String errorMsg = task.getException() != null ? task.getException().getMessage() : "Erreur inconnue";
+            showError("Erreur IA", "Impossible de générer la description: " + errorMsg);
+            taDescription.setText(errorMsg);
+            taDescription.setStyle("-fx-text-fill: #dc3545;");
+            taDescription.setPromptText("Entrez la description du produit");
+        });
+
+        new Thread(task).start();
+    }
+
+    @FXML
     private void onBrowseImage(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Sélectionner une image");

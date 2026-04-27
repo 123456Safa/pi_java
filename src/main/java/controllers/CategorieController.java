@@ -26,6 +26,7 @@ public class CategorieController {
     @FXML private TableColumn<Categorie, String> colDescription;
     @FXML private TableColumn<Categorie, java.util.Date> colCreatedAt;
     @FXML private TableColumn<Categorie, Void> colActions;
+    @FXML private Pagination pagination;
     @FXML private Button btnAjouter;
 
     @FXML private TextField tfRechercheCategorie;
@@ -35,6 +36,7 @@ public class CategorieController {
     @FXML private ComboBox<String> cbOrdreCategorie;
 
     private ObservableList<Categorie> categoriesList = FXCollections.observableArrayList();
+    private static final int ITEMS_PER_PAGE = 3;
 
     @FXML
     public void initialize() {
@@ -56,6 +58,9 @@ public class CategorieController {
             // Ajouter les boutons d'actions
             addActionButtons();
 
+            // Configurer la pagination
+            pagination.setPageFactory(this::createPage);
+
             // Charger les données de la table
             rafraichirTable();
         } catch (Exception e) {
@@ -66,16 +71,21 @@ public class CategorieController {
 
     private void addActionButtons() {
         colActions.setCellFactory(col -> new TableCell<Categorie, Void>() {
-            private final Button btnModifier = new Button("✏️");
-            private final Button btnSupprimer = new Button("🗑️");
-            private final HBox box = new HBox(8);
+            private final Button btnModifier  = new Button("✏  Modifier");
+            private final Button btnSupprimer = new Button("🗑  Supprimer");
+            private final HBox box = new HBox(6);
 
             {
+                // Styles
                 btnModifier.getStyleClass().addAll("action-btn", "action-btn-edit");
                 btnSupprimer.getStyleClass().addAll("action-btn", "action-btn-delete");
 
+                // Tooltips
+                btnModifier.setTooltip(new Tooltip("Modifier cette catégorie"));
+                btnSupprimer.setTooltip(new Tooltip("Supprimer cette catégorie"));
+
                 box.setAlignment(Pos.CENTER);
-                box.getChildren().addAll( btnModifier, btnSupprimer);
+                box.getChildren().addAll(btnModifier, btnSupprimer);
 
                 btnModifier.setOnAction(e -> modifierCategorie(getTableView().getItems().get(getIndex())));
                 btnSupprimer.setOnAction(e -> supprimerCategorie(getTableView().getItems().get(getIndex())));
@@ -96,9 +106,33 @@ public class CategorieController {
     public void rafraichirTable() {
         try {
             categoriesList.setAll(categorieService.afficher());
-            tableCategories.setItems(categoriesList);
+            updatePagination();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void updatePagination() {
+        int count = categoriesList.size();
+        int pageCount = (count / ITEMS_PER_PAGE) + (count % ITEMS_PER_PAGE > 0 ? 1 : 0);
+        pagination.setPageCount(Math.max(1, pageCount));
+        pagination.setCurrentPageIndex(0);
+        updateTableForPage(0);
+    }
+
+    private javafx.scene.Node createPage(int pageIndex) {
+        updateTableForPage(pageIndex);
+        return new Label("");
+    }
+
+    private void updateTableForPage(int pageIndex) {
+        int fromIndex = pageIndex * ITEMS_PER_PAGE;
+        int toIndex = Math.min(fromIndex + ITEMS_PER_PAGE, categoriesList.size());
+        
+        if (fromIndex < categoriesList.size()) {
+            tableCategories.setItems(FXCollections.observableArrayList(categoriesList.subList(fromIndex, toIndex)));
+        } else {
+            tableCategories.setItems(FXCollections.observableArrayList());
         }
     }
 
@@ -199,7 +233,8 @@ public class CategorieController {
                 }
             }
 
-            tableCategories.setItems(resultatRecherche);
+            categoriesList.setAll(resultatRecherche);
+            updatePagination();
         } catch (SQLException e) {
             e.printStackTrace();
             showError("Erreur", "Erreur lors de la recherche: " + e.getMessage());
@@ -249,7 +284,8 @@ public class CategorieController {
                 }
             }
             
-            tableCategories.setItems(FXCollections.observableArrayList(categories));
+            categoriesList.setAll(categories);
+            updatePagination();
         } catch (Exception e) {
             e.printStackTrace();
         }

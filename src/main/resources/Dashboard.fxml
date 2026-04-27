@@ -2,56 +2,121 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.chart.*?>
-<VBox xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DashboardController" stylesheets="@AccueilFront.css" spacing="20" style="-fx-padding: 30 30 30 30; -fx-background-color: #f6f7fb;">
-    <Label text="Bienvenue au Backoffice Pharmax" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #222;" />
-    <Label text="Voici un aperçu de votre inventaire" style="-fx-font-size: 14; -fx-text-fill: #888;" />
-    <HBox spacing="20">
-        <VBox style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, #e0e0e0, 8, 0.2, 0, 2);" alignment="CENTER" spacing="8">
-            <Label text="Total Produits" style="-fx-font-size: 14; -fx-text-fill: #888;" />
-            <Label fx:id="lblTotalProduits" text="0" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #222;" />
-            <Label fx:id="lblProduitsStock" text="+ Produits en stock" style="-fx-font-size: 12; -fx-text-fill: #22c55e;" />
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.DashboardController"
+      stylesheets="@dashboard.css"
+      styleClass="dashboard-root" spacing="0">
+
+    <!-- ═══ PAGE HEADER ═══ -->
+    <VBox styleClass="dash-header" spacing="4">
+        <Label text="Tableau de bord" styleClass="dash-title"/>
+        <Label text="Vue d'ensemble de votre inventaire Pharmax" styleClass="dash-subtitle"/>
+    </VBox>
+
+    <!-- ═══ CONTENU SCROLLABLE ═══ -->
+    <ScrollPane fitToWidth="true" styleClass="dash-scroll" VBox.vgrow="ALWAYS">
+        <VBox spacing="24" styleClass="dash-body">
+
+            <!-- ═══ STAT CARDS ═══ -->
+            <HBox spacing="20">
+
+                <!-- Carte Total Produits -->
+                <VBox styleClass="stat-card stat-card-blue" spacing="10" HBox.hgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="14">
+                        <Label text="📦" styleClass="stat-icon"/>
+                        <VBox spacing="2">
+                            <Label text="Total Produits" styleClass="stat-label"/>
+                            <Label fx:id="lblTotalProduits" text="0" styleClass="stat-value"/>
+                        </VBox>
+                    </HBox>
+                    <Label fx:id="lblProduitsStock" text="Produits en stock"
+                           styleClass="stat-trend-positive"/>
+                </VBox>
+
+                <!-- Carte Total Catégories -->
+                <VBox styleClass="stat-card stat-card-violet" spacing="10" HBox.hgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="14">
+                        <Label text="🗂" styleClass="stat-icon"/>
+                        <VBox spacing="2">
+                            <Label text="Total Catégories" styleClass="stat-label"/>
+                            <Label fx:id="lblTotalCategories" text="0" styleClass="stat-value"/>
+                        </VBox>
+                    </HBox>
+                    <Label fx:id="lblCategoriesActives" text="Catégories actives"
+                           styleClass="stat-trend-positive"/>
+                </VBox>
+
+                <!-- Carte Produits Expirés -->
+                <VBox styleClass="stat-card stat-card-orange" spacing="10" HBox.hgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="14">
+                        <Label text="⚠" styleClass="stat-icon"/>
+                        <VBox spacing="2">
+                            <Label text="Produits Expirés" styleClass="stat-label"/>
+                            <Label fx:id="lblProduitsExpires" text="0" styleClass="stat-value"/>
+                        </VBox>
+                    </HBox>
+                    <Label fx:id="lblAretirer" text="À retirer du stock"
+                           styleClass="stat-trend-warning"/>
+                </VBox>
+
+            </HBox>
+
+            <!-- ═══ CHARTS ROW ═══ -->
+            <HBox spacing="20" alignment="TOP_LEFT">
+
+                <!-- Pie Chart -->
+                <VBox styleClass="chart-card" spacing="14" HBox.hgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="📊" style="-fx-font-size: 16px;"/>
+                        <Label text="Produits Valables vs Hors Stock"
+                               styleClass="chart-title"/>
+                    </HBox>
+                    <PieChart fx:id="pieChartStock" prefWidth="340" prefHeight="260"
+                              legendVisible="true"/>
+                </VBox>
+
+                <!-- Bar Charts VBox -->
+                <VBox spacing="20" HBox.hgrow="ALWAYS">
+
+                    <!-- Bar Chart Plus Chers -->
+                    <VBox styleClass="chart-card" spacing="14">
+                        <HBox alignment="CENTER_LEFT" spacing="8">
+                            <Label text="📈" style="-fx-font-size: 16px;"/>
+                            <Label text="5 Produits les Plus Chers" styleClass="chart-title"/>
+                        </HBox>
+                        <BarChart fx:id="barChartPlusChers" prefWidth="340" prefHeight="170"
+                                  legendVisible="false">
+                            <xAxis><CategoryAxis label="Produits"/></xAxis>
+                            <yAxis><NumberAxis label="Prix (DTN)"/></yAxis>
+                        </BarChart>
+                    </VBox>
+
+                    <!-- Bar Chart Moins Chers -->
+                    <VBox styleClass="chart-card" spacing="14">
+                        <HBox alignment="CENTER_LEFT" spacing="8">
+                            <Label text="📉" style="-fx-font-size: 16px;"/>
+                            <Label text="5 Produits les Moins Chers" styleClass="chart-title"/>
+                        </HBox>
+                        <BarChart fx:id="barChartMoinsChers" prefWidth="340" prefHeight="170"
+                                  legendVisible="false">
+                            <xAxis><CategoryAxis label="Produits"/></xAxis>
+                            <yAxis><NumberAxis label="Prix (DTN)"/></yAxis>
+                        </BarChart>
+                    </VBox>
+
+                </VBox>
+
+            </HBox>
+
+            <!-- ═══ FOOTER ═══ -->
+            <HBox styleClass="dash-footer" alignment="CENTER">
+                <Label text="© 2026 Pharmax  —  Tableau de bord administrateur" styleClass="dash-footer-label"/>
+            </HBox>
+
         </VBox>
-        <VBox style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, #e0e0e0, 8, 0.2, 0, 2);" alignment="CENTER" spacing="8">
-            <Label text="Total Catégories" style="-fx-font-size: 14; -fx-text-fill: #888;" />
-            <Label fx:id="lblTotalCategories" text="0" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #222;" />
-            <Label fx:id="lblCategoriesActives" text="Catégories actives" style="-fx-font-size: 12; -fx-text-fill: #0ea5e9;" />
-        </VBox>
-        <VBox style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, #e0e0e0, 8, 0.2, 0, 2);" alignment="CENTER" spacing="8">
-            <Label text="Produits Expirés" style="-fx-font-size: 14; -fx-text-fill: #888;" />
-            <Label fx:id="lblProduitsExpires" text="0" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #222;" />
-            <Label fx:id="lblAretirer" text="À retirer du stock" style="-fx-font-size: 12; -fx-text-fill: #fbbf24;" />
-        </VBox>
-    </HBox>
-    <HBox spacing="20">
-        <VBox style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, #e0e0e0, 8, 0.2, 0, 2);" alignment="CENTER">
-            <Label text="Produits Valables vs Hors Stock par Mois" style="-fx-font-size: 15; -fx-font-weight: bold; -fx-text-fill: #222;" />
-            <PieChart fx:id="pieChartStock" prefWidth="350" prefHeight="250" />
-        </VBox>
-        <VBox spacing="20">
-            <VBox style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, #e0e0e0, 8, 0.2, 0, 2);" alignment="CENTER">
-                <Label text="5 Produits les Plus Chers" style="-fx-font-size: 15; -fx-font-weight: bold; -fx-text-fill: #222;" />
-                <BarChart fx:id="barChartPlusChers" prefWidth="350" prefHeight="180">
-                    <xAxis>
-                        <CategoryAxis label="Produits" />
-                    </xAxis>
-                    <yAxis>
-                        <NumberAxis label="Prix (DTN)" />
-                    </yAxis>
-                </BarChart>
-            </VBox>
-            <VBox style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, #e0e0e0, 8, 0.2, 0, 2);" alignment="CENTER">
-                <Label text="5 Produits les Moins Chers" style="-fx-font-size: 15; -fx-font-weight: bold; -fx-text-fill: #222;" />
-                <BarChart fx:id="barChartMoinsChers" prefWidth="350" prefHeight="180">
-                    <xAxis>
-                        <CategoryAxis label="Produits" />
-                    </xAxis>
-                    <yAxis>
-                        <NumberAxis label="Prix (DTN)" />
-                    </yAxis>
-                </BarChart>
-            </VBox>
-        </VBox>
-    </HBox>
+    </ScrollPane>
+
 </VBox>

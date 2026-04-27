@@ -3,26 +3,58 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.geometry.Insets?>
+
 <VBox xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controllers.SidebarController"
-      spacing="30" styleClass="sidebar" prefWidth="240">
-    <VBox spacing="10" alignment="CENTER">
-        <ImageView fitWidth="120" fitHeight="40">
-            <image>
-                <!-- Remplacez le chemin par votre logo si besoin -->
-                <Image url="@logo.png" />
-            </image>
+      styleClass="sidebar" prefWidth="220" spacing="0">
+
+    <!-- ═══ LOGO ZONE ═══ -->
+    <VBox styleClass="sidebar-logo-zone" alignment="CENTER" spacing="6">
+        <ImageView fitWidth="90" fitHeight="32" preserveRatio="true">
+            <image><Image url="@logo.png"/></image>
         </ImageView>
+        <Label text="Pharmax" styleClass="sidebar-brand"/>
+        <Label text="Back Office" styleClass="sidebar-brand-sub"/>
     </VBox>
-    <VBox spacing="10">
-        <Button text="                Dashboard             " styleClass="sidebar-btn" fx:id="btnDashboard" onAction="#onDashboard" />
-        <Button text="               Catégories              " styleClass="sidebar-btn" fx:id="btnCategories" onAction="#onCategories" />
-        <Button text="               Produits                 " styleClass="sidebar-btn" fx:id="btnProduits" onAction="#onProduits" />
 
+    <!-- ═══ DIVIDER ═══ -->
+    <HBox styleClass="sidebar-divider"/>
+
+    <!-- ═══ MAIN MENU ═══ -->
+    <VBox spacing="4" styleClass="sidebar-menu" VBox.vgrow="ALWAYS">
+
+        <Label text="MENU PRINCIPAL" styleClass="sidebar-section-label"/>
+
+        <Button text="🏠   Dashboard" styleClass="sidebar-btn"
+                fx:id="btnDashboard" onAction="#onDashboard"
+                maxWidth="1.7976931348623157E308"/>
+
+        <Button text="📦   Produits" styleClass="sidebar-btn"
+                fx:id="btnProduits" onAction="#onProduits"
+                maxWidth="1.7976931348623157E308"/>
+
+        <Button text="🗂   Catégories" styleClass="sidebar-btn"
+                fx:id="btnCategories" onAction="#onCategories"
+                maxWidth="1.7976931348623157E308"/>
+
+        <!-- DIVIDER -->
+        <HBox styleClass="sidebar-divider-thin"/>
+
+        <Label text="FRONT OFFICE" styleClass="sidebar-section-label"/>
+
+        <Button text="🛍   Voir Produits" styleClass="sidebar-btn-secondary"
+                fx:id="btnVoirProduits" onAction="#onVoirProduits"
+                maxWidth="1.7976931348623157E308"/>
 
     </VBox>
-    <VBox style="-fx-background-color: transparent;" alignment="BOTTOM_LEFT">
-        <Label text="   FRONT OFFICE" styleClass="sidebar-section" />
-        <Button text="            Voir Produits            " styleClass="sidebar-btn-secondary" fx:id="btnVoirProduits" onAction="#onVoirProduits" />
+
+    <!-- ═══ FOOTER ═══ -->
+    <VBox styleClass="sidebar-footer" alignment="CENTER" spacing="4">
+        <HBox styleClass="sidebar-divider-thin"/>
+        <Label text="© 2026 Pharmax" styleClass="sidebar-footer-label"/>
+        <Label text="v1.0" styleClass="sidebar-version-label"/>
     </VBox>
+
 </VBox>

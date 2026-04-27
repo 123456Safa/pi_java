@@ -3,82 +3,57 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CategorieFormController">
-   <style>
-      .header-label {
-         -fx-font-size: 18;
-         -fx-font-weight: bold;
-         -fx-text-fill: #333333;
-      }
-      .field-label {
-         -fx-font-size: 12;
-         -fx-font-weight: bold;
-         -fx-text-fill: #555555;
-      }
-      .validation-message {
-         -fx-font-size: 11;
-         -fx-padding: 3 0 0 0;
-         -fx-min-height: 16;
-      }
-      .validation-error {
-         -fx-text-fill: #dc3545;
-         -fx-font-weight: 500;
-      }
-      .validation-success {
-         -fx-text-fill: #28a745;
-         -fx-font-weight: 500;
-      }
-      .button-add {
-         -fx-font-size: 12;
-         -fx-padding: 10 30;
-         -fx-background-color: #34C759;
-         -fx-text-fill: white;
-         -fx-font-weight: bold;
-         -fx-cursor: hand;
-      }
-      .button-cancel {
-         -fx-font-size: 12;
-         -fx-padding: 10 30;
-         -fx-background-color: #999999;
-         -fx-text-fill: white;
-         -fx-font-weight: bold;
-         -fx-cursor: hand;
-      }
-   </style>
+<BorderPane xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.CategorieFormController"
+            stylesheets="@produitdetail.css"
+            style="-fx-background-color: #f4f6fb;">
 
+    <!-- ═══ HEADER ═══ -->
     <top>
-       <VBox style="-fx-background-color: #f5f5f5; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0; -fx-padding: 20;">
-          <Label fx:id="lblHeader" styleClass="header-label" text="Ajouter une catégorie" />
-       </VBox>
+        <VBox styleClass="form-header" spacing="4">
+            <Label fx:id="lblHeader" styleClass="header-label" text="Ajouter une catégorie"/>
+            <Label text="Remplissez les informations de la catégorie ci-dessous" styleClass="header-subtitle"/>
+        </VBox>
     </top>
 
+    <!-- ═══ FORMULAIRE ═══ -->
     <center>
-       <ScrollPane fitToWidth="true" style="-fx-padding: 0;">
-          <VBox spacing="15" style="-fx-padding: 30;">
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+            <VBox spacing="20" styleClass="form-body" style="-fx-padding: 28;">
 
-             <!-- Nom -->
-             <VBox spacing="2">
-                <Label styleClass="field-label" text="Nom de la catégorie" />
-                <TextField fx:id="tfNom" promptText="Entrez le nom de la catégorie" prefHeight="40" />
-                <Label fx:id="lblNomValidation" styleClass="validation-message" text="" />
-             </VBox>
+                <VBox styleClass="form-card" spacing="18">
+                    <Label text="🗂  Informations de la catégorie"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #5856d6;"/>
 
-             <!-- Description -->
-             <VBox spacing="2">
-                <Label styleClass="field-label" text="Description" />
-                <TextArea fx:id="taDescription" promptText="Entrez la description de la catégorie" prefHeight="80" wrapText="true" />
-                <Label fx:id="lblDescriptionValidation" styleClass="validation-message" text="" />
-             </VBox>
+                    <!-- NOM -->
+                    <VBox spacing="4">
+                        <Label styleClass="field-label" text="Nom de la catégorie *"/>
+                        <TextField fx:id="tfNom" promptText="Entrez le nom de la catégorie"
+                                   styleClass="text-field" prefHeight="42"/>
+                        <Label fx:id="lblNomValidation" styleClass="validation-message" text=""/>
+                    </VBox>
 
-             <!-- Separator -->
-             <Separator />
+                    <!-- DESCRIPTION -->
+                    <VBox spacing="4">
+                        <Label styleClass="field-label" text="Description"/>
+                        <TextArea fx:id="taDescription" promptText="Entrez la description de la catégorie"
+                                  prefHeight="100" wrapText="true" styleClass="text-area"/>
+                        <Label fx:id="lblDescriptionValidation" styleClass="validation-message" text=""/>
+                    </VBox>
 
-             <!-- Buttons -->
-             <HBox spacing="15" alignment="CENTER_RIGHT">
-                <Button fx:id="btnAjouter" styleClass="button-add" text="Ajouter" onAction="#onAjouter" />
-                <Button fx:id="btnAnnuler" styleClass="button-cancel" text="Annuler" onAction="#onAnnuler" />
-             </HBox>
-          </VBox>
-       </ScrollPane>
+                </VBox>
+
+                <!-- SÉPARATEUR + BOUTONS -->
+                <Separator/>
+                <HBox spacing="12" alignment="CENTER_RIGHT">
+                    <Button fx:id="btnAjouter" styleClass="button-add"
+                            text="✔  Enregistrer" onAction="#onAjouter"/>
+                    <Button fx:id="btnAnnuler" styleClass="button-cancel"
+                            text="✕  Annuler" onAction="#onAnnuler"/>
+                </HBox>
+
+            </VBox>
+        </ScrollPane>
     </center>
+
 </BorderPane>
