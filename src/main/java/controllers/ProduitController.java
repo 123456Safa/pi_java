@@ -3,6 +3,7 @@ package controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -42,6 +43,12 @@ public class ProduitController {
     @FXML
     private TableColumn<Produit, Integer> colStock;
 
+    @FXML
+    private Pagination pagination;
+
+    private static final int ITEMS_PER_PAGE = 8;
+    private ObservableList<Produit> allProduits = FXCollections.observableArrayList();
+
     private final ProduitService service = new ProduitService();
 
     private Produit selectedProduit;
@@ -55,6 +62,8 @@ public class ProduitController {
         colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         colStock.setCellValueFactory(new PropertyValueFactory<>("stock"));
 
+        pagination.currentPageIndexProperty().addListener((obs, oldIdx, newIdx) -> updateTablePage(newIdx.intValue()));
+        
         loadProduits();
     }
 
@@ -94,14 +103,33 @@ public class ProduitController {
 
     public void loadProduits() {
         try {
-            ObservableList<Produit> data =
-                    FXCollections.observableArrayList(service.select());
-
-            tableProduit.setItems(data);
-
+            allProduits = FXCollections.observableArrayList(service.select());
+            updatePagination();
         } catch (Exception e) {
+            allProduits = FXCollections.observableArrayList();
+            updatePagination();
             e.printStackTrace();
         }
+    }
+
+    private void updatePagination() {
+        int totalItems = allProduits.size();
+        int pageCount = (totalItems + ITEMS_PER_PAGE - 1) / ITEMS_PER_PAGE;
+        pagination.setPageCount(Math.max(1, pageCount));
+        pagination.setCurrentPageIndex(0);
+        updateTablePage(0);
+    }
+
+    private void updateTablePage(int pageIndex) {
+        int fromIndex = pageIndex * ITEMS_PER_PAGE;
+        int toIndex = Math.min(fromIndex + ITEMS_PER_PAGE, allProduits.size());
+        
+        if (fromIndex >= allProduits.size()) {
+            tableProduit.setItems(FXCollections.observableArrayList());
+            return;
+        }
+        
+        tableProduit.setItems(FXCollections.observableArrayList(allProduits.subList(fromIndex, toIndex)));
     }
 
     private void clearFields() {

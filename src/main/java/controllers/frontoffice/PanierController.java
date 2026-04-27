@@ -256,45 +256,41 @@ public class PanierController {
 
         String modePaiement = paiementBox.getValue();
         if ("Carte bancaire".equals(modePaiement)) {
-            afficherPopupStripeLink(client);
+            afficherPopupFlouciCheckout(client);
         } else {
             // Paiement à la livraison
             validerCommande(client);
         }
     }
 
-    private void afficherPopupStripeLink(Client client) {
+    private void afficherPopupFlouciCheckout(Client client) {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/frontoffice/stripe_link.fxml"));
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/frontoffice/flouci_checkout.fxml"));
             javafx.scene.Parent root = loader.load();
 
-            StripeLinkController controller = loader.getController();
+            FlouciCheckoutController controller = loader.getController();
             
-            // Calculer le total TTC
             double sousTotal = panierService.getSousTotal();
             double total = sousTotal + (sousTotal * 0.19);
             
-            controller.initData(client.getEmail(), total, 
-                () -> validerCommande(client), // Succès
-                () -> System.out.println("Paiement Stripe Link annulé") // Annulation
-            );
+            // On passe un ID temporaire ou 0, l'enregistrement se fait après succès
+            controller.setData(total, 0, () -> validerCommande(client));
 
             javafx.scene.Scene scene = new javafx.scene.Scene(root);
             javafx.stage.Stage stage = new javafx.stage.Stage();
-            stage.setTitle("Stripe Checkout");
+            stage.setTitle("Flouci Checkout");
             stage.setScene(scene);
             
             javafx.stage.Stage owner = (javafx.stage.Stage) confirmerBtn.getScene().getWindow();
             stage.initOwner(owner);
             stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
             
-            stage.setWidth(450);
             stage.setResizable(false);
             stage.showAndWait();
 
         } catch (java.io.IOException e) {
             e.printStackTrace();
-            showError("Erreur d'affichage", "Impossible d'afficher l'interface de paiement.");
+            showError("Erreur d'affichage", "Impossible d'afficher l'interface de paiement Flouci.");
         }
     }
 
@@ -499,11 +495,8 @@ public class PanierController {
             stage.setTitle("Facture - PHARMAX");
             stage.setScene(scene);
             stage.setMaximized(true);
-
-            // APPLICATION_MODAL bloque toute l'application (y compris les popups ContextMenu)
             stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
 
-            // Différer l'ouverture au prochain pulse JavaFX pour que les popups se ferment d'abord
             javafx.application.Platform.runLater(() -> {
                 stage.show();
                 stage.toFront();

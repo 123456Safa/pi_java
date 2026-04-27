@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.frontoffice.PaiementController"
+      spacing="20" style="-fx-background-color: white; -fx-padding: 30; -fx-border-radius: 12; -fx-background-radius: 12;">
+
+    <Label text="Paiement Sécurisé" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+
+    <Label text="Total à payer :" style="-fx-font-size: 14; -fx-text-fill: #64748b;"/>
+    <Label fx:id="montantLabel" text="0.00 DT" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #10b981;"/>
+
+    <VBox spacing="8">
+        <Label text="Numéro de carte" style="-fx-font-size: 14; -fx-text-fill: #334155;"/>
+        <TextField fx:id="carteField" promptText="0000 0000 0000 0000" style="-fx-font-size: 14; -fx-padding: 10; -fx-background-radius: 6; -fx-border-color: #cbd5e1; -fx-border-radius: 6;"/>
+    </VBox>
+
+    <HBox spacing="15">
+        <VBox spacing="8" HBox.hgrow="ALWAYS">
+            <Label text="Date d'expiration" style="-fx-font-size: 14; -fx-text-fill: #334155;"/>
+            <TextField fx:id="expField" promptText="MM/AA" style="-fx-font-size: 14; -fx-padding: 10; -fx-background-radius: 6; -fx-border-color: #cbd5e1; -fx-border-radius: 6;"/>
+        </VBox>
+        <VBox spacing="8" HBox.hgrow="ALWAYS">
+            <Label text="CVC" style="-fx-font-size: 14; -fx-text-fill: #334155;"/>
+            <TextField fx:id="cvcField" promptText="123" style="-fx-font-size: 14; -fx-padding: 10; -fx-background-radius: 6; -fx-border-color: #cbd5e1; -fx-border-radius: 6;"/>
+        </VBox>
+    </HBox>
+
+    <Label fx:id="erreurLabel" text="" style="-fx-text-fill: #ef4444; -fx-font-size: 12;"/>
+
+    <HBox alignment="CENTER" spacing="10">
+        <VBox HBox.hgrow="ALWAYS" alignment="CENTER" style="-fx-border-color: transparent transparent #cbd5e1 transparent; -fx-border-width: 1;"/>
+        <Label text="OU" style="-fx-text-fill: #94a3b8; -fx-font-size: 12; -fx-font-weight: bold;"/>
+        <VBox HBox.hgrow="ALWAYS" alignment="CENTER" style="-fx-border-color: transparent transparent #cbd5e1 transparent; -fx-border-width: 1;"/>
+    </HBox>
+
+    <Button text="Payer avec Flouci" onAction="#handlePayerFlouci" maxWidth="Infinity" 
+            style="-fx-background-color: #fcc419; -fx-text-fill: #1e293b; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12; -fx-cursor: hand; -fx-font-size: 14; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);"/>
+
+    <HBox spacing="15" alignment="CENTER_RIGHT">
+        <Button text="Annuler" onAction="#handleAnnuler" style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 10 20; -fx-cursor: hand; -fx-text-fill: #64748b;"/>
+        <Button text="Payer par Carte" onAction="#handlePayer" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 10 20; -fx-cursor: hand;"/>
+    </HBox>
+
+</VBox>

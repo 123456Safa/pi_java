@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -25,6 +26,10 @@ public class LivraisonController {
     @FXML private TableColumn<Livraison, String> telColumn;
     @FXML private TableColumn<Livraison, String> createdAtColumn;
     @FXML private Label countLabel;
+    @FXML private Pagination pagination;
+
+    private static final int ITEMS_PER_PAGE = 8;
+    private List<Livraison> allLivraisons = FXCollections.observableArrayList();
 
     private final LivraisonService livraisonService = new LivraisonService();
 
@@ -38,18 +43,22 @@ public class LivraisonController {
         adresseColumn.setCellValueFactory(new PropertyValueFactory<>("adresse"));
         telColumn.setCellValueFactory(new PropertyValueFactory<>("tel"));
         createdAtColumn.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
+        
+        pagination.currentPageIndexProperty().addListener((obs, oldIdx, newIdx) -> updateTablePage(newIdx.intValue()));
+        
         refresh();
     }
 
     public void refresh() {
         try {
-            List<Livraison> livraisons = livraisonService.select();
-            livraisonsTable.setItems(FXCollections.observableArrayList(livraisons));
+            allLivraisons = livraisonService.select();
+            updatePagination();
             if (countLabel != null) {
-                countLabel.setText(livraisons.size() + " livraison(s)");
+                countLabel.setText(allLivraisons.size() + " livraison(s)");
             }
         } catch (SQLException e) {
-            livraisonsTable.setItems(FXCollections.observableArrayList());
+            allLivraisons = FXCollections.observableArrayList();
+            updatePagination();
             Alert alert = new Alert(Alert.AlertType.ERROR,
                     "Impossible de charger les livraisons.\n" + e.getMessage(),
                     ButtonType.OK);
@@ -57,5 +66,25 @@ public class LivraisonController {
             alert.setHeaderText(null);
             alert.showAndWait();
         }
+    }
+
+    private void updatePagination() {
+        int totalItems = allLivraisons.size();
+        int pageCount = (totalItems + ITEMS_PER_PAGE - 1) / ITEMS_PER_PAGE;
+        pagination.setPageCount(Math.max(1, pageCount));
+        pagination.setCurrentPageIndex(0);
+        updateTablePage(0);
+    }
+
+    private void updateTablePage(int pageIndex) {
+        int fromIndex = pageIndex * ITEMS_PER_PAGE;
+        int toIndex = Math.min(fromIndex + ITEMS_PER_PAGE, allLivraisons.size());
+        
+        if (fromIndex >= allLivraisons.size()) {
+            livraisonsTable.setItems(FXCollections.observableArrayList());
+            return;
+        }
+        
+        livraisonsTable.setItems(FXCollections.observableArrayList(allLivraisons.subList(fromIndex, toIndex)));
     }
 }

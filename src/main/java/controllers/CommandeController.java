@@ -3,10 +3,7 @@ package controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import models.Commandes;
 import services.CommandeService;
@@ -51,6 +48,12 @@ public class CommandeController {
     @FXML
     private TableColumn<Commandes, Integer> colUtilisateurId;
 
+    @FXML
+    private Pagination pagination;
+
+    private static final int ITEMS_PER_PAGE = 8;
+    private ObservableList<Commandes> allCommandes = FXCollections.observableArrayList();
+
     private final CommandeService service = new CommandeService();
 
     private Commandes selectedCommandes;
@@ -60,11 +63,47 @@ public class CommandeController {
         // Initialize the columns
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colProduits.setCellValueFactory(new PropertyValueFactory<>("produits"));
+        
         colTotal.setCellValueFactory(new PropertyValueFactory<>("totales"));
+        colTotal.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("%.3f DT", item));
+                }
+            }
+        });
+
         colStatut.setCellValueFactory(new PropertyValueFactory<>("statut"));
+        colStatut.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.isBlank()) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    Label badge = new Label(item);
+                    badge.getStyleClass().add("status-badge");
+                    String s = item.toLowerCase();
+                    if (s.contains("attente")) badge.getStyleClass().add("status-pending");
+                    else if (s.contains("confirm")) badge.getStyleClass().add("status-confirmed");
+                    else if (s.contains("livre") || s.contains("deliver")) badge.getStyleClass().add("status-delivered");
+                    else if (s.contains("annul")) badge.getStyleClass().add("status-cancelled");
+                    setGraphic(badge);
+                    setText(null);
+                }
+            }
+        });
+
         colDate.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
         colUtilisateurId.setCellValueFactory(new PropertyValueFactory<>("utilisateurId"));
 
+        pagination.currentPageIndexProperty().addListener((obs, oldIdx, newIdx) -> updateTablePage(newIdx.intValue()));
+        
         loadCommandes();
     }
 
@@ -106,14 +145,33 @@ public class CommandeController {
 
     public void loadCommandes() {
         try {
-            ObservableList<Commandes> data =
-                    FXCollections.observableArrayList(service.select());
-
-            tableCommande.setItems(data);
-
+            allCommandes = FXCollections.observableArrayList(service.select());
+            updatePagination();
         } catch (Exception e) {
+            allCommandes = FXCollections.observableArrayList();
+            updatePagination();
             e.printStackTrace();
         }
+    }
+
+    private void updatePagination() {
+        int totalItems = allCommandes.size();
+        int pageCount = (totalItems + ITEMS_PER_PAGE - 1) / ITEMS_PER_PAGE;
+        pagination.setPageCount(Math.max(1, pageCount));
+        pagination.setCurrentPageIndex(0);
+        updateTablePage(0);
+    }
+
+    private void updateTablePage(int pageIndex) {
+        int fromIndex = pageIndex * ITEMS_PER_PAGE;
+        int toIndex = Math.min(fromIndex + ITEMS_PER_PAGE, allCommandes.size());
+        
+        if (fromIndex >= allCommandes.size()) {
+            tableCommande.setItems(FXCollections.observableArrayList());
+            return;
+        }
+        
+        tableCommande.setItems(FXCollections.observableArrayList(allCommandes.subList(fromIndex, toIndex)));
     }
 
     private void clearFields() {

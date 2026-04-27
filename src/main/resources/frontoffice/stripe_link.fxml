@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.layout.StackPane?>
+
+<VBox xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.frontoffice.StripeLinkController"
+      alignment="TOP_CENTER" spacing="20"
+      style="-fx-background-color: white; -fx-padding: 40; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #e5e7eb; -fx-border-width: 1;">
+
+    <!-- Top Logo / Title -->
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <StackPane>
+            <Circle radius="16" fill="#635bff"/>
+            <Label text="S" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18;"/>
+        </StackPane>
+        <VBox>
+            <Label text="Paiement Sécurisé" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1a1f36;"/>
+            <Label text="par Stripe" style="-fx-font-size: 11; -fx-text-fill: #8792a2;"/>
+        </VBox>
+    </HBox>
+
+    <VBox spacing="15" style="-fx-margin-top: 10;">
+        
+        <!-- Email -->
+        <VBox spacing="5">
+            <Label text="Adresse e-mail" style="-fx-text-fill: #1a1f36; -fx-font-size: 13; -fx-font-weight: bold;"/>
+            <javafx.scene.control.TextField fx:id="emailField" 
+                   style="-fx-background-color: white; -fx-border-color: #e5e7eb; -fx-border-radius: 6; -fx-padding: 10; -fx-font-size: 14;"/>
+        </VBox>
+
+        <!-- Card Information -->
+        <VBox spacing="5">
+            <Label text="Informations de la carte" style="-fx-text-fill: #1a1f36; -fx-font-size: 13; -fx-font-weight: bold;"/>
+            
+            <VBox style="-fx-border-color: #e5e7eb; -fx-border-radius: 6; -fx-background-color: white;">
+                <!-- Card Number -->
+                <javafx.scene.control.TextField fx:id="cardNumberField" promptText="Numéro de carte" 
+                       style="-fx-background-color: transparent; -fx-padding: 10; -fx-font-size: 14; -fx-border-color: transparent transparent #e5e7eb transparent; -fx-border-width: 0 0 1 0;"/>
+                
+                <!-- Exp & CVC -->
+                <HBox>
+                    <javafx.scene.control.TextField fx:id="expField" promptText="MM / AA" 
+                           style="-fx-background-color: transparent; -fx-padding: 10; -fx-font-size: 14; -fx-border-color: transparent #e5e7eb transparent transparent; -fx-border-width: 0 1 0 0;" HBox.hgrow="ALWAYS"/>
+                    <javafx.scene.control.TextField fx:id="cvcField" promptText="CVC" 
+                           style="-fx-background-color: transparent; -fx-padding: 10; -fx-font-size: 14;" HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </VBox>
+            <Label fx:id="errorLabel" text="" style="-fx-text-fill: #df1b41; -fx-font-size: 12;"/>
+        </VBox>
+
+    </VBox>
+
+    <!-- Pay Button -->
+    <Button fx:id="payerBtn" text="Payer" onAction="#handlePayer" 
+            style="-fx-background-color: #635bff; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 14 0; -fx-cursor: hand;" 
+            maxWidth="Infinity"/>
+
+    <!-- Pay without link / Cancel -->
+    <Label text="Annuler" onMouseClicked="#handleAnnuler" style="-fx-text-fill: #635bff; -fx-font-size: 14; -fx-cursor: hand; -fx-padding: 5 0;"/>
+
+    <!-- Footer -->
+    <HBox alignment="CENTER" spacing="8" style="-fx-padding: 10 0 0 0;">
+        <Label text="Propulsé par" style="-fx-text-fill: #8792a2; -fx-font-size: 11;"/>
+        <Label text="stripe" style="-fx-text-fill: #1a1f36; -fx-font-size: 11; -fx-font-weight: bold;"/>
+    </HBox>
+
+</VBox>

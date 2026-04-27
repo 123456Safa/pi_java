@@ -10,10 +10,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import models.Commandes;
@@ -63,6 +65,10 @@ public class OrdersManagementController {
     private ComboBox<String> statusFilterBox;
     @FXML
     private ComboBox<String> sortBox;
+    @FXML
+    private Pagination pagination;
+
+    private static final int ITEMS_PER_PAGE = 8;
 
     private final CommandeService commandeService = new CommandeService();
     private final ObservableList<Commandes> masterOrders = FXCollections.observableArrayList();
@@ -101,30 +107,36 @@ public class OrdersManagementController {
 
                 if (empty || item == null || item.isBlank()) {
                     setText(null);
-                    setStyle("");
+                    setGraphic(null);
                     return;
                 }
 
-                setText(item);
+                Label badge = new Label(item);
+                badge.getStyleClass().add("status-badge");
+                
                 String normalizedStatus = normalizeStatus(item);
                 if (normalizedStatus.contains("attente")) {
-                    setStyle("-fx-text-fill: #c27a00; -fx-font-weight: bold;");
+                    badge.getStyleClass().add("status-pending");
                 } else if (normalizedStatus.contains("confirm")) {
-                    setStyle("-fx-text-fill: #5d4df1; -fx-font-weight: bold;");
+                    badge.getStyleClass().add("status-confirmed");
                 } else if (normalizedStatus.contains("livre") || normalizedStatus.contains("deliver")) {
-                    setStyle("-fx-text-fill: #0b8f78; -fx-font-weight: bold;");
+                    badge.getStyleClass().add("status-delivered");
                 } else if (normalizedStatus.contains("annul")) {
-                    setStyle("-fx-text-fill: #d13b4f; -fx-font-weight: bold;");
-                } else {
-                    setStyle("-fx-text-fill: #243248; -fx-font-weight: bold;");
+                    badge.getStyleClass().add("status-cancelled");
                 }
+                
+                setGraphic(badge);
+                setText(null);
             }
         });
         createdAtColumn.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
         utilisateurIdColumn.setCellValueFactory(new PropertyValueFactory<>("utilisateurId"));
         setupFilters();
         configureActionsColumn();
-        ordersTable.setItems(sortedOrders);
+        
+        pagination.currentPageIndexProperty().addListener((obs, oldIdx, newIdx) -> updateTablePage(newIdx.intValue()));
+        
+        refresh();
     }
 
     public void setNavigator(OrderBackofficeNavigator navigator) {
@@ -141,6 +153,26 @@ public class OrdersManagementController {
             updateStatusFilterOptions();
             applyFilters();
         }
+    }
+
+    private void updatePagination() {
+        int totalItems = filteredOrders.size();
+        int pageCount = (totalItems + ITEMS_PER_PAGE - 1) / ITEMS_PER_PAGE;
+        pagination.setPageCount(Math.max(1, pageCount));
+        pagination.setCurrentPageIndex(0);
+        updateTablePage(0);
+    }
+
+    private void updateTablePage(int pageIndex) {
+        int fromIndex = pageIndex * ITEMS_PER_PAGE;
+        int toIndex = Math.min(fromIndex + ITEMS_PER_PAGE, sortedOrders.size());
+        
+        if (fromIndex >= sortedOrders.size()) {
+            ordersTable.setItems(FXCollections.observableArrayList());
+            return;
+        }
+        
+        ordersTable.setItems(FXCollections.observableArrayList(sortedOrders.subList(fromIndex, toIndex)));
     }
 
     private void setupFilters() {
@@ -187,6 +219,7 @@ public class OrdersManagementController {
 
         filteredOrders.setPredicate(commande -> matchesSearch(commande, keyword) && matchesStatus(commande, selectedStatus));
         applySort();
+        updatePagination();
         updateOrdersCount();
         updateStatusStats();
     }
