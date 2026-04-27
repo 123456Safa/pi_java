@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<HBox xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AppBarController" spacing="10" style="-fx-padding: 10; -fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;" alignment="CENTER_RIGHT">
+    <Label text="Pharmax Backoffice" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #222;" HBox.hgrow="ALWAYS" />
+    <StackPane>
+        <Button fx:id="btnNotifications" style="-fx-background-color: transparent; -fx-font-size: 18;" onAction="#onNotifications">
+            <graphic>
+                <Label text="🔔" />
+            </graphic>
+        </Button>
+        <Label fx:id="lblNotifBadge" text="0" visible="false" StackPane.alignment="TOP_RIGHT" 
+               style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 1 5; -fx-background-radius: 10;" 
+               translateX="-5" translateY="5"/>
+    </StackPane>
+    <Button fx:id="btnUser" style="-fx-background-color: transparent;" onAction="#onUser">
+        <graphic>
+            <Label text="👤" />
+        </graphic>
+    </Button>
+</HBox>
