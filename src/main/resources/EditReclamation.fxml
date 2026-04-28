@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="650.0" prefWidth="900.0" spacing="0" style="-fx-background-color: #f8f9fa;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EditReclamationController">
+
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+        <VBox spacing="24" style="-fx-padding: 40 45 40 45;">
+
+            <!-- Header -->
+            <VBox spacing="8">
+                <Label style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #0f172a;" text="✏️  Éditer la Réclamation" />
+                <Label style="-fx-font-size: 14; -fx-text-fill: #64748b;" text="Modifiez les détails de votre réclamation" />
+            </VBox>
+
+            <!-- Main Card -->
+            <VBox spacing="24" style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-radius: 14; -fx-border-width: 1; -fx-padding: 32; -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.08), 12, 0, 0, 4);">
+
+                <!-- Titre Section -->
+                <VBox spacing="10">
+                    <Label style="-fx-font-size: 13; -fx-font-weight: 600; -fx-text-fill: #1e293b;" text="TITRE *" />
+                    <TextField fx:id="titre" promptText="Résumé de votre réclamation" style="-fx-font-size: 13; -fx-padding: 12; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-control-inner-background: #f8fafc; -fx-border-width: 1;" />
+                    <HBox spacing="12" style="-fx-alignment: center-left;">
+                        <Label style="-fx-font-size: 12; -fx-text-fill: #94a3b8;" text="Entre 5 et 255 caractères" />
+                        <Label fx:id="titreCharCount" style="-fx-font-size: 12; -fx-text-fill: #6366f1; -fx-font-weight: 600;" text="0/255" />
+                    </HBox>
+                </VBox>
+
+                <!-- 🔴 error titre -->
+                <Label fx:id="titreError" style="-fx-text-fill: #ef4444; -fx-font-size: 12; -fx-font-weight: 600;" />
+
+                <!-- Description Section -->
+                <VBox spacing="10">
+                    <Label style="-fx-font-size: 13; -fx-font-weight: 600; -fx-text-fill: #1e293b;" text="DESCRIPTION *" />
+                    <TextArea fx:id="description" promptText="Décrivez votre problème en détail..." prefHeight="140" style="-fx-font-size: 13; -fx-padding: 12; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-control-inner-background: #f8fafc; -fx-border-width: 1; -fx-font-family: 'Segoe UI', 'Ubuntu';" wrapText="true" />
+                    <HBox spacing="12" style="-fx-alignment: center-left;">
+                        <Label style="-fx-font-size: 12; -fx-text-fill: #94a3b8;" text="Entre 20 et 2000 caractères" />
+                        <Label fx:id="descCharCount" style="-fx-font-size: 12; -fx-text-fill: #6366f1; -fx-font-weight: 600;" text="0/2000" />
+                    </HBox>
+                </VBox>
+
+                <!-- 🔴 error description -->
+                <Label fx:id="descError" style="-fx-text-fill: #ef4444; -fx-font-size: 12; -fx-font-weight: 600;" />
+
+                <!-- Current Status Info -->
+                <HBox spacing="16" style="-fx-background-color: #f0f4ff; -fx-border-color: #c7d2fe; -fx-border-radius: 8; -fx-border-width: 1; -fx-padding: 16; -fx-alignment: center-left;">
+                    <Label style="-fx-font-size: 13; -fx-text-fill: #1e293b; -fx-font-weight: 500;" text="ℹ️ Statut actuel :" />
+                    <Label fx:id="lblStatusActuel" style="-fx-font-size: 12; -fx-font-weight: 600; -fx-text-fill: white; -fx-background-color: #6366f1; -fx-padding: 6 14; -fx-border-radius: 20; -fx-background-radius: 20;" />
+                </HBox>
+
+                <!-- Buttons -->
+                <HBox spacing="12" style="-fx-alignment: center-left; -fx-padding: 16 0 0 0;">
+                    <Button onAction="#save" style="-fx-font-size: 13; -fx-padding: 12 28; -fx-text-fill: white; -fx-background-color: #6366f1; -fx-border-color: transparent; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: 600;" text="💾 Enregistrer les Modifications" />
+                    <Button onAction="#cancel" style="-fx-font-size: 13; -fx-padding: 12 28; -fx-text-fill: #475569; -fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-width: 1.5; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: 600;" text="✖️ Annuler" />
+                </HBox>
+
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
+
+</VBox>

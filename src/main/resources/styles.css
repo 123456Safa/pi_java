@@ -1,0 +1,78 @@
+/* Combined styles.css - Pagination + Pill Buttons */
+
+/* ============ PAGINATION STYLES ============ */
+.pagination {
+    -fx-background-color: transparent;
+    -fx-padding: 10 0 0 0;
+}
+.pagination .control-box {
+    -fx-spacing: 8;
+    -fx-alignment: center;
+}
+.pagination .button {
+    -fx-background-color: #e5e7eb; /* light gray */
+    -fx-text-fill: #374151; /* dark gray */
+    -fx-font-size: 12px;
+    -fx-pref-width: 28px;
+    -fx-pref-height: 28px;
+    -fx-background-radius: 14px;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-effect: none;
+}
+.pagination .button:hover {
+    -fx-background-color: #d1d5db; /* slightly darker */
+}
+.pagination .button:selected, .pagination .button:focused {
+    -fx-background-color: #6366f1; /* indigo/purple */
+    -fx-text-fill: white;
+}
+.pagination .increment-arrow, .pagination .decrement-arrow {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 14px;
+}
+/* Hide page information text */
+.pagination .page-information {
+    -fx-opacity: 0;
+}
+
+/* ============ PILL BUTTONS STYLES ============ */
+.pill-btn-blue {
+    -fx-background-color: white;
+    -fx-border-color: #6366f1; /* indigo */
+    -fx-text-fill: #6366f1;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-padding: 10 24;
+    -fx-cursor: hand;
+}
+
+.pill-btn-blue:hover {
+    -fx-background-color: #f5f7ff;
+    -fx-border-color: #4f46e5;
+    -fx-text-fill: #4f46e5;
+}
+
+.pill-btn-orange {
+    -fx-background-color: white;
+    -fx-border-color: #f59e0b; /* orange */
+    -fx-text-fill: #f59e0b;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-padding: 10 24;
+    -fx-cursor: hand;
+}
+
+.pill-btn-orange:hover {
+    -fx-background-color: #fff7ed;
+    -fx-border-color: #d97706;
+    -fx-text-fill: #d97706;
+}
+

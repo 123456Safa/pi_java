@@ -1,0 +1,59 @@
+/* pill-buttons.css – Modern outlined buttons with enhanced styling */
+
+.pill-btn-blue {
+    -fx-background-color: linear-gradient(to bottom, #f8faff, #ffffff);
+    -fx-border-color: #6366f1; /* indigo */
+    -fx-text-fill: #6366f1;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-padding: 10 24;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.15), 6, 0, 0, 2);
+}
+
+.pill-btn-blue:hover {
+    -fx-background-color: linear-gradient(to bottom, #eff6ff, #f5f7ff);
+    -fx-border-color: #4f46e5;
+    -fx-text-fill: #4f46e5;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.3), 10, 0, 0, 4);
+}
+
+.pill-btn-blue:pressed {
+    -fx-background-color: linear-gradient(to bottom, #e0e7ff, #f0f4ff);
+    -fx-border-color: #4f46e5;
+    -fx-text-fill: #4f46e5;
+    -fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.2), 6, 0, 0, 2);
+}
+
+.pill-btn-orange {
+    -fx-background-color: linear-gradient(to bottom, #fffbf5, #ffffff);
+    -fx-border-color: #f59e0b; /* orange */
+    -fx-text-fill: #f59e0b;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-padding: 10 24;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(245, 158, 11, 0.15), 6, 0, 0, 2);
+}
+
+.pill-btn-orange:hover {
+    -fx-background-color: linear-gradient(to bottom, #fff7ed, #ffedd5);
+    -fx-border-color: #d97706;
+    -fx-text-fill: #d97706;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(217, 119, 6, 0.3), 10, 0, 0, 4);
+}
+
+.pill-btn-orange:pressed {
+    -fx-background-color: linear-gradient(to bottom, #fed7aa, #fecaca);
+    -fx-border-color: #d97706;
+    -fx-text-fill: #d97706;
+    -fx-effect: dropshadow(gaussian, rgba(217, 119, 6, 0.2), 6, 0, 0, 2);
+}
