@@ -12,6 +12,11 @@ import model.Produit;
 import model.Categorie;
 import service.ProduitService;
 import service.CategorieService;
+import service.OpenFDAService;
+import javafx.concurrent.Task;
+import javafx.application.Platform;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -49,6 +54,9 @@ public class ProduitFormController {
     private ProduitController parentController;
     private Produit produitToEdit = null;
     private boolean isEditMode = false;
+    private boolean isFdaValidated = false;
+    private PauseTransition debounce = new PauseTransition(Duration.millis(700));
+    private Task<Boolean> currentFdaTask = null;
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -256,12 +264,66 @@ public class ProduitFormController {
                 showError("Validation", "Veuillez sélectionner une image pour le produit");
                 return;
             }
-            if (imageUrl.length() > 500) {
-                showError("Validation", "L'URL de l'image ne peut pas dépasser 500 caractères");
-                return;
+            
+            // --- openFDA Verification ---
+            // Only verify if the name has changed or if it's a new product
+            if (!isEditMode || !nom.equalsIgnoreCase(produitToEdit.getNom())) {
+                
+                // Si déjà validé proactivement, on passe direct
+                if (isFdaValidated && nom.equalsIgnoreCase(tfNom.getText().trim())) {
+                    enregistrerProduit(nom, description, prix, imageUrl, quantite);
+                    return;
+                }
+
+                btnAjouter.setDisable(true);
+                btnAjouter.setText("🔄 Vérification en cours...");
+                
+                final double finalPrix = prix;
+                final int finalQuantite = quantite;
+
+                Task<Boolean> fdaTask = new Task<>() {
+                    @Override
+                    protected Boolean call() throws Exception {
+                        return OpenFDAService.isProductValid(nom);
+                    }
+                };
+
+                fdaTask.setOnSucceeded(e -> {
+                    btnAjouter.setDisable(false);
+                    btnAjouter.setText(isEditMode ? "Modifier" : "Ajouter");
+                    
+                    if (fdaTask.getValue()) {
+                        isFdaValidated = true;
+                        // 🟢 succès
+                        enregistrerProduit(nom, description, finalPrix, imageUrl, finalQuantite);
+                    } else {
+                        isFdaValidated = false;
+                        // 🔴 erreur
+                        showError("Validation openFDA", "Le produit '" + nom + "' n'a pas été trouvé dans la base de données de la FDA. Veuillez vérifier l'orthographe.");
+                        tfNom.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+                    }
+                });
+
+                fdaTask.setOnFailed(e -> {
+                    btnAjouter.setDisable(false);
+                    btnAjouter.setText(isEditMode ? "Modifier" : "Ajouter");
+                    showError("Erreur de connexion", "Impossible de vérifier le produit avec openFDA. Veuillez vérifier votre connexion internet.");
+                });
+
+                new Thread(fdaTask).start();
+            } else {
+                // If name hasn't changed in edit mode, proceed directly
+                enregistrerProduit(nom, description, prix, imageUrl, quantite);
             }
 
-            // Créer ou obtenir le produit
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Erreur", "Une erreur inattendue est survenue: " + e.getMessage());
+        }
+    }
+
+    private void enregistrerProduit(String nom, String description, double prix, String imageUrl, int quantite) {
+        try {
             Produit produit = isEditMode ? produitToEdit : new Produit();
             produit.setNom(nom);
             produit.setDescription(description);
@@ -270,45 +332,36 @@ public class ProduitFormController {
             produit.setStatut(cbStatut.getValue());
             produit.setQuantite(quantite);
 
-            // Obtenir l'ID de catégorie depuis la catégorie sélectionnée
             Categorie categorieSelectionnee = cbCategorie.getValue();
             if (categorieSelectionnee != null) {
                 produit.setCategorieId(categorieSelectionnee.getId());
             }
 
-            // Convertir la date d'expiration
             if (dpDateExpiration.getValue() != null) {
                 Date date = java.sql.Date.valueOf(dpDateExpiration.getValue());
                 produit.setDateExpiration(date);
             }
 
-            // Si en mode ajout, ajouter la date de création actuelle
             if (!isEditMode) {
                 produit.setCreatedAt(new Date());
                 produitService.ajouter(produit);
                 showSuccess("Succès", "Produit ajouté avec succès!");
             } else {
-                // Si en mode édition, mettre à jour
                 produitService.modifier(produit);
                 showSuccess("Succès", "Produit modifié avec succès!");
             }
 
-            // Rafraîchir la table du contrôleur parent
             if (parentController != null) {
                 parentController.rafraichirTable();
             }
-
-            // Fermer la fenêtre
             stage.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
             showError("Erreur base de données", "Une erreur est survenue: " + e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Erreur", "Une erreur inattendue est survenue: " + e.getMessage());
         }
     }
+
 
     @FXML
     private void onAnnuler(ActionEvent event) {
@@ -426,10 +479,16 @@ public class ProduitFormController {
         tfNom.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal) {
                 validerNom();
+                verifierNomFDA();
             }
         });
         tfNom.textProperty().addListener((obs, oldVal, newVal) -> {
             validerNom();
+            isFdaValidated = false;
+            
+            // Debounce logic for real-time validation
+            debounce.setOnFinished(event -> verifierNomFDA());
+            debounce.playFromStart();
         });
 
         // Validation de la description
@@ -533,10 +592,66 @@ public class ProduitFormController {
             lblNomValidation.getStyleClass().add("validation-error");
             tfNom.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
         } else {
-            lblNomValidation.setText("✓ Nom valide");
+            lblNomValidation.setText("✓ Format valide");
             lblNomValidation.getStyleClass().add("validation-success");
             tfNom.setStyle("-fx-border-color: #28a745; -fx-border-width: 2;");
         }
+    }
+
+    private void verifierNomFDA() {
+        String nom = tfNom.getText().trim();
+        if (nom.length() < 3) {
+            isFdaValidated = false;
+            return;
+        }
+
+        // Annuler la tâche en cours si elle existe
+        if (currentFdaTask != null && currentFdaTask.isRunning()) {
+            currentFdaTask.cancel();
+        }
+
+        // Si on est en mode édition et que le nom n'a pas changé, pas besoin de vérifier
+        if (isEditMode && nom.equalsIgnoreCase(produitToEdit.getNom())) {
+            isFdaValidated = true;
+            lblNomValidation.setText("✓ Produit déjà vérifié (FDA)");
+            return;
+        }
+
+        lblNomValidation.setText("🔄 Vérification en cours...");
+        lblNomValidation.getStyleClass().removeAll("validation-error", "validation-success");
+
+        currentFdaTask = new Task<>() {
+            @Override
+            protected Boolean call() throws Exception {
+                return OpenFDAService.isProductValid(nom);
+            }
+        };
+
+        currentFdaTask.setOnSucceeded(e -> {
+            if (currentFdaTask.getValue()) {
+                isFdaValidated = true;
+                lblNomValidation.setText("✅ Produit validé par la FDA");
+                lblNomValidation.getStyleClass().add("validation-success");
+                tfNom.setStyle("-fx-border-color: #28a745; -fx-border-width: 2;");
+            } else {
+                isFdaValidated = false;
+                lblNomValidation.setText("❌ Produit non trouvé dans la FDA");
+                lblNomValidation.getStyleClass().add("validation-error");
+                tfNom.setStyle("-fx-border-color: #dc3545; -fx-border-width: 2;");
+            }
+        });
+
+        currentFdaTask.setOnFailed(e -> {
+            if (!currentFdaTask.isCancelled()) {
+                isFdaValidated = false;
+                lblNomValidation.setText("⚠ Erreur de connexion FDA");
+                lblNomValidation.getStyleClass().add("validation-error");
+            }
+        });
+
+        Thread thread = new Thread(currentFdaTask);
+        thread.setDaemon(true);
+        thread.start();
     }
 
     private void validerDescription() {

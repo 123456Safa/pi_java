@@ -7,23 +7,7 @@
     <list default="true" id="42332132-b611-4429-ab64-8d6caab07312" name="Changes" comment="gestion_produit">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/CategorieController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/CategorieController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/ProduitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/ProduitController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controllers/ProduitFormController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/ProduitFormController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/CategorieService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/CategorieService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/AccueilFront.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/AccueilFront.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/AccueilFront.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/AccueilFront.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/Categorie.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Categorie.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/CategorieForm.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/CategorieForm.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/Dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Dashboard.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/Produit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Produit.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/ProduitDetail.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/ProduitDetail.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/ProduitForm.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/ProduitForm.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/Sidebar.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Sidebar.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/categoriefront.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/categoriefront.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/produitdetail.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/produitdetail.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/produitfront.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/produitfront.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -189,7 +173,8 @@
       <workItem from="1777317891509" duration="353000" />
       <workItem from="1777318257024" duration="742000" />
       <workItem from="1777319278463" duration="6573000" />
-      <workItem from="1777325958002" duration="7304000" />
+      <workItem from="1777325958002" duration="7937000" />
+      <workItem from="1777364471135" duration="2375000" />
     </task>
     <task id="LOCAL-00001" summary="vesrion_1">
       <option name="closed" value="true" />
@@ -263,7 +248,31 @@
       <option name="project" value="LOCAL" />
       <updated>1777149580101</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="gestion_produit">
+      <option name="closed" value="true" />
+      <created>1777333346123</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1777333346123</updated>
+    </task>
+    <task id="LOCAL-00011" summary="gestion_produit">
+      <option name="closed" value="true" />
+      <created>1777333369108</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1777333369108</updated>
+    </task>
+    <task id="LOCAL-00012" summary="gestion_produit">
+      <option name="closed" value="true" />
+      <created>1777333428482</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1777333428482</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
