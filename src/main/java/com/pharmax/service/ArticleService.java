@@ -1,13 +1,17 @@
 package com.pharmax.service;
 
-import com.pharmax.model.Article;
-import com.pharmax.util.DatabaseConnection;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
+import com.pharmax.model.Article;
+import com.pharmax.util.DatabaseConnection;
 
 /**
  * ArticleService — CRUD operations for Article entities via JDBC.
@@ -25,17 +29,18 @@ public class ArticleService {
     /**
      * Create and persist a new article in the database.
      */
-    public Article create(String titre, String contenu, String image) {
-        String sql = "INSERT INTO article (titre, contenu, image, created_at, updated_at, likes, is_draft) VALUES (?, ?, ?, ?, ?, 0, 1)";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+    public Article create(String titre, String contenu, String contenuEn, String image) {
+        String sql = "INSERT INTO article (titre, contenu, contenu_en, image, created_at, updated_at, likes, is_draft) VALUES (?, ?, ?, ?, ?, ?, 0, 1)";
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             Timestamp now = Timestamp.valueOf(LocalDateTime.now());
             ps.setString(1, titre);
             ps.setString(2, contenu);
-            ps.setString(3, image);
-            ps.setTimestamp(4, now);
+            ps.setString(3, contenuEn);
+            ps.setString(4, image);
             ps.setTimestamp(5, now);
+            ps.setTimestamp(6, now);
             ps.executeUpdate();
 
             ResultSet keys = ps.getGeneratedKeys();
@@ -45,6 +50,7 @@ public class ArticleService {
             }
             article.setTitre(titre);
             article.setContenu(contenu);
+            article.setContenuEn(contenuEn);
             article.setImage(image);
             article.setDateCreation(LocalDateTime.now());
             article.setDateModification(LocalDateTime.now());
@@ -63,8 +69,8 @@ public class ArticleService {
      */
     public Article find(int id) {
         String sql = "SELECT * FROM article WHERE id = ?";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
@@ -99,8 +105,8 @@ public class ArticleService {
     public List<Article> findPublishedPaginated(int page, int itemsPerPage) {
         String sql = "SELECT * FROM article WHERE is_draft = 0 ORDER BY created_at DESC LIMIT ? OFFSET ?";
         List<Article> result = new ArrayList<>();
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
             ps.setInt(1, itemsPerPage);
             ps.setInt(2, (page - 1) * itemsPerPage);
@@ -123,8 +129,8 @@ public class ArticleService {
         }
         String sql = "SELECT * FROM article WHERE is_draft = 0 AND (titre LIKE ? OR contenu LIKE ?) ORDER BY created_at DESC";
         List<Article> result = new ArrayList<>();
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
             String pattern = "%" + query + "%";
             ps.setString(1, pattern);
@@ -144,8 +150,8 @@ public class ArticleService {
      */
     public int countPublished() {
         String sql = "SELECT COUNT(*) FROM article WHERE is_draft = 0";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             Statement st = cnx.createStatement();
+        Connection cnx = DatabaseConnection.getInstance();
+        try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
 
             if (rs.next()) {
@@ -162,16 +168,17 @@ public class ArticleService {
     /**
      * Update an existing article.
      */
-    public Article update(int id, String titre, String contenu, String image) {
-        String sql = "UPDATE article SET titre = ?, contenu = ?, image = ?, updated_at = ? WHERE id = ?";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+    public Article update(int id, String titre, String contenu, String contenuEn, String image) {
+        String sql = "UPDATE article SET titre = ?, contenu = ?, contenu_en = ?, image = ?, updated_at = ? WHERE id = ?";
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
             ps.setString(1, titre);
             ps.setString(2, contenu);
-            ps.setString(3, image);
-            ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
-            ps.setInt(5, id);
+            ps.setString(3, contenuEn);
+            ps.setString(4, image);
+            ps.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
+            ps.setInt(6, id);
             int affected = ps.executeUpdate();
             if (affected > 0) {
                 return find(id);
@@ -187,8 +194,8 @@ public class ArticleService {
      */
     public Article togglePublish(int id) {
         String sql = "UPDATE article SET is_draft = NOT is_draft, updated_at = ? WHERE id = ?";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
             ps.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
             ps.setInt(2, id);
@@ -205,8 +212,8 @@ public class ArticleService {
      */
     public Article like(int id) {
         String sql = "UPDATE article SET likes = likes + 1 WHERE id = ?";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             ps.executeUpdate();
@@ -222,8 +229,8 @@ public class ArticleService {
      */
     public Article unlike(int id) {
         String sql = "UPDATE article SET likes = GREATEST(likes - 1, 0) WHERE id = ?";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             ps.executeUpdate();
@@ -241,10 +248,11 @@ public class ArticleService {
      * Also deletes associated comments and archives to satisfy FK constraints.
      */
     public boolean delete(int id) {
+        Connection cnx = DatabaseConnection.getInstance();
+
         // 1️⃣ Delete associated archives (archive_de_commentaire.article_id)
         String deleteArchives = "DELETE FROM archive_de_commentaire WHERE article_id = ?";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(deleteArchives)) {
+        try (PreparedStatement ps = cnx.prepareStatement(deleteArchives)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -253,8 +261,7 @@ public class ArticleService {
 
         // 2️⃣ Delete associated comments (commentaire.article_id)
         String deleteComments = "DELETE FROM commentaire WHERE article_id = ?";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(deleteComments)) {
+        try (PreparedStatement ps = cnx.prepareStatement(deleteComments)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -263,8 +270,7 @@ public class ArticleService {
 
         // 3️⃣ Delete the article itself
         String sql = "DELETE FROM article WHERE id = ?";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setInt(1, id);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -282,8 +288,8 @@ public class ArticleService {
      */
     private List<Article> executeQueryList(String sql) {
         List<Article> result = new ArrayList<>();
-        try (Connection cnx = DatabaseConnection.getInstance();
-             Statement st = cnx.createStatement();
+        Connection cnx = DatabaseConnection.getInstance();
+        try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {

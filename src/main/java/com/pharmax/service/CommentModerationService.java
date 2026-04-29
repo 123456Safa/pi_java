@@ -104,11 +104,16 @@ public class CommentModerationService {
                 .build();
 
         try (okhttp3.Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful() || response.body() == null) {
+            if (!response.isSuccessful()) {
                 return false;
             }
 
-            String responseBody = response.body().string();
+            okhttp3.ResponseBody body = response.body();
+            if (body == null) {
+                return false;
+            }
+
+            String responseBody = body.string();
             com.google.gson.JsonArray outerArray = com.google.gson.JsonParser
                     .parseString(responseBody).getAsJsonArray();
 

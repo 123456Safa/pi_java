@@ -19,7 +19,7 @@ public class Article {
     private LocalDateTime dateModification;
     private int likes;
     private boolean isDraft;
-    private List<Commentaire> commentaires;
+    private final List<Commentaire> commentaires;
 
     // ─── Constructor ───────────────────────────────────────────
     public Article() {

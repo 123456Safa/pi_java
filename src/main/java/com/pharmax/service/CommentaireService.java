@@ -1,13 +1,24 @@
 package com.pharmax.service;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.pharmax.model.Article;
 import com.pharmax.model.Commentaire;
 import com.pharmax.model.CommentaireArchive;
 import com.pharmax.util.DatabaseConnection;
-
-import java.sql.*;
-import java.time.LocalDateTime;
-import java.util.*;
 
 /**
  * CommentaireService — CRUD operations for Commentaire and CommentaireArchive
@@ -97,8 +108,8 @@ public class CommentaireService {
      */
     public Commentaire createDirect(String contenu, Article article, String statut) {
         String sql = "INSERT INTO commentaire (contenu, created_at, statut, article_id) VALUES (?, ?, ?, ?)";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             Timestamp now = Timestamp.valueOf(LocalDateTime.now());
             ps.setString(1, contenu);
@@ -132,8 +143,8 @@ public class CommentaireService {
 
     public Commentaire find(int id) {
         String sql = "SELECT * FROM commentaire WHERE id = ?";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
@@ -154,8 +165,8 @@ public class CommentaireService {
     public List<Commentaire> findByArticle(Article article) {
         String sql = "SELECT * FROM commentaire WHERE article_id = ? ORDER BY created_at DESC";
         List<Commentaire> result = new ArrayList<>();
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
             ps.setInt(1, article.getId());
             ResultSet rs = ps.executeQuery();
@@ -173,8 +184,8 @@ public class CommentaireService {
     public List<Commentaire> findByStatut(String statut) {
         String sql = "SELECT * FROM commentaire WHERE statut = ? ORDER BY created_at DESC";
         List<Commentaire> result = new ArrayList<>();
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
             ps.setString(1, statut);
             ResultSet rs = ps.executeQuery();
@@ -210,15 +221,15 @@ public class CommentaireService {
         sql.append(" WHERE id = ?");
         params.add(id);
 
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql.toString())) {
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql.toString())) {
 
             for (int i = 0; i < params.size(); i++) {
                 Object param = params.get(i);
-                if (param instanceof String) {
-                    ps.setString(i + 1, (String) param);
-                } else if (param instanceof Integer) {
-                    ps.setInt(i + 1, (Integer) param);
+                if (param instanceof String str) {
+                    ps.setString(i + 1, str);
+                } else if (param instanceof Integer intVal) {
+                    ps.setInt(i + 1, intVal);
                 }
             }
             ps.executeUpdate();
@@ -234,8 +245,8 @@ public class CommentaireService {
 
     public boolean delete(int id) {
         String sql = "DELETE FROM commentaire WHERE id = ?";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             return ps.executeUpdate() > 0;
@@ -255,8 +266,8 @@ public class CommentaireService {
 
         String placeholders = String.join(",", Collections.nCopies(ids.size(), "?"));
         String sql = "DELETE FROM commentaire WHERE id IN (" + placeholders + ")";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
             for (int i = 0; i < ids.size(); i++) {
                 ps.setInt(i + 1, ids.get(i));
@@ -279,8 +290,8 @@ public class CommentaireService {
                                               String userName, String userEmail, String reason) {
         String sql = "INSERT INTO archive_de_commentaire (contenu, date_publication, user_name, user_email, reason, article_id, archived_at) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             Timestamp now = Timestamp.valueOf(LocalDateTime.now());
             ps.setString(1, contenu);
@@ -318,8 +329,8 @@ public class CommentaireService {
 
     public CommentaireArchive findArchive(int id) {
         String sql = "SELECT * FROM archive_de_commentaire WHERE id = ?";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
@@ -335,8 +346,8 @@ public class CommentaireService {
     public List<CommentaireArchive> findAllArchives() {
         String sql = "SELECT * FROM archive_de_commentaire ORDER BY archived_at DESC";
         List<CommentaireArchive> result = new ArrayList<>();
-        try (Connection cnx = DatabaseConnection.getInstance();
-             Statement st = cnx.createStatement();
+        Connection cnx = DatabaseConnection.getInstance();
+        try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
@@ -350,8 +361,8 @@ public class CommentaireService {
 
     public boolean deleteArchive(int id) {
         String sql = "DELETE FROM archive_de_commentaire WHERE id = ?";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             return ps.executeUpdate() > 0;
@@ -366,8 +377,8 @@ public class CommentaireService {
 
         String placeholders = String.join(",", Collections.nCopies(ids.size(), "?"));
         String sql = "DELETE FROM archive_de_commentaire WHERE id IN (" + placeholders + ")";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        Connection cnx = DatabaseConnection.getInstance();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
             for (int i = 0; i < ids.size(); i++) {
                 ps.setInt(i + 1, ids.get(i));
@@ -389,10 +400,10 @@ public class CommentaireService {
     public Map<String, Integer> getStatistics() {
         Map<String, Integer> stats = new LinkedHashMap<>();
         int valide = 0, bloque = 0, enAttente = 0, total = 0;
+        Connection cnx = DatabaseConnection.getInstance();
 
         String sql = "SELECT statut, COUNT(*) as cnt FROM commentaire GROUP BY statut";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             Statement st = cnx.createStatement();
+        try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
@@ -400,9 +411,10 @@ public class CommentaireService {
                 int count = rs.getInt("cnt");
                 total += count;
                 switch (statut) {
-                    case "valide": valide = count; break;
-                    case "bloque": bloque = count; break;
-                    case "en_attente": enAttente = count; break;
+                    case "valide" -> valide = count;
+                    case "bloque" -> bloque = count;
+                    case "en_attente" -> enAttente = count;
+                    default -> {}
                 }
             }
         } catch (SQLException e) {
@@ -412,8 +424,7 @@ public class CommentaireService {
         // Count archives
         int archiveCount = 0;
         String archiveSql = "SELECT COUNT(*) FROM archive_de_commentaire";
-        try (Connection cnx = DatabaseConnection.getInstance();
-             Statement st = cnx.createStatement();
+        try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(archiveSql)) {
 
             if (rs.next()) {
@@ -442,8 +453,8 @@ public class CommentaireService {
      */
     private List<Commentaire> executeCommentQueryList(String sql) {
         List<Commentaire> result = new ArrayList<>();
-        try (Connection cnx = DatabaseConnection.getInstance();
-             Statement st = cnx.createStatement();
+        Connection cnx = DatabaseConnection.getInstance();
+        try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {

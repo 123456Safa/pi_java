@@ -1,0 +1,687 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PharmaX Modern Design System — Premium Animated Green Pharmacy Theme
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/* ─── COLOR PALETTE ────────────────────────────────────────────────────────── */
+.root {
+    -pharmax-green: #2d8659;
+    -pharmax-green-light: #4a9f6f;
+    -pharmax-green-dark: #1f5e42;
+    -pharmax-accent: #0fb97a;
+    -pharmax-white: #ffffff;
+    -pharmax-bg: #f0f2f5;
+    -pharmax-surface: #fafbfc;
+    -pharmax-text: #1a202c;
+    -pharmax-text-secondary: #718096;
+    -pharmax-border: #e2e8f0;
+    -pharmax-success: #27ae60;
+    -pharmax-warning: #f39c12;
+    -pharmax-danger: #e74c3c;
+    -pharmax-info: #3498db;
+    -pharmax-shadow-sm: dropshadow(three-pass-box, rgba(0,0,0,0.04), 3, 0, 0, 1);
+    -pharmax-shadow-md: dropshadow(three-pass-box, rgba(0,0,0,0.08), 6, 0, 0, 3);
+    -pharmax-shadow-lg: dropshadow(three-pass-box, rgba(0,0,0,0.12), 10, 0, 0, 5);
+    -pharmax-shadow-xl: dropshadow(three-pass-box, rgba(0,0,0,0.18), 16, 0, 0, 8);
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-font-size: 13;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GENERAL STYLES
+   ═════════════════════════════════════════════════════════════════════════ */
+
+VBox, HBox, StackPane, BorderPane {
+    -fx-background-color: transparent;
+}
+
+Label {
+    -fx-text-fill: -pharmax-text;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-font-size: 13;
+}
+
+Button {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-font-size: 13;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   NAVBAR / HEADER — Glassmorphism style
+   ═════════════════════════════════════════════════════════════════════════ */
+
+.pharmax-navbar {
+    -fx-background-color: linear-gradient(to right, #1f5e42, #2d8659, #4a9f6f);
+    -fx-padding: 0 10;
+    -fx-spacing: 0;
+    -fx-min-height: 60;
+    -fx-alignment: center-left;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 10, 0, 0, 3);
+}
+
+.pharmax-navbar .label {
+    -fx-text-fill: white;
+    -fx-font-size: 22;
+    -fx-font-weight: bold;
+    -fx-padding: 0 30 0 20;
+}
+
+.nav-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255,255,255,0.75);
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-font-size: 13;
+    -fx-font-weight: 600;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-color: transparent;
+    -fx-background-radius: 8 8 0 0;
+}
+
+.nav-btn:hover {
+    -fx-text-fill: white;
+    -fx-background-color: rgba(255,255,255,0.12);
+}
+
+.nav-btn-active {
+    -fx-text-fill: white;
+    -fx-border-color: white;
+    -fx-background-color: rgba(255,255,255,0.18);
+    -fx-font-weight: bold;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BUTTONS — Modern with depth
+   ═════════════════════════════════════════════════════════════════════════ */
+
+.btn-primary {
+    -fx-background-color: linear-gradient(to bottom, #2d8659, #1f5e42);
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-padding: 10 24;
+    -fx-cursor: hand;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(45, 134, 89, 0.35), 6, 0, 0, 3);
+}
+
+.btn-primary:hover {
+    -fx-background-color: linear-gradient(to bottom, #4a9f6f, #2d8659);
+    -fx-effect: dropshadow(three-pass-box, rgba(45, 134, 89, 0.45), 10, 0, 0, 4);
+}
+
+.btn-primary:pressed {
+    -fx-background-color: #1f5e42;
+    -fx-effect: dropshadow(three-pass-box, rgba(45, 134, 89, 0.2), 3, 0, 0, 1);
+}
+
+.btn-secondary {
+    -fx-background-color: white;
+    -fx-text-fill: -pharmax-green;
+    -fx-border-color: -pharmax-green;
+    -fx-border-width: 2;
+    -fx-font-weight: 700;
+    -fx-padding: 9 22;
+    -fx-cursor: hand;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-effect: -pharmax-shadow-sm;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: rgba(45, 134, 89, 0.08);
+    -fx-effect: -pharmax-shadow-md;
+}
+
+.btn-danger {
+    -fx-background-color: linear-gradient(to bottom, #e74c3c, #c0392b);
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(231, 76, 60, 0.3), 6, 0, 0, 3);
+}
+
+.btn-danger:hover {
+    -fx-background-color: linear-gradient(to bottom, #ff6b5a, #e74c3c);
+    -fx-effect: dropshadow(three-pass-box, rgba(231, 76, 60, 0.45), 10, 0, 0, 4);
+}
+
+.btn-success {
+    -fx-background-color: linear-gradient(to bottom, #27ae60, #1e8449);
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(39, 174, 96, 0.3), 6, 0, 0, 3);
+}
+
+.btn-warning {
+    -fx-background-color: linear-gradient(to bottom, #f39c12, #d68910);
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.btn-info {
+    -fx-background-color: linear-gradient(to bottom, #3498db, #2980b9);
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.btn-icon {
+    -fx-background-color: transparent;
+    -fx-text-fill: -pharmax-text-secondary;
+    -fx-font-size: 16;
+    -fx-cursor: hand;
+    -fx-padding: 6 8;
+    -fx-background-radius: 50;
+}
+
+.btn-icon:hover {
+    -fx-background-color: rgba(45, 134, 89, 0.1);
+    -fx-text-fill: -pharmax-green;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INPUT FIELDS — Refined
+   ═════════════════════════════════════════════════════════════════════════ */
+
+TextField, TextArea {
+    -fx-border-color: -pharmax-border;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 8;
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-padding: 10 14;
+    -fx-text-fill: -pharmax-text;
+    -fx-control-inner-background: white;
+    -fx-focus-color: -pharmax-green;
+    -fx-faint-focus-color: rgba(45, 134, 89, 0.12);
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-font-size: 13;
+}
+
+TextField:focused, TextArea:focused {
+    -fx-border-color: -pharmax-green;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(three-pass-box, rgba(45, 134, 89, 0.15), 6, 0, 0, 0);
+}
+
+TextField:disabled, TextArea:disabled {
+    -fx-background-color: #f5f7fa;
+    -fx-text-fill: -pharmax-text-secondary;
+}
+
+ComboBox {
+    -fx-border-color: -pharmax-border;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-background-color: white;
+    -fx-padding: 8 10;
+    -fx-focus-color: -pharmax-green;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FRONT OFFICE — BLOG CARD VIEW with flip effect
+   ═════════════════════════════════════════════════════════════════════════ */
+
+.front-header {
+    -fx-background-color: linear-gradient(to right, #1f5e42, #2d8659, #4a9f6f);
+    -fx-padding: 35 30 35 30;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, 3);
+}
+
+.front-header .label {
+    -fx-text-fill: white;
+    -fx-font-size: 28;
+    -fx-font-weight: bold;
+}
+
+.article-card {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+    -fx-padding: 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.06), 8, 0, 0, 4);
+}
+
+.article-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(45, 134, 89, 0.2), 16, 0, 0, 6);
+}
+
+.article-card-back {
+    -fx-background-color: linear-gradient(to bottom, #f0fdf4, white);
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(45, 134, 89, 0.15), 12, 0, 0, 5);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   COMMENTS SECTION
+   ═════════════════════════════════════════════════════════════════════════ */
+
+.comment-section {
+    -fx-border-width: 1 0 0 0;
+    -fx-border-color: -pharmax-border;
+    -fx-padding: 20 0 0 0;
+}
+
+.comment-item {
+    -fx-border-color: -pharmax-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-effect: -pharmax-shadow-sm;
+}
+
+.comment-author {
+    -fx-font-weight: bold;
+    -fx-text-fill: -pharmax-green-dark;
+}
+
+.comment-date {
+    -fx-text-fill: -pharmax-text-secondary;
+    -fx-font-size: 11;
+}
+
+.comment-text {
+    -fx-text-fill: -pharmax-text;
+    -fx-font-size: 13;
+    -fx-line-spacing: 1.4;
+    -fx-wrap-text: true;
+}
+
+.status-badge {
+    -fx-padding: 4 12;
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+    -fx-font-size: 11;
+    -fx-font-weight: 700;
+}
+
+.status-valide {
+    -fx-background-color: rgba(39, 174, 96, 0.15);
+    -fx-text-fill: -pharmax-success;
+}
+
+.status-bloque {
+    -fx-background-color: rgba(231, 76, 60, 0.15);
+    -fx-text-fill: -pharmax-danger;
+}
+
+.status-attente {
+    -fx-background-color: rgba(243, 156, 18, 0.15);
+    -fx-text-fill: -pharmax-warning;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ADMIN SECTION — MODERN TABLES
+   ═════════════════════════════════════════════════════════════════════════ */
+
+.admin-header {
+    -fx-background-color: white;
+    -fx-padding: 20 25;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: -pharmax-border;
+}
+
+.admin-header .label {
+    -fx-text-fill: -pharmax-green-dark;
+    -fx-font-size: 22;
+    -fx-font-weight: bold;
+}
+
+TableView {
+    -fx-background-color: white;
+    -fx-border-color: -pharmax-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: -pharmax-shadow-sm;
+}
+
+.table-row-cell {
+    -fx-padding: 10 12;
+    -fx-border-color: transparent transparent #f0f2f5 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-color: white;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #fafbfc;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: rgba(45, 134, 89, 0.06);
+}
+
+.table-row-cell:selected {
+    -fx-background-color: rgba(45, 134, 89, 0.15);
+}
+
+.column-header {
+    -fx-background-color: linear-gradient(to bottom, #f8f9fa, #f0f2f5);
+    -fx-border-color: -pharmax-border;
+    -fx-border-width: 0 0 2 0;
+    -fx-padding: 14 12;
+    -fx-font-weight: 700;
+    -fx-font-size: 12;
+    -fx-text-fill: -pharmax-text;
+}
+
+.column-header .label {
+    -fx-text-fill: #4a5568;
+    -fx-font-weight: 700;
+    -fx-font-size: 11;
+    -fx-text-overrun: clip;
+}
+
+.check-box {
+    -fx-cursor: hand;
+}
+
+.check-box .box {
+    -fx-border-color: -pharmax-border;
+    -fx-border-width: 2;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-background-color: white;
+    -fx-padding: 3;
+}
+
+.check-box:selected .box {
+    -fx-background-color: -pharmax-green;
+    -fx-border-color: -pharmax-green;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: white;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FORM
+   ═════════════════════════════════════════════════════════════════════════ */
+
+.form-section {
+    -fx-border-color: -pharmax-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-background-color: white;
+    -fx-padding: 24;
+    -fx-effect: -pharmax-shadow-md;
+}
+
+.form-title {
+    -fx-text-fill: -pharmax-text;
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 15 0;
+}
+
+.form-label {
+    -fx-text-fill: -pharmax-text;
+    -fx-font-weight: 600;
+    -fx-font-size: 12;
+}
+
+.form-error {
+    -fx-text-fill: -pharmax-danger;
+    -fx-font-size: 11;
+    -fx-padding: 3 0 0 0;
+}
+
+.form-success {
+    -fx-background-color: rgba(39, 174, 96, 0.1);
+    -fx-text-fill: -pharmax-success;
+    -fx-border-color: -pharmax-success;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 10 14;
+    -fx-font-size: 12;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   STAT CARDS — Modern glass design
+   ═════════════════════════════════════════════════════════════════════════ */
+
+.stat-card {
+    -fx-background-color: white;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 18;
+    -fx-effect: -pharmax-shadow-sm;
+}
+
+.stat-card:hover {
+    -fx-effect: -pharmax-shadow-md;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCRAPER SECTION
+   ═════════════════════════════════════════════════════════════════════════ */
+
+.scraper-container {
+    -fx-background-color: #1e1e2e;
+    -fx-text-fill: #cdd6f4;
+}
+
+.scraper-title {
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+    -fx-text-fill: #cdd6f4;
+}
+
+.scraper-subtitle {
+    -fx-font-size: 13;
+    -fx-text-fill: #a6adc8;
+}
+
+.scraper-input {
+    -fx-background-color: #313244;
+    -fx-text-fill: #cdd6f4;
+    -fx-border-color: #45475a;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-padding: 10 12;
+}
+
+.scraper-input:focused {
+    -fx-border-color: -pharmax-green;
+    -fx-border-width: 2;
+}
+
+.scraper-result-item {
+    -fx-border-color: #45475a;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-color: #313244;
+    -fx-padding: 12;
+    -fx-text-fill: #cdd6f4;
+}
+
+.scraper-result-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 13;
+    -fx-text-fill: -pharmax-green-light;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LOADING & SPLASH SCREEN
+   ═════════════════════════════════════════════════════════════════════════ */
+
+.splash-container {
+    -fx-background-color: #2d8659;
+    -fx-alignment: center;
+}
+
+.splash-logo {
+    -fx-font-size: 80;
+    -fx-text-alignment: center;
+}
+
+.splash-title {
+    -fx-font-size: 32;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.splash-message {
+    -fx-font-size: 14;
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
+}
+
+.progress-bar {
+    -fx-accent: -pharmax-green-light;
+    -fx-min-height: 6;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+}
+
+.progress-indicator {
+    -fx-progress-color: -pharmax-green-light;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EMPTY STATE & PLACEHOLDERS
+   ═════════════════════════════════════════════════════════════════════════ */
+
+.empty-state-icon {
+    -fx-font-size: 60;
+}
+
+.empty-state-message {
+    -fx-font-size: 16;
+    -fx-text-fill: -pharmax-text;
+}
+
+.empty-state-description {
+    -fx-font-size: 13;
+    -fx-text-fill: -pharmax-text-secondary;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   UTILITIES
+   ═════════════════════════════════════════════════════════════════════════ */
+
+.text-muted {
+    -fx-text-fill: -pharmax-text-secondary;
+}
+
+.text-success {
+    -fx-text-fill: -pharmax-success;
+}
+
+.text-danger {
+    -fx-text-fill: -pharmax-danger;
+}
+
+.text-warning {
+    -fx-text-fill: -pharmax-warning;
+}
+
+.text-info {
+    -fx-text-fill: -pharmax-info;
+}
+
+.section-divider {
+    -fx-border-color: -pharmax-border;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 15 0;
+}
+
+.card {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 20;
+    -fx-effect: -pharmax-shadow-sm;
+}
+
+.card:hover {
+    -fx-effect: -pharmax-shadow-md;
+}
+
+ScrollBar {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+}
+
+ScrollBar .thumb {
+    -fx-background-color: rgba(0,0,0,0.15);
+    -fx-background-radius: 10;
+}
+
+ScrollBar .thumb:hover {
+    -fx-background-color: rgba(0,0,0,0.25);
+}
+
+ScrollBar:vertical .increment-button,
+ScrollBar:vertical .decrement-button,
+ScrollBar:horizontal .increment-button,
+ScrollBar:horizontal .decrement-button {
+    -fx-padding: 0;
+    -fx-pref-height: 0;
+    -fx-pref-width: 0;
+}
+
+ScrollBar .increment-arrow,
+ScrollBar .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+
+.scroll-pane {
+    -fx-background-color: -pharmax-bg;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: -pharmax-bg;
+}
+
+/* Image upload area */
+.image-upload-area {
+    -fx-border-color: #cbd5e0;
+    -fx-border-width: 2;
+    -fx-border-style: segments(8, 6);
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-background-color: #f7fafc;
+    -fx-padding: 20;
+    -fx-cursor: hand;
+}
+
+.image-upload-area:hover {
+    -fx-border-color: -pharmax-green;
+    -fx-background-color: rgba(45, 134, 89, 0.04);
+}
+
+/* Toolbar */
+.toolbar-modern {
+    -fx-background-color: white;
+    -fx-padding: 12 16;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: -pharmax-shadow-sm;
+    -fx-spacing: 8;
+}

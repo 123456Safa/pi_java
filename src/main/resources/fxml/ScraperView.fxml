@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<!--
+    ScraperView.fxml
+    Article Scraper panel — equivalent to GET /api/articles/import?keyword=xxx
+    Controller: com.pharmax.controller.ScraperController
+-->
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.pharmax.controller.ScraperController"
+      spacing="12"
+      style="-fx-background-color: #1e1e2e; -fx-padding: 20;">
+
+    <!-- ── Header ─────────────────────────────────────────────────────── -->
+    <Label text="🔍 Article Scraper"
+           style="-fx-font-size: 22px; -fx-font-weight: bold;
+                  -fx-text-fill: #cdd6f4; -fx-font-family: 'Segoe UI';"/>
+
+    <Label text="Search public articles by keyword (powered by DW.com)"
+           style="-fx-font-size: 13px; -fx-text-fill: #a6adc8; -fx-font-family: 'Segoe UI';"/>
+
+    <Separator style="-fx-background-color: #313244;"/>
+
+    <!-- ── Search bar ──────────────────────────────────────────────────── -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+
+        <TextField fx:id="keywordField"
+                   promptText="Enter keyword (e.g. artificial intelligence)"
+                   HBox.hgrow="ALWAYS"
+                   style="-fx-background-color: #313244; -fx-text-fill: #cdd6f4;
+                          -fx-prompt-text-fill: #6c7086; -fx-border-color: #45475a;
+                          -fx-border-radius: 6; -fx-background-radius: 6;
+                          -fx-font-size: 14px; -fx-padding: 8 12 8 12;
+                          -fx-font-family: 'Segoe UI';"/>
+
+        <Button fx:id="searchButton"
+                text="Search"
+                onAction="#handleSearch"
+                style="-fx-background-color: #89b4fa; -fx-text-fill: #1e1e2e;
+                       -fx-font-weight: bold; -fx-font-size: 14px;
+                       -fx-padding: 8 18 8 18; -fx-background-radius: 6;
+                       -fx-cursor: hand; -fx-font-family: 'Segoe UI';"/>
+
+        <Button fx:id="clearCacheButton"
+                text="Clear Cache"
+                onAction="#handleClearCache"
+                style="-fx-background-color: #f38ba8; -fx-text-fill: #1e1e2e;
+                       -fx-font-weight: bold; -fx-font-size: 13px;
+                       -fx-padding: 8 14 8 14; -fx-background-radius: 6;
+                       -fx-cursor: hand; -fx-font-family: 'Segoe UI';"/>
+
+        <ProgressIndicator fx:id="spinner"
+                           prefWidth="28" prefHeight="28"
+                           style="-fx-progress-color: #89b4fa;"/>
+    </HBox>
+
+    <!-- ── Status bar ─────────────────────────────────────────────────── -->
+    <Label fx:id="statusLabel"
+           text=""
+           style="-fx-font-size: 12px; -fx-text-fill: #a6e3a1;
+                  -fx-font-family: 'Segoe UI'; -fx-padding: 2 0 2 0;"/>
+
+    <!-- ── Results list ────────────────────────────────────────────────── -->
+    <ListView fx:id="resultsList"
+              VBox.vgrow="ALWAYS"
+              style="-fx-background-color: #181825; -fx-border-color: #313244;
+                     -fx-border-radius: 8; -fx-background-radius: 8;
+                     -fx-font-family: 'Segoe UI';"/>
+
+    <!-- ── Footer note ─────────────────────────────────────────────────── -->
+    <Label text="Results are preview-only. Max 10 per search. Cache avoids repeated requests."
+           style="-fx-font-size: 11px; -fx-text-fill: #585b70;
+                  -fx-font-family: 'Segoe UI'; -fx-padding: 4 0 0 0;"/>
+
+</VBox>
