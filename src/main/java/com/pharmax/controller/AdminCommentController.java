@@ -374,7 +374,8 @@ public class AdminCommentController {
                 commentaireService.deleteMultiple(toDelete);
                 Platform.runLater(() -> {
                     commentSelectionMap.clear();
-                    refresh();
+                    commentTable.getItems().removeIf(c -> toDelete.contains(c.getId()));
+                    updateStats();
                 });
             }).start();
         }
@@ -409,7 +410,8 @@ public class AdminCommentController {
                 commentaireService.deleteMultipleArchives(toDelete);
                 Platform.runLater(() -> {
                     archiveSelectionMap.clear();
-                    refresh();
+                    archiveTable.getItems().removeIf(a -> toDelete.contains(a.getId()));
+                    updateStats();
                 });
             }).start();
         }

@@ -471,7 +471,9 @@ public class AdminBlogController {
             new Thread(() -> {
                 try {
                     articleService.delete(selected.getId());
-                    Platform.runLater(this::refresh);
+                    Platform.runLater(() -> {
+                        articleTable.getItems().remove(selected);
+                    });
                 } catch (Exception e) {
                     Platform.runLater(() -> showAlert("❌ Erreur suppression: " + e.getMessage()));
                 }
@@ -488,7 +490,10 @@ public class AdminBlogController {
         new Thread(() -> {
             try {
                 articleService.togglePublish(selected.getId());
-                Platform.runLater(this::refresh);
+                Platform.runLater(() -> {
+                    selected.setIsDraft(!selected.isDraft());
+                    articleTable.refresh();
+                });
             } catch (Exception e) {
                 Platform.runLater(() -> showAlert("❌ Erreur: " + e.getMessage()));
             }

@@ -63,26 +63,26 @@ public class ScraperController {
     public VBox buildView() {
         VBox root = new VBox(14);
         root.setPadding(new Insets(24));
-        root.setStyle("-fx-background-color: #1e1e2e;");
+        root.setStyle("-fx-background-color: #f0f2f5;");
         VBox.setVgrow(root, Priority.ALWAYS);
 
         // ── Header ─────────────────────────────────────────────────────────
         Label title = new Label("🔍 Article Scraper");
-        title.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; " +
-                       "-fx-text-fill: #cdd6f4; -fx-font-family: 'Segoe UI';");
+        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; " +
+                       "-fx-text-fill: #1f5e42; -fx-font-family: 'Segoe UI';");
 
         Label subtitle = new Label("Search health & medical articles by keyword  ·  powered by The Guardian Health & Santé Magazine");
-        subtitle.setStyle("-fx-font-size: 13px; -fx-text-fill: #a6adc8; " +
+        subtitle.setStyle("-fx-font-size: 13px; -fx-text-fill: #718096; " +
                           "-fx-font-family: 'Segoe UI';");
 
         Separator sep = new Separator();
-        sep.setStyle("-fx-background-color: #313244;");
+        sep.setStyle("-fx-background-color: #e2e8f0;");
 
         // ── Search bar ─────────────────────────────────────────────────────
         keywordField = new TextField();
         keywordField.setPromptText("Enter keyword (e.g. cancer, treatment, médicament)");
-        keywordField.setStyle("-fx-background-color: #313244; -fx-text-fill: #cdd6f4; " +
-                              "-fx-prompt-text-fill: #6c7086; -fx-border-color: #45475a; " +
+        keywordField.setStyle("-fx-background-color: #ffffff; -fx-text-fill: #1a202c; " +
+                              "-fx-prompt-text-fill: #a0aec0; -fx-border-color: #cbd5e0; " +
                               "-fx-border-radius: 6; -fx-background-radius: 6; " +
                               "-fx-font-size: 14px; -fx-padding: 8 12 8 12; " +
                               "-fx-font-family: 'Segoe UI';");
@@ -92,29 +92,29 @@ public class ScraperController {
         languageComboBox = new ComboBox<>();
         languageComboBox.getItems().addAll("English", "Français");
         languageComboBox.setValue("English");
-        languageComboBox.setStyle("-fx-background-color: #313244; -fx-text-fill: #cdd6f4; " +
-                                  "-fx-border-color: #45475a; -fx-border-radius: 6; " +
+        languageComboBox.setStyle("-fx-background-color: #ffffff; -fx-text-fill: #1a202c; " +
+                                  "-fx-border-color: #cbd5e0; -fx-border-radius: 6; " +
                                   "-fx-background-radius: 6; -fx-font-size: 13px; " +
                                   "-fx-padding: 8 10 8 10; -fx-font-family: 'Segoe UI';");
         languageComboBox.setPrefWidth(120);
 
         searchButton = new Button("Search");
-        searchButton.setStyle("-fx-background-color: #89b4fa; -fx-text-fill: #1e1e2e; " +
+        searchButton.setStyle("-fx-background-color: linear-gradient(to bottom, #2d8659, #1f5e42); -fx-text-fill: white; " +
                               "-fx-font-weight: bold; -fx-font-size: 14px; " +
                               "-fx-padding: 8 20 8 20; -fx-background-radius: 6; " +
                               "-fx-cursor: hand; -fx-font-family: 'Segoe UI';");
         searchButton.setOnAction(e -> handleSearch());
 
         clearCacheButton = new Button("Clear Cache");
-        clearCacheButton.setStyle("-fx-background-color: #f38ba8; -fx-text-fill: #1e1e2e; " +
+        clearCacheButton.setStyle("-fx-background-color: #fff0f0; -fx-text-fill: #d73a49; -fx-border-color: #d73a49; -fx-border-radius: 6; " +
                                   "-fx-font-weight: bold; -fx-font-size: 13px; " +
-                                  "-fx-padding: 8 14 8 14; -fx-background-radius: 6; " +
+                                  "-fx-padding: 7 13 7 13; -fx-background-radius: 6; " +
                                   "-fx-cursor: hand; -fx-font-family: 'Segoe UI';");
         clearCacheButton.setOnAction(e -> handleClearCache());
 
         spinner = new ProgressIndicator();
         spinner.setPrefSize(28, 28);
-        spinner.setStyle("-fx-progress-color: #89b4fa;");
+        spinner.setStyle("-fx-progress-color: #2d8659;");
         spinner.setVisible(false);
 
         HBox searchBar = new HBox(10, keywordField, languageComboBox, searchButton, clearCacheButton, spinner);
@@ -122,21 +122,21 @@ public class ScraperController {
 
         // ── Status bar ─────────────────────────────────────────────────────
         statusLabel = new Label("Enter a keyword and press Search.");
-        statusLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #a6e3a1; " +
+        statusLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #718096; " +
                              "-fx-font-family: 'Segoe UI';");
 
         // ── Results list ───────────────────────────────────────────────────
         resultsList = new ListView<>();
         resultsList.setCellFactory(lv -> new ArticleCell());
-        resultsList.setStyle("-fx-background-color: #181825; -fx-border-color: #313244; " +
-                             "-fx-border-radius: 8; -fx-background-radius: 8;");
+        resultsList.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; " +
+                             "-fx-control-inner-background: #f0f2f5;");
         VBox.setVgrow(resultsList, Priority.ALWAYS);
 
         // ── Footer ─────────────────────────────────────────────────────────
         Label footer = new Label(
                 "Results are preview-only · Max 10 per search · " +
                 "Repeated searches for the same keyword are served from cache.");
-        footer.setStyle("-fx-font-size: 11px; -fx-text-fill: #585b70; " +
+        footer.setStyle("-fx-font-size: 12px; -fx-text-fill: #a0aec0; " +
                         "-fx-font-family: 'Segoe UI';");
 
         root.getChildren().addAll(
@@ -162,13 +162,13 @@ public class ScraperController {
 
         if (keyword == null || keyword.trim().isEmpty()) {
             statusLabel.setText("⚠ Please enter a keyword before searching.");
-            statusLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #f9e2af; " +
+            statusLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #e74c3c; " +
                                  "-fx-font-family: 'Segoe UI';");
             return;
         }
 
         setLoading(true);
-        statusLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #89b4fa; " +
+        statusLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #3498db; " +
                              "-fx-font-family: 'Segoe UI';");
         statusLabel.setText("Searching for \"" + keyword.trim() + "\" in " + selectedLanguage + "…");
         resultsList.setItems(FXCollections.observableArrayList());
@@ -186,11 +186,11 @@ public class ScraperController {
 
             String cacheInfo = " (cache: " + scraperService.getCacheSize() + " keyword(s) stored)";
             if (articles.isEmpty()) {
-                statusLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #f38ba8; " +
+                statusLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #e74c3c; " +
                                      "-fx-font-family: 'Segoe UI';");
                 statusLabel.setText("No results found for \"" + keyword.trim() + "\" in " + selectedLanguage + "." + cacheInfo);
             } else {
-                statusLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #a6e3a1; " +
+                statusLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #27ae60; " +
                                      "-fx-font-family: 'Segoe UI';");
                 statusLabel.setText("✔ Found " + articles.size() +
                         " article(s) for \"" + keyword.trim() + "\" in " + selectedLanguage + "." + cacheInfo);
@@ -204,7 +204,7 @@ public class ScraperController {
         task.setOnFailed(e -> {
             Throwable ex = task.getException();
             LOG.log(Level.SEVERE, "ScraperController: background task failed.", ex);
-            statusLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #f38ba8; " +
+            statusLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #e74c3c; " +
                                  "-fx-font-family: 'Segoe UI';");
             statusLabel.setText("❌ Error: " + (ex != null ? ex.getMessage() : "Unknown error"));
             setLoading(false);
@@ -220,7 +220,7 @@ public class ScraperController {
      */
     private void handleClearCache() {
         scraperService.clearCache();
-        statusLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #a6e3a1; " +
+        statusLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #27ae60; " +
                              "-fx-font-family: 'Segoe UI';");
         statusLabel.setText("✔ Cache cleared — next search will fetch fresh results.");
         LOG.info("ScraperController: cache cleared by user.");
@@ -250,31 +250,31 @@ public class ScraperController {
 
         ArticleCell() {
             titleLabel = new Label();
-            titleLabel.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; " +
-                                "-fx-text-fill: #cdd6f4; -fx-font-family: 'Segoe UI';");
+            titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; " +
+                                "-fx-text-fill: #1f5e42; -fx-font-family: 'Segoe UI';");
             titleLabel.setWrapText(true);
 
             descLabel = new Label();
-            descLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #a6adc8; " +
+            descLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #4a5568; " +
                                "-fx-font-family: 'Segoe UI';");
             descLabel.setWrapText(true);
             descLabel.setMaxHeight(56);
 
             sourceLabel = new Label();
-            sourceLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #89dceb; " +
+            sourceLabel.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #2d8659; " +
                                  "-fx-font-family: 'Segoe UI';");
 
             urlLabel = new Label();
-            urlLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #6c7086; " +
+            urlLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #a0aec0; " +
                               "-fx-font-family: 'Segoe UI';");
             urlLabel.setWrapText(true);
 
             Separator divider = new Separator();
-            divider.setStyle("-fx-background-color: #313244;");
+            divider.setStyle("-fx-background-color: transparent;");
 
-            card = new VBox(5, titleLabel, descLabel, sourceLabel, urlLabel, divider);
-            card.setPadding(new Insets(10, 14, 8, 14));
-            card.setStyle("-fx-background-color: #181825;");
+            card = new VBox(8, titleLabel, descLabel, sourceLabel, urlLabel, divider);
+            card.setPadding(new Insets(16));
+            card.setStyle("-fx-background-color: white; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #e2e8f0; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);");
         }
 
         @Override
@@ -283,7 +283,7 @@ public class ScraperController {
             if (empty || article == null) {
                 setGraphic(null);
                 setText(null);
-                setStyle("-fx-background-color: #181825;");
+                setStyle("-fx-background-color: transparent;");
             } else {
                 titleLabel.setText(article.getTitle());
 

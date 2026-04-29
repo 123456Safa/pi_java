@@ -486,23 +486,24 @@ public class FrontBlogController {
 
         List<Commentaire> comments = commentaireService.findByArticle(article);
         
+        VBox commentsList = new VBox(10);
+        
         if (comments.isEmpty()) {
             Label empty = new Label("No comments yet. Be the first!");
             empty.setStyle("-fx-text-fill: #a0aec0; -fx-font-size: 13;");
-            section.getChildren().addAll(title, empty);
+            commentsList.getChildren().add(empty);
         } else {
-            VBox commentsList = new VBox(10);
             for (Commentaire comment : comments) {
                 if ("valide".equals(comment.getStatut())) {
                     VBox commentItem = buildCommentItem(comment);
                     commentsList.getChildren().add(commentItem);
                 }
             }
-            section.getChildren().addAll(title, commentsList);
         }
+        section.getChildren().addAll(title, commentsList);
 
-        // Add comment form (NO name field — user system handles auth)
-        VBox formSection = buildCommentForm(article);
+        // Add comment form (dynamically updates list)
+        VBox formSection = buildCommentForm(article, commentsList);
         section.getChildren().add(formSection);
 
         return section;
@@ -525,7 +526,7 @@ public class FrontBlogController {
         return item;
     }
 
-    private VBox buildCommentForm(Article article) {
+    private VBox buildCommentForm(Article article, VBox commentsList) {
         VBox form = new VBox(10);
         form.setStyle("-fx-border-color: #e2e8f0; -fx-border-width: 1 0 0 0; -fx-padding: 20 0 0 0;");
 
@@ -564,6 +565,16 @@ public class FrontBlogController {
                                 feedbackLabel.setText("✅ Comment posted!");
                                 feedbackLabel.setStyle("-fx-text-fill: #27ae60; -fx-font-size: 12;");
                                 commentArea.clear();
+                                
+                                // Dynamically add comment to UI without reloading
+                                Commentaire newComment = new Commentaire();
+                                newComment.setContenu(content);
+                                newComment.setDatePublication(java.time.LocalDateTime.now());
+                                
+                                if (commentsList.getChildren().size() == 1 && commentsList.getChildren().get(0) instanceof Label) {
+                                    commentsList.getChildren().clear(); // remove "No comments yet"
+                                }
+                                commentsList.getChildren().add(buildCommentItem(newComment));
                             } else {
                                 feedbackLabel.setText("❌ " + result.get("message"));
                                 feedbackLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-size: 12;");
