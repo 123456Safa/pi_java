@@ -52,6 +52,8 @@ public class AdminBlogController {
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
+    private final java.util.Map<Integer, SimpleBooleanProperty> articleSelectionMap = new java.util.HashMap<>();
+
     public AdminBlogController(ArticleService articleService) {
         this.articleService = articleService;
     }
@@ -113,15 +115,27 @@ public class AdminBlogController {
             }
         });
 
-        Button btnDelete = new Button("🗑 Supprimer");
+        Button btnDelete = new Button("🗑 Supprimer Sélection");
         btnDelete.setStyle("-fx-background-color: #fff0f0; -fx-text-fill: #d73a49; -fx-font-weight: bold; -fx-font-size: 12; -fx-padding: 8 16; -fx-cursor: hand; -fx-border-color: #d73a49; -fx-border-radius: 4;");
         btnDelete.setOnAction(e -> onDeleteArticle());
 
-        Button btnToggle = new Button("🔄 Statut");
+        Button btnToggle = new Button("🔄 Statut Sélection");
         btnToggle.setStyle("-fx-background-color: #f3f4f6; -fx-text-fill: #4b5563; -fx-font-weight: bold; -fx-font-size: 12; -fx-padding: 8 16; -fx-cursor: hand; -fx-border-color: #d1d5db; -fx-border-radius: 4;");
         btnToggle.setOnAction(e -> onToggleStatus());
 
-        toolbar.getChildren().addAll(btnEdit, btnDelete, btnToggle);
+        Region toolSpacer = new Region();
+        HBox.setHgrow(toolSpacer, Priority.ALWAYS);
+
+        CheckBox selectAllArticles = new CheckBox("Sélectionner Tout");
+        selectAllArticles.setStyle("-fx-font-size: 12; -fx-text-fill: #718096;");
+        selectAllArticles.setOnAction(e -> {
+            boolean selected = selectAllArticles.isSelected();
+            for (SimpleBooleanProperty prop : articleSelectionMap.values()) {
+                prop.set(selected);
+            }
+        });
+
+        toolbar.getChildren().addAll(btnEdit, btnDelete, btnToggle, toolSpacer, selectAllArticles);
 
         articleTable = buildArticleTable();
         VBox.setVgrow(articleTable, Priority.ALWAYS);
@@ -143,6 +157,32 @@ public class AdminBlogController {
         TableView<Article> tv = new TableView<>();
         tv.setPlaceholder(new Label("Aucun article disponible"));
         tv.setStyle("-fx-font-size: 14px; -fx-border-color: #e2e8f0; -fx-border-radius: 4;");
+
+        TableColumn<Article, Boolean> colSelect = new TableColumn<>("");
+        colSelect.setPrefWidth(40);
+        colSelect.setSortable(false);
+        colSelect.setCellFactory(col -> new TableCell<>() {
+            private final CheckBox cb = new CheckBox();
+            private SimpleBooleanProperty boundProperty = null;
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                if (boundProperty != null) {
+                    cb.selectedProperty().unbindBidirectional(boundProperty);
+                    boundProperty = null;
+                }
+                if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+                    setGraphic(null);
+                } else {
+                    Article a = getTableRow().getItem();
+                    articleSelectionMap.putIfAbsent(a.getId(), new SimpleBooleanProperty(false));
+                    boundProperty = articleSelectionMap.get(a.getId());
+                    cb.selectedProperty().bindBidirectional(boundProperty);
+                    setGraphic(cb);
+                    setAlignment(Pos.CENTER);
+                }
+            }
+        });
 
         TableColumn<Article, Integer> colId = new TableColumn<>("ID");
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -188,7 +228,7 @@ public class AdminBlogController {
             }
         });
 
-        tv.getColumns().addAll(colId, colTitre, colStatut, colLikes, colDate);
+        tv.getColumns().addAll(colSelect, colId, colTitre, colStatut, colLikes, colDate);
         return tv;
     }
 
@@ -460,19 +500,36 @@ public class AdminBlogController {
     }
 
     private void onDeleteArticle() {
-        Article selected = articleTable.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            showAlert("Sélectionnez un article à supprimer.");
+        java.util.List<Integer> toDelete = new java.util.ArrayList<>();
+        for (java.util.Map.Entry<Integer, SimpleBooleanProperty> entry : articleSelectionMap.entrySet()) {
+            if (entry.getValue().get()) {
+                toDelete.add(entry.getKey());
+            }
+        }
+
+        if (toDelete.isEmpty()) {
+            Article selected = articleTable.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                toDelete.add(selected.getId());
+            }
+        }
+
+        if (toDelete.isEmpty()) {
+            showAlert("Sélectionnez au moins un article à supprimer.");
             return;
         }
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Supprimer l'article \"" + selected.getTitre() + "\" ?", ButtonType.YES, ButtonType.NO);
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Supprimer " + toDelete.size() + " article(s) ?", ButtonType.YES, ButtonType.NO);
         Optional<ButtonType> result = confirm.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.YES) {
             new Thread(() -> {
                 try {
-                    articleService.delete(selected.getId());
+                    for (int id : toDelete) {
+                        articleService.delete(id);
+                    }
                     Platform.runLater(() -> {
-                        articleTable.getItems().remove(selected);
+                        articleSelectionMap.clear();
+                        articleTable.getItems().removeIf(a -> toDelete.contains(a.getId()));
                     });
                 } catch (Exception e) {
                     Platform.runLater(() -> showAlert("❌ Erreur suppression: " + e.getMessage()));
@@ -482,16 +539,35 @@ public class AdminBlogController {
     }
 
     private void onToggleStatus() {
-        Article selected = articleTable.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            showAlert("Sélectionnez un article.");
+        java.util.List<Article> toToggle = new java.util.ArrayList<>();
+        for (Article a : articleTable.getItems()) {
+            SimpleBooleanProperty prop = articleSelectionMap.get(a.getId());
+            if (prop != null && prop.get()) {
+                toToggle.add(a);
+            }
+        }
+
+        if (toToggle.isEmpty()) {
+            Article selected = articleTable.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                toToggle.add(selected);
+            }
+        }
+
+        if (toToggle.isEmpty()) {
+            showAlert("Sélectionnez au moins un article.");
             return;
         }
+
         new Thread(() -> {
             try {
-                articleService.togglePublish(selected.getId());
+                for (Article a : toToggle) {
+                    articleService.togglePublish(a.getId());
+                }
                 Platform.runLater(() -> {
-                    selected.setIsDraft(!selected.isDraft());
+                    for (Article a : toToggle) {
+                        a.setIsDraft(!a.isDraft());
+                    }
                     articleTable.refresh();
                 });
             } catch (Exception e) {

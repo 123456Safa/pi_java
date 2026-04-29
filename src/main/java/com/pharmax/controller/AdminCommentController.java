@@ -161,16 +161,25 @@ public class AdminCommentController {
         colSelect.setSortable(false);
         colSelect.setCellFactory(col -> new TableCell<>() {
             private final CheckBox cb = new CheckBox();
+            private javafx.beans.property.SimpleBooleanProperty boundProperty = null;
+            
             @Override
             protected void updateItem(Boolean item, boolean empty) {
                 super.updateItem(item, empty);
+                
+                if (boundProperty != null) {
+                    cb.selectedProperty().unbindBidirectional(boundProperty);
+                    boundProperty = null;
+                }
+                
                 if (empty || getTableRow() == null || getTableRow().getItem() == null) {
                     setGraphic(null);
                 } else {
                     Commentaire c = getTableRow().getItem();
                     if (c.getId() != null) {
                         commentSelectionMap.putIfAbsent(c.getId(), new SimpleBooleanProperty(false));
-                        cb.selectedProperty().bindBidirectional(commentSelectionMap.get(c.getId()));
+                        boundProperty = commentSelectionMap.get(c.getId());
+                        cb.selectedProperty().bindBidirectional(boundProperty);
                     }
                     setGraphic(cb);
                     setAlignment(Pos.CENTER);
@@ -243,16 +252,25 @@ public class AdminCommentController {
         colSelect.setSortable(false);
         colSelect.setCellFactory(col -> new TableCell<>() {
             private final CheckBox cb = new CheckBox();
+            private javafx.beans.property.SimpleBooleanProperty boundProperty = null;
+            
             @Override
             protected void updateItem(Boolean item, boolean empty) {
                 super.updateItem(item, empty);
+                
+                if (boundProperty != null) {
+                    cb.selectedProperty().unbindBidirectional(boundProperty);
+                    boundProperty = null;
+                }
+                
                 if (empty || getTableRow() == null || getTableRow().getItem() == null) {
                     setGraphic(null);
                 } else {
                     CommentaireArchive a = getTableRow().getItem();
                     if (a.getId() != null) {
                         archiveSelectionMap.putIfAbsent(a.getId(), new SimpleBooleanProperty(false));
-                        cb.selectedProperty().bindBidirectional(archiveSelectionMap.get(a.getId()));
+                        boundProperty = archiveSelectionMap.get(a.getId());
+                        cb.selectedProperty().bindBidirectional(boundProperty);
                     }
                     setGraphic(cb);
                     setAlignment(Pos.CENTER);
