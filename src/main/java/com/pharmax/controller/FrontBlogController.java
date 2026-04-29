@@ -52,6 +52,11 @@ public class FrontBlogController {
     // Track liked & saved articles in-memory (per session)
     private final Set<Integer> likedArticles = new HashSet<>();
     private final Set<Integer> savedArticles = new HashSet<>();
+    
+    // Mock stats for demo
+    private final java.util.Map<Integer, Integer> viewCounts = new java.util.HashMap<>();
+    private final java.util.Map<Integer, Integer> dislikeCounts = new java.util.HashMap<>();
+    private final Set<Integer> dislikedArticles = new HashSet<>();
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd MMM yyyy");
     private static final DateTimeFormatter DATE_FMT_FULL = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm");
@@ -222,72 +227,31 @@ public class FrontBlogController {
         titre.setWrapText(true);
         titre.setMaxHeight(50);
 
-        // Action icons row
-        HBox actionsRow = new HBox(4);
+        // Action icons row (STATIC STATS ONLY ON FRONT)
+        HBox actionsRow = new HBox(12);
         actionsRow.setAlignment(Pos.CENTER_LEFT);
         actionsRow.setPadding(new Insets(6, 0, 0, 0));
 
-        Button btnLike = new Button(likedArticles.contains(article.getId()) ? "❤" : "🤍");
-        btnLike.setStyle("-fx-background-color: transparent; -fx-font-size: 16; -fx-cursor: hand; -fx-padding: 4 8;");
-        Label likeCount = new Label(String.valueOf(article.getLikes()));
-        likeCount.setStyle("-fx-text-fill: #e74c3c; -fx-font-size: 12; -fx-font-weight: bold;");
+        // Setup mock stats
+        viewCounts.putIfAbsent(article.getId(), (int)(Math.random() * 50) + 10);
+        dislikeCounts.putIfAbsent(article.getId(), (int)(Math.random() * 5));
 
-        Button btnView = new Button("👁");
-        btnView.setStyle("-fx-background-color: transparent; -fx-font-size: 16; -fx-cursor: hand; -fx-padding: 4 8;");
+        Label frontLikes = new Label("❤ " + article.getLikes());
+        frontLikes.setStyle("-fx-text-fill: #e74c3c; -fx-font-size: 13; -fx-font-weight: bold;");
 
-        Button btnSave = new Button(savedArticles.contains(article.getId()) ? "🔖" : "📑");
-        btnSave.setStyle("-fx-background-color: transparent; -fx-font-size: 16; -fx-cursor: hand; -fx-padding: 4 8;");
+        Label frontDislikes = new Label("💔 " + dislikeCounts.get(article.getId()));
+        frontDislikes.setStyle("-fx-text-fill: #718096; -fx-font-size: 13; -fx-font-weight: bold;");
+
+        Label frontSaves = new Label("🔖 " + (savedArticles.contains(article.getId()) ? 1 : 0));
+        frontSaves.setStyle("-fx-text-fill: #3182ce; -fx-font-size: 13; -fx-font-weight: bold;");
+        
+        Label frontViews = new Label("👁 " + viewCounts.get(article.getId()));
+        frontViews.setStyle("-fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold;");
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        actionsRow.getChildren().addAll(btnLike, likeCount, btnView, btnSave, spacer);
-
-        // Like action
-        btnLike.setOnAction(e -> {
-            if (article.getId() != null) {
-                if (likedArticles.contains(article.getId())) {
-                    likedArticles.remove(article.getId());
-                    btnLike.setText("🤍");
-                    new Thread(() -> {
-                        articleService.unlike(article.getId());
-                        Article updated = articleService.find(article.getId());
-                        if (updated != null) Platform.runLater(() -> likeCount.setText(String.valueOf(updated.getLikes())));
-                    }).start();
-                } else {
-                    likedArticles.add(article.getId());
-                    btnLike.setText("❤");
-                    // Bounce animation
-                    ScaleTransition st = new ScaleTransition(Duration.millis(200), btnLike);
-                    st.setFromX(1); st.setFromY(1); st.setToX(1.4); st.setToY(1.4);
-                    st.setAutoReverse(true); st.setCycleCount(2); st.play();
-                    new Thread(() -> {
-                        articleService.like(article.getId());
-                        Article updated = articleService.find(article.getId());
-                        if (updated != null) Platform.runLater(() -> likeCount.setText(String.valueOf(updated.getLikes())));
-                    }).start();
-                }
-            }
-        });
-
-        // Save action
-        btnSave.setOnAction(e -> {
-            if (article.getId() != null) {
-                if (savedArticles.contains(article.getId())) {
-                    savedArticles.remove(article.getId());
-                    btnSave.setText("📑");
-                } else {
-                    savedArticles.add(article.getId());
-                    btnSave.setText("🔖");
-                    ScaleTransition st = new ScaleTransition(Duration.millis(200), btnSave);
-                    st.setFromX(1); st.setFromY(1); st.setToX(1.3); st.setToY(1.3);
-                    st.setAutoReverse(true); st.setCycleCount(2); st.play();
-                }
-            }
-        });
-
-        // View action
-        btnView.setOnAction(e -> showArticleDetail(article));
+        actionsRow.getChildren().addAll(frontLikes, frontDislikes, frontSaves, frontViews, spacer);
 
         cardContent.getChildren().addAll(metaRow, titre, actionsRow);
         front.getChildren().addAll(imageArea, cardContent);
@@ -316,14 +280,108 @@ public class FrontBlogController {
         excerpt.setStyle("-fx-text-fill: #4a5568; -fx-font-size: 13; -fx-line-spacing: 1.5;");
         excerpt.setWrapText(true);
         VBox.setVgrow(excerpt, Priority.ALWAYS);
+        
+        // INTERACTIVE ACTIONS ON BACK
+        HBox backActions = new HBox(8);
+        backActions.setAlignment(Pos.CENTER);
+        
+        Button btnLike = new Button("♥");
+        btnLike.setStyle("-fx-background-color: white; -fx-text-fill: " + (likedArticles.contains(article.getId()) ? "#e74c3c" : "#a0aec0") + "; -fx-font-size: 18; -fx-cursor: hand; -fx-background-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 1);");
+        
+        Button btnDislike = new Button("✖");
+        btnDislike.setStyle("-fx-background-color: white; -fx-text-fill: " + (dislikedArticles.contains(article.getId()) ? "#4a5568" : "#a0aec0") + "; -fx-font-size: 16; -fx-cursor: hand; -fx-background-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 1);");
+        
+        Button btnSave = new Button("★");
+        btnSave.setStyle("-fx-background-color: white; -fx-text-fill: " + (savedArticles.contains(article.getId()) ? "#3182ce" : "#a0aec0") + "; -fx-font-size: 18; -fx-cursor: hand; -fx-background-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 1);");
+
+        btnLike.setOnAction(e -> {
+            if (article.getId() != null) {
+                if (likedArticles.contains(article.getId())) {
+                    likedArticles.remove(article.getId());
+                    btnLike.setStyle(btnLike.getStyle().replace("#e74c3c", "#a0aec0"));
+                    new Thread(() -> {
+                        articleService.unlike(article.getId());
+                        Article updated = articleService.find(article.getId());
+                        if (updated != null) Platform.runLater(() -> frontLikes.setText("❤ " + updated.getLikes()));
+                    }).start();
+                } else {
+                    likedArticles.add(article.getId());
+                    btnLike.setStyle(btnLike.getStyle().replace("#a0aec0", "#e74c3c"));
+                    if (dislikedArticles.contains(article.getId())) {
+                        dislikedArticles.remove(article.getId());
+                        btnDislike.setStyle(btnDislike.getStyle().replace("#4a5568", "#a0aec0"));
+                        dislikeCounts.put(article.getId(), Math.max(0, dislikeCounts.get(article.getId()) - 1));
+                        frontDislikes.setText("💔 " + dislikeCounts.get(article.getId()));
+                    }
+                    ScaleTransition st = new ScaleTransition(Duration.millis(200), btnLike);
+                    st.setFromX(1); st.setFromY(1); st.setToX(1.4); st.setToY(1.4);
+                    st.setAutoReverse(true); st.setCycleCount(2); st.play();
+                    new Thread(() -> {
+                        articleService.like(article.getId());
+                        Article updated = articleService.find(article.getId());
+                        if (updated != null) Platform.runLater(() -> frontLikes.setText("❤ " + updated.getLikes()));
+                    }).start();
+                }
+            }
+        });
+
+        btnDislike.setOnAction(e -> {
+            if (article.getId() != null) {
+                if (dislikedArticles.contains(article.getId())) {
+                    dislikedArticles.remove(article.getId());
+                    btnDislike.setStyle(btnDislike.getStyle().replace("#4a5568", "#a0aec0"));
+                    dislikeCounts.put(article.getId(), Math.max(0, dislikeCounts.get(article.getId()) - 1));
+                } else {
+                    dislikedArticles.add(article.getId());
+                    btnDislike.setStyle(btnDislike.getStyle().replace("#a0aec0", "#4a5568"));
+                    dislikeCounts.put(article.getId(), dislikeCounts.get(article.getId()) + 1);
+                    if (likedArticles.contains(article.getId())) {
+                        likedArticles.remove(article.getId());
+                        btnLike.setStyle(btnLike.getStyle().replace("#e74c3c", "#a0aec0"));
+                        new Thread(() -> {
+                            articleService.unlike(article.getId());
+                            Article updated = articleService.find(article.getId());
+                            if (updated != null) Platform.runLater(() -> frontLikes.setText("❤ " + updated.getLikes()));
+                        }).start();
+                    }
+                    ScaleTransition st = new ScaleTransition(Duration.millis(200), btnDislike);
+                    st.setFromX(1); st.setFromY(1); st.setToX(1.4); st.setToY(1.4);
+                    st.setAutoReverse(true); st.setCycleCount(2); st.play();
+                }
+                frontDislikes.setText("💔 " + dislikeCounts.get(article.getId()));
+            }
+        });
+
+        btnSave.setOnAction(e -> {
+            if (article.getId() != null) {
+                if (savedArticles.contains(article.getId())) {
+                    savedArticles.remove(article.getId());
+                    btnSave.setStyle(btnSave.getStyle().replace("#3182ce", "#a0aec0"));
+                    frontSaves.setText("🔖 0");
+                } else {
+                    savedArticles.add(article.getId());
+                    btnSave.setStyle(btnSave.getStyle().replace("#a0aec0", "#3182ce"));
+                    frontSaves.setText("🔖 1");
+                    ScaleTransition st = new ScaleTransition(Duration.millis(200), btnSave);
+                    st.setFromX(1); st.setFromY(1); st.setToX(1.3); st.setToY(1.3);
+                    st.setAutoReverse(true); st.setCycleCount(2); st.play();
+                }
+            }
+        });
+        
+        backActions.getChildren().addAll(btnLike, btnDislike, btnSave);
 
         Button btnReadMore = new Button("Read Article →");
         btnReadMore.getStyleClass().add("btn-primary");
         btnReadMore.setStyle("-fx-background-color: linear-gradient(to right, #2d8659, #4a9f6f); -fx-text-fill: white; "
                 + "-fx-font-weight: bold; -fx-font-size: 13; -fx-padding: 10 24; -fx-cursor: hand; -fx-background-radius: 8;");
-        btnReadMore.setOnAction(e -> showArticleDetail(article));
+        btnReadMore.setOnAction(e -> {
+            viewCounts.put(article.getId(), viewCounts.get(article.getId()) + 1);
+            frontViews.setText("👁 " + viewCounts.get(article.getId()));
+            showArticleDetail(article);
+        });
 
-        back.getChildren().addAll(backTitle, excerpt, btnReadMore);
+        back.getChildren().addAll(backTitle, excerpt, backActions, btnReadMore);
 
         // ════════════════ STACK (flip container) ════════════════
         StackPane flipCard = new StackPane(front, back);
