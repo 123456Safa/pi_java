@@ -53,6 +53,13 @@ public class FrontBlogController {
     private final Set<Integer> likedArticles = new HashSet<>();
     private final Set<Integer> savedArticles = new HashSet<>();
     
+    private java.util.List<Article> allPublishedArticles = new java.util.ArrayList<>();
+    
+    // UI Filter controls
+    private javafx.scene.control.TextField searchField;
+    private javafx.scene.control.DatePicker datePicker;
+    private javafx.scene.control.ComboBox<String> sortBox;
+    
     // Mock stats for demo
     private final java.util.Map<Integer, Integer> viewCounts = new java.util.HashMap<>();
     private final java.util.Map<Integer, Integer> dislikeCounts = new java.util.HashMap<>();
@@ -84,6 +91,39 @@ public class FrontBlogController {
 
         header.getChildren().addAll(title, subtitle);
 
+        // ─── Toolbar (Search, Filter, Sort) ───
+        HBox toolbar = new HBox(15);
+        toolbar.setAlignment(Pos.CENTER_LEFT);
+        toolbar.setPadding(new Insets(15, 30, 0, 30));
+        toolbar.setStyle("-fx-background-color: #f0f2f5;");
+
+        searchField = new javafx.scene.control.TextField();
+        searchField.setPromptText("🔍 Rechercher un article...");
+        searchField.setPrefWidth(250);
+        searchField.setStyle("-fx-background-radius: 20; -fx-padding: 8 15; -fx-border-color: #e2e8f0; -fx-border-radius: 20; -fx-background-color: white;");
+        searchField.textProperty().addListener((obs, oldV, newV) -> applyFiltersAndSort());
+
+        datePicker = new javafx.scene.control.DatePicker();
+        datePicker.setPromptText("📅 Filtrer par date");
+        datePicker.setStyle("-fx-font-size: 13; -fx-background-color: white;");
+        datePicker.valueProperty().addListener((obs, oldV, newV) -> applyFiltersAndSort());
+
+        sortBox = new javafx.scene.control.ComboBox<>();
+        sortBox.getItems().addAll("Plus récent", "Tri A-Z", "Tri Z-A");
+        sortBox.setValue("Plus récent");
+        sortBox.setStyle("-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-radius: 4;");
+        sortBox.valueProperty().addListener((obs, oldV, newV) -> applyFiltersAndSort());
+
+        Button btnClear = new Button("✖ Réinitialiser");
+        btnClear.setStyle("-fx-background-color: transparent; -fx-text-fill: #718096; -fx-cursor: hand;");
+        btnClear.setOnAction(e -> {
+            searchField.clear();
+            datePicker.setValue(null);
+            sortBox.setValue("Plus récent");
+        });
+
+        toolbar.getChildren().addAll(searchField, datePicker, sortBox, btnClear);
+
         // ScrollPane content
         scrollPane = new ScrollPane();
         scrollPane.setFitToWidth(true);
@@ -99,7 +139,7 @@ public class FrontBlogController {
 
         scrollPane.setContent(articleGridPane);
 
-        rootView.getChildren().addAll(header, scrollPane);
+        rootView.getChildren().addAll(header, toolbar, scrollPane);
 
         return rootView;
     }
@@ -113,43 +153,77 @@ public class FrontBlogController {
     private void showArticleGrid() {
         new Thread(() -> {
             try {
-                List<Article> published = articleService.findPublished();
-                Platform.runLater(() -> {
-                    articleGridPane.getChildren().clear();
-
-                    if (published.isEmpty()) {
-                        VBox emptyState = new VBox(10);
-                        emptyState.setAlignment(Pos.CENTER);
-                        emptyState.setPadding(new Insets(80, 20, 80, 20));
-                        emptyState.setPrefWidth(800);
-                        Label icon = new Label("📭");
-                        icon.setStyle("-fx-font-size: 70;");
-                        Label msg = new Label("No articles published yet");
-                        msg.setStyle("-fx-font-size: 16; -fx-text-fill: #718096; -fx-font-weight: bold;");
-                        Label desc = new Label("Check back soon for health and pharmacy insights");
-                        desc.setStyle("-fx-font-size: 13; -fx-text-fill: #a0aec0;");
-                        emptyState.getChildren().addAll(icon, msg, desc);
-                        articleGridPane.getChildren().add(emptyState);
-                    } else {
-                        for (int i = 0; i < published.size(); i++) {
-                            StackPane card = createFlipCard(published.get(i));
-                            // Staggered fade-in animation
-                            card.setOpacity(0);
-                            FadeTransition ft = new FadeTransition(Duration.millis(400), card);
-                            ft.setFromValue(0);
-                            ft.setToValue(1);
-                            ft.setDelay(Duration.millis(i * 80));
-                            ft.play();
-                            articleGridPane.getChildren().add(card);
-                        }
-                    }
-
-                    scrollPane.setContent(articleGridPane);
-                });
+                allPublishedArticles = articleService.findPublished();
+                Platform.runLater(this::applyFiltersAndSort);
             } catch (Exception e) {
-                Platform.runLater(() -> System.err.println("⚠ Could not load articles: " + e.getMessage()));
+                Platform.runLater(() -> {
+                    Label err = new Label("Erreur de chargement: " + e.getMessage());
+                    err.setTextFill(javafx.scene.paint.Color.RED);
+                    articleGridPane.getChildren().add(err);
+                });
             }
         }).start();
+    }
+
+    private void applyFiltersAndSort() {
+        if (allPublishedArticles == null) return;
+
+        String searchText = searchField.getText() != null ? searchField.getText().toLowerCase().trim() : "";
+        java.time.LocalDate selectedDate = datePicker.getValue();
+        String sortOption = sortBox.getValue();
+
+        // Filter
+        java.util.List<Article> filteredList = allPublishedArticles.stream().filter(a -> {
+            boolean matchesSearch = searchText.isEmpty() || 
+                                    (a.getTitre() != null && a.getTitre().toLowerCase().contains(searchText));
+            
+            boolean matchesDate = selectedDate == null || 
+                                  (a.getDateCreation() != null && a.getDateCreation().toLocalDate().equals(selectedDate));
+                                  
+            return matchesSearch && matchesDate;
+        }).collect(java.util.stream.Collectors.toList());
+
+        // Sort
+        if ("Tri A-Z".equals(sortOption)) {
+            filteredList.sort(java.util.Comparator.comparing(Article::getTitre, java.util.Comparator.nullsLast(String::compareToIgnoreCase)));
+        } else if ("Tri Z-A".equals(sortOption)) {
+            filteredList.sort(java.util.Comparator.comparing(Article::getTitre, java.util.Comparator.nullsLast(String::compareToIgnoreCase)).reversed());
+        } else {
+            // Plus récent
+            filteredList.sort(java.util.Comparator.comparing(Article::getDateCreation, java.util.Comparator.nullsLast(java.util.Comparator.naturalOrder())).reversed());
+        }
+
+        // Render
+        articleGridPane.getChildren().clear();
+
+        if (filteredList.isEmpty()) {
+            VBox emptyState = new VBox(10);
+            emptyState.setAlignment(Pos.CENTER);
+            emptyState.setPadding(new Insets(80, 20, 80, 20));
+            emptyState.setPrefWidth(800);
+            Label icon = new Label("📭");
+            icon.setStyle("-fx-font-size: 70;");
+            Label msg = new Label("Aucun article trouvé");
+            msg.setStyle("-fx-font-size: 16; -fx-text-fill: #718096; -fx-font-weight: bold;");
+            Label desc = new Label("Essayez de modifier vos filtres ou termes de recherche.");
+            desc.setStyle("-fx-font-size: 13; -fx-text-fill: #a0aec0;");
+            emptyState.getChildren().addAll(icon, msg, desc);
+            articleGridPane.getChildren().add(emptyState);
+        } else {
+            for (int i = 0; i < filteredList.size(); i++) {
+                StackPane card = createFlipCard(filteredList.get(i));
+                // Staggered fade-in animation
+                card.setOpacity(0);
+                FadeTransition ft = new FadeTransition(Duration.millis(400), card);
+                ft.setFromValue(0);
+                ft.setToValue(1);
+                ft.setDelay(Duration.millis(Math.min(i, 10) * 50)); // limit delay for long lists
+                ft.play();
+                articleGridPane.getChildren().add(card);
+            }
+        }
+
+        scrollPane.setContent(articleGridPane);
     }
 
     /**
