@@ -8,6 +8,7 @@ module com.pharmax {
     requires org.jsoup;
     requires okhttp3;
     requires com.google.gson;
+    requires itextpdf;
 
     opens com.pharmax to javafx.controls, javafx.fxml;
     opens com.pharmax.ui to javafx.fxml;

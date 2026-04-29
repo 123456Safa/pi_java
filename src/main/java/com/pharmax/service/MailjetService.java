@@ -5,10 +5,17 @@ import com.google.gson.JsonObject;
 import com.pharmax.model.Article;
 import okhttp3.*;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -32,8 +39,8 @@ public class MailjetService {
     private static final String SENDER_EMAIL = "nayrouzdaikhi@gmail.com";
     private static final String SENDER_NAME = "PharmaX System";
     
-    private static final String TARGET_EMAIL = "Daikhi.Nayrouz@esprit.tn";
-    private static final String TARGET_NAME = "Daikhi Nayrouz";
+    private static final String TARGET_EMAIL = "chatgpttunisia43@gmail.com";
+    private static final String TARGET_NAME = "ChatGPT Tunisia";
 
     private final OkHttpClient client;
 
@@ -113,11 +120,12 @@ public class MailjetService {
                                      "      <div class='snippet'>\"" + contentSnippet.replace("\n", "<br>") + "\"</div>" +
                                      "      <p style='color: #3c4043; font-size: 15px; line-height: 1.6;'>We thought this article might be of great interest to you. It covers recent developments and critical information that aligns with your expertise.</p>" +
                                      "      <div class='cta-container'>" +
-                                     "        <a href='#' class='btn'>📖 Read Full Article</a>" +
+                                     "        <a href='#' class='btn'>⬇ See Attached PDF</a>" +
                                      "      </div>" +
                                      "    </div>" +
                                      "    <div class='footer'>" +
                                      "      <p>This is an automated recommendation from the PharmaX Blog System.</p>" +
+                                     "      <p>A full PDF copy of the article is attached to this email.</p>" +
                                      "      <p>&copy; 2026 PharmaX Inc. All rights reserved.</p>" +
                                      "    </div>" +
                                      "  </div>" +
@@ -126,6 +134,35 @@ public class MailjetService {
 
                 message.addProperty("TextPart", textContent);
                 message.addProperty("HTMLPart", htmlContent);
+
+                // --- Generate PDF Attachment ---
+                ByteArrayOutputStream pdfOut = new ByteArrayOutputStream();
+                Document document = new Document();
+                PdfWriter.getInstance(document, pdfOut);
+                document.open();
+                
+                Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 22);
+                Font metadataFont = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 12);
+                Font bodyFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
+                
+                document.add(new Paragraph(article.getTitre() != null ? article.getTitre() : "Untitled", titleFont));
+                document.add(new Paragraph(" "));
+                document.add(new Paragraph("Published via PharmaX", metadataFont));
+                document.add(new Paragraph(" "));
+                document.add(new Paragraph(article.getContenu() != null ? article.getContenu() : "No content provided.", bodyFont));
+                document.close();
+                
+                String base64Pdf = Base64.getEncoder().encodeToString(pdfOut.toByteArray());
+                String safeFilename = (article.getTitre() != null ? article.getTitre().replaceAll("[^a-zA-Z0-9.-]", "_") : "article") + ".pdf";
+                
+                JsonArray attachments = new JsonArray();
+                JsonObject attachment = new JsonObject();
+                attachment.addProperty("ContentType", "application/pdf");
+                attachment.addProperty("Filename", safeFilename);
+                attachment.addProperty("Base64Content", base64Pdf);
+                attachments.add(attachment);
+                
+                message.add("Attachments", attachments);
 
                 JsonArray messagesArray = new JsonArray();
                 messagesArray.add(message);
@@ -172,12 +209,12 @@ public class MailjetService {
                     }
                 }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 LOG.log(Level.SEVERE, "❌ Failed to send Mailjet email.", e);
                 Platform.runLater(() -> {
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "Network Error: " + e.getMessage(), ButtonType.OK);
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Error: " + e.getMessage(), ButtonType.OK);
                     alert.setTitle("Mailjet Error");
-                    alert.setHeaderText("Failed to connect to Mailjet");
+                    alert.setHeaderText("Failed to process or send email");
                     alert.show();
                 });
             }
