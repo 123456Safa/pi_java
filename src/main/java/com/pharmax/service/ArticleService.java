@@ -54,6 +54,11 @@ public class ArticleService {
             article.setImage(image);
             article.setDateCreation(LocalDateTime.now());
             article.setDateModification(LocalDateTime.now());
+            article.setIsDraft(true); // By default, new articles are drafts (is_draft = 1)
+            
+            // Send email notification asynchronously
+            MailjetService.getInstance().sendNewArticleNotification(article);
+            
             return article;
 
         } catch (SQLException e) {
