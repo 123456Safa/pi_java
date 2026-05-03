@@ -1,93 +1,143 @@
 package Test;
 
+import Controllers.ChatbotController;
 import Controllers.UserController;
 import Models.User;
+<<<<<<< Updated upstream
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+=======
+import Services.FaceAuthService;
+import Services.RecaptchaService;
+import Views.*;
+import utils.RecaptchaWidget;
+import javafx.application.Application;
+import javafx.application.Platform;
+>>>>>>> Stashed changes
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.sql.SQLDataException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main extends Application {
 
     private final UserController userController = new UserController();
+<<<<<<< Updated upstream
     private final ObservableList<User> userData = FXCollections.observableArrayList();
+=======
+    private final RecaptchaService recaptchaService = new RecaptchaService();
+    private RecaptchaWidget recaptchaWidget;
+    private ChatbotController chatbotController;
+    private final FaceAuthService faceAuthService = new FaceAuthService();
+>>>>>>> Stashed changes
 
     private StackPane root;
-    private VBox loginPane;
-    private VBox registerPane;
-    private BorderPane appPane;
-
     private User currentUser;
-    private Label currentUserLabel;
+    
+    // View References
+    private LoginView loginView;
+    private RegisterView registerView;
+    private ForgotPasswordView forgotPasswordView;
+    private TwoFactorAuthView twoFactorAuthView;
 
-    private TextField searchField;
-    private ComboBox<String> sortByCombo;
-    private ComboBox<String> directionCombo;
-
-    private Label totalUsersLabel;
-    private Label adminUsersLabel;
-    private Label normalUsersLabel;
+    private enum ViewType { AUTH, APP }
+    private ViewType currentViewType = ViewType.AUTH;
 
     @Override
     public void start(Stage stage) {
         root = new StackPane();
+<<<<<<< Updated upstream
 
         appPane = buildAppPane();
         loginPane = buildLoginPane();
         registerPane = buildRegisterPane();
 
         root.getChildren().addAll(appPane, loginPane, registerPane);
+=======
+        recaptchaWidget = new RecaptchaWidget();
+        
+        // --- Initialize Views ---
+        loginView = new LoginView(userController, recaptchaService, recaptchaWidget, 
+                                  this::handleLoginSuccess, this::showRegister, this::showForgotPassword);
+        
+        registerView = new RegisterView(userController, recaptchaService, recaptchaWidget, 
+                                        this::handleLoginSuccess, this::showLogin);
+        
+        forgotPasswordView = new ForgotPasswordView(userController, faceAuthService, this::showLogin);
+        
+        twoFactorAuthView = new TwoFactorAuthView(userController, this::enterApp, this::showLogin);
 
-        showLoginPane();
+        // --- Chatbot Setup ---
+        chatbotController = new ChatbotController();
+        chatbotController.setUiActionCallback(action -> {
+            if ("open_profile".equals(action)) showProfile();
+        });
+>>>>>>> Stashed changes
 
-        Scene scene = new Scene(root, 1220, 820);
+        Button chatBubbleButton = chatbotController.buildChatBubbleButton();
+        chatBubbleButton.setVisible(false);
+        VBox chatPanel = chatbotController.buildChatPanel();
+
+        // --- Layout ---
+        root.getChildren().addAll(recaptchaWidget.getWebView(), chatPanel, chatBubbleButton);
+        StackPane.setAlignment(recaptchaWidget.getWebView(), Pos.BOTTOM_RIGHT);
+        StackPane.setMargin(recaptchaWidget.getWebView(), new Insets(0, 24, 24, 0));
+        
+        StackPane.setAlignment(chatBubbleButton, Pos.BOTTOM_RIGHT);
+        StackPane.setMargin(chatBubbleButton, new Insets(0, 24, 24, 0));
+        StackPane.setAlignment(chatPanel, Pos.BOTTOM_RIGHT);
+        StackPane.setMargin(chatPanel, new Insets(0, 24, 90, 0));
+
+        showLogin();
+
+        Scene scene = new Scene(root, 1280, 850);
         if (getClass().getResource("/styles/user-module.css") != null) {
             scene.getStylesheets().add(getClass().getResource("/styles/user-module.css").toExternalForm());
         }
 
-        stage.setTitle("User App - Login Required");
+        stage.setTitle("PharmaX - Secure Access");
         stage.setScene(scene);
         stage.show();
     }
 
-    private VBox buildLoginPane() {
-        VBox screen = new VBox(14);
-        screen.setPadding(new Insets(24));
-        screen.setAlignment(Pos.CENTER);
-        screen.getStyleClass().add("single-window-root");
+    private void showLogin() {
+        currentViewType = ViewType.AUTH;
+        recaptchaWidget.getWebView().setVisible(true);
+        setView(loginView.buildView());
+    }
 
-        Label title = new Label("Login");
-        title.getStyleClass().add("single-window-title");
+    private void showRegister() {
+        currentViewType = ViewType.AUTH;
+        recaptchaWidget.getWebView().setVisible(true);
+        setView(registerView.buildView());
+    }
 
-        VBox card = buildSectionContainer("Connect to continue");
-        card.setMaxWidth(420);
+    private void showForgotPassword() {
+        recaptchaWidget.getWebView().setVisible(false);
+        setView(forgotPasswordView.buildView());
+    }
 
-        TextField loginEmail = new TextField();
-        loginEmail.setPromptText("Email");
+    private void handleLoginSuccess(User user) {
+        if (user.getGoogleAuthenticatorSecret() != null && !user.getGoogleAuthenticatorSecret().isEmpty()) {
+            recaptchaWidget.getWebView().setVisible(false);
+            twoFactorAuthView.setPendingUser(user);
+            setView(twoFactorAuthView.buildView());
+        } else {
+            enterApp(user);
+        }
+    }
 
+<<<<<<< Updated upstream
         PasswordField loginPassword = new PasswordField();
         loginPassword.setPromptText("Password");
 
@@ -370,405 +420,91 @@ public class Main extends Application {
                 refreshUsersAndStats(null, status);
             } catch (SQLDataException ex) {
                 setError(status, ex.getMessage());
+=======
+    private void setView(Node node) {
+        Platform.runLater(() -> {
+            List<Node> toRemove = new ArrayList<>();
+            for (Node child : root.getChildren()) {
+                if (child != recaptchaWidget.getWebView() && 
+                    !child.getStyleClass().contains("chat-panel") && 
+                    !child.getStyleClass().contains("chat-bubble-btn")) {
+                    toRemove.add(child);
+                }
+            }
+            root.getChildren().removeAll(toRemove);
+            root.getChildren().add(0, node);
+            
+            // Hide reCAPTCHA if not on auth screens
+            if (currentViewType != ViewType.AUTH) {
+                recaptchaWidget.getWebView().setVisible(false);
+>>>>>>> Stashed changes
             }
         });
-
-        section.getChildren().addAll(form, createButton, status);
-        return section;
-    }
-
-    private VBox buildReadSection() {
-        VBox section = buildSectionContainer("Read Users");
-        TableView<User> table = buildUserTable();
-        Label status = new Label();
-
-        Button refreshButton = new Button("Refresh");
-        refreshButton.getStyleClass().add("btn-admin-view");
-        refreshButton.setOnAction(event -> refreshUsersAndStats("Users loaded.", status));
-
-        VBox.setVgrow(table, Priority.ALWAYS);
-        section.getChildren().addAll(table, refreshButton, status);
-        return section;
-    }
-
-    private VBox buildUpdateSection() {
-        VBox section = buildSectionContainer("Update User");
-
-        TextField emailField = new TextField();
-        PasswordField passwordField = new PasswordField();
-        TextField firstNameField = new TextField();
-        TextField lastNameField = new TextField();
-
-        ComboBox<String> roleCombo = new ComboBox<>();
-        roleCombo.getItems().addAll(UserController.ROLE_ADMIN, UserController.ROLE_NORMAL_USER);
-        roleCombo.setValue(UserController.ROLE_NORMAL_USER);
-
-        GridPane form = buildFormGrid();
-        addFormRow(form, 0, "Email", emailField);
-        addFormRow(form, 1, "Role", roleCombo);
-        addFormRow(form, 2, "Password", passwordField);
-        addFormRow(form, 3, "First Name", firstNameField);
-        addFormRow(form, 4, "Last Name", lastNameField);
-
-        TableView<User> table = buildUserTable();
-        User[] selectedHolder = new User[1];
-
-        table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, selected) -> {
-            selectedHolder[0] = selected;
-            if (selected == null) {
-                return;
-            }
-
-            emailField.setText(selected.getEmail());
-            passwordField.setText(selected.getPassword());
-            firstNameField.setText(selected.getFirstName());
-            lastNameField.setText(selected.getLastName() == null ? "" : selected.getLastName());
-            roleCombo.setValue(userController.toRoleLabel(selected.getRoles()));
-        });
-
-        Label status = new Label();
-
-        Button useSelected = new Button("Use Selected");
-        useSelected.getStyleClass().add("btn-admin-view");
-        useSelected.setOnAction(event -> {
-            User selected = table.getSelectionModel().getSelectedItem();
-            if (selected == null) {
-                setError(status, "Select a row first.");
-                return;
-            }
-            selectedHolder[0] = selected;
-            emailField.setText(selected.getEmail());
-            passwordField.setText(selected.getPassword());
-            firstNameField.setText(selected.getFirstName());
-            lastNameField.setText(selected.getLastName() == null ? "" : selected.getLastName());
-            roleCombo.setValue(userController.toRoleLabel(selected.getRoles()));
-            setSuccess(status, "Form filled from selected row.");
-        });
-
-        Button updateButton = new Button("Update User");
-        updateButton.getStyleClass().add("btn-admin-edit");
-        updateButton.setOnAction(event -> {
-            User selected = selectedHolder[0];
-            if (selected == null || selected.getId() <= 0) {
-                setError(status, "Select a row to update.");
-                return;
-            }
-
-            String validationMessage = validateUserFormInputs(
-                    emailField.getText(),
-                    passwordField.getText(),
-                    firstNameField.getText(),
-                    lastNameField.getText(),
-                    roleCombo.getValue()
-            );
-            if (validationMessage != null) {
-                setError(status, validationMessage);
-                return;
-            }
-
-            User user = new User(
-                    selected.getId(),
-                    emailField.getText(),
-                    "",
-                    passwordField.getText(),
-                    firstNameField.getText(),
-                    lastNameField.getText()
-            );
-
-            try {
-                userController.updateUser(user, roleCombo.getValue());
-                setSuccess(status, "User updated successfully.");
-                refreshUsersAndStats(null, status);
-            } catch (SQLDataException ex) {
-                setError(status, ex.getMessage());
-            }
-        });
-
-        Button refreshButton = new Button("Refresh");
-        refreshButton.getStyleClass().add("btn-admin-view");
-        refreshButton.setOnAction(event -> refreshUsersAndStats("Users loaded.", status));
-
-        HBox actions = new HBox(10, useSelected, updateButton, refreshButton);
-        actions.setAlignment(Pos.CENTER_LEFT);
-
-        VBox.setVgrow(table, Priority.ALWAYS);
-        section.getChildren().addAll(form, actions, table, status);
-        return section;
-    }
-
-    private VBox buildDeleteSection() {
-        VBox section = buildSectionContainer("Delete User");
-
-        TableView<User> table = buildUserTable();
-        Label status = new Label();
-
-        Button deleteButton = new Button("Delete Selected User");
-        deleteButton.getStyleClass().add("btn-admin-delete");
-        deleteButton.setOnAction(event -> {
-            User selected = table.getSelectionModel().getSelectedItem();
-            if (selected == null || selected.getId() <= 0) {
-                setError(status, "Select a row to delete.");
-                return;
-            }
-
-            try {
-                userController.deleteUserById(selected.getId());
-                setSuccess(status, "User deleted successfully.");
-                refreshUsersAndStats(null, status);
-            } catch (SQLDataException ex) {
-                setError(status, ex.getMessage());
-            }
-        });
-
-        Button refreshButton = new Button("Refresh");
-        refreshButton.getStyleClass().add("btn-admin-view");
-        refreshButton.setOnAction(event -> refreshUsersAndStats("Users loaded.", status));
-
-        HBox actions = new HBox(10, deleteButton, refreshButton);
-        actions.setAlignment(Pos.CENTER_LEFT);
-
-        VBox.setVgrow(table, Priority.ALWAYS);
-        section.getChildren().addAll(table, actions, status);
-        return section;
-    }
-
-    private VBox buildSectionContainer(String title) {
-        Label titleLabel = new Label(title);
-        titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #0f172a;");
-
-        VBox container = new VBox(12, titleLabel);
-        container.setPadding(new Insets(14));
-        container.getStyleClass().addAll("user-card", "admin-form");
-        return container;
-    }
-
-    private GridPane buildFormGrid() {
-        GridPane gridPane = new GridPane();
-        gridPane.setVgap(8);
-        gridPane.setHgap(12);
-        return gridPane;
-    }
-
-    private void addFormRow(GridPane gridPane, int rowIndex, String labelText, Node field) {
-        Label label = new Label(labelText + " :");
-        label.setMinWidth(120);
-        gridPane.add(label, 0, rowIndex);
-
-        if (field instanceof TextField) {
-            ((TextField) field).setPrefWidth(380);
-        }
-        if (field instanceof ComboBox) {
-            ((ComboBox<?>) field).setPrefWidth(380);
-        }
-
-        gridPane.add(field, 1, rowIndex);
-    }
-
-    private TableView<User> buildUserTable() {
-        TableView<User> table = new TableView<>();
-        table.setItems(userData);
-
-        TableColumn<User, Integer> idColumn = new TableColumn<>("ID");
-        idColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getId()));
-
-        TableColumn<User, String> emailColumn = new TableColumn<>("Email");
-        emailColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
-
-        TableColumn<User, String> roleColumn = new TableColumn<>("Role");
-        roleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(userController.toRoleLabel(cellData.getValue().getRoles())));
-
-        TableColumn<User, String> passwordColumn = new TableColumn<>("Password");
-        passwordColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPassword()));
-
-        TableColumn<User, String> firstNameColumn = new TableColumn<>("First Name");
-        firstNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFirstName()));
-
-        TableColumn<User, String> lastNameColumn = new TableColumn<>("Last Name");
-        lastNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLastName()));
-
-        table.getColumns().addAll(idColumn, emailColumn, roleColumn, passwordColumn, firstNameColumn, lastNameColumn);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        table.setPrefHeight(430);
-        return table;
-    }
-
-    private void activateSection(StackPane stackPane, Node active, Button activeButton, Button... inactiveButtons) {
-        for (Node section : stackPane.getChildren()) {
-            boolean visible = section == active;
-            section.setVisible(visible);
-            section.setManaged(visible);
-        }
-
-        activeButton.getStyleClass().remove("nav-btn-active");
-        activeButton.getStyleClass().add("nav-btn-active");
-        for (Button button : inactiveButtons) {
-            button.getStyleClass().remove("nav-btn-active");
-        }
-    }
-
-    private void refreshUsersAndStats(String successMessage, Label statusLabel) {
-        try {
-            boolean ascending = "Ascending".equalsIgnoreCase(directionCombo.getValue());
-            userData.setAll(userController.searchAndSortUsers(searchField.getText(), sortByCombo.getValue(), ascending));
-
-            int[] stats = userController.getStatistics();
-            totalUsersLabel.setText(String.valueOf(stats[0]));
-            adminUsersLabel.setText(String.valueOf(stats[1]));
-            normalUsersLabel.setText(String.valueOf(stats[2]));
-
-            if (statusLabel != null && successMessage != null) {
-                setSuccess(statusLabel, successMessage);
-            }
-        } catch (SQLDataException ex) {
-            if (statusLabel != null) {
-                setError(statusLabel, ex.getMessage());
-            }
-        } catch (Exception ex) {
-            if (statusLabel != null) {
-                setError(statusLabel, "Database unavailable: " + ex.getMessage());
-            }
-        }
     }
 
     private void enterApp(User user) {
-        currentUser = user;
-        currentUserLabel.setText("Connected as: " + user.getEmail());
+        this.currentUser = user;
+        currentViewType = ViewType.APP;
+        chatbotController.setLoggedUser(user);
+        
+        // Show chatbot bubble
+        root.getChildren().stream()
+            .filter(n -> n.getStyleClass().contains("chat-bubble-btn"))
+            .forEach(n -> n.setVisible(true));
 
-        loginPane.setVisible(false);
-        loginPane.setManaged(false);
-        registerPane.setVisible(false);
-        registerPane.setManaged(false);
-
-        appPane.setVisible(true);
-        appPane.setManaged(true);
-
-        refreshUsersAndStats(null, null);
+        if (user.isAdmin()) {
+            showAdminDashboard();
+        } else {
+            showUserHome();
+        }
+        recaptchaWidget.getWebView().setVisible(false);
     }
 
-    private void showLoginPane() {
-        currentUser = null;
-        appPane.setVisible(false);
-        appPane.setManaged(false);
-        registerPane.setVisible(false);
-        registerPane.setManaged(false);
-        loginPane.setVisible(true);
-        loginPane.setManaged(true);
+    private void showAdminDashboard() {
+        AdminDashboardView dashboard = new AdminDashboardView(userController, currentUser, this::logout, this::showProfile, this::showLogs, this::showUserCreate, this::showUserEdit, this::showUserHome);
+        recaptchaWidget.getWebView().setVisible(false);
+        setView(dashboard.buildView());
     }
 
-    private void showRegisterPane() {
-        appPane.setVisible(false);
-        appPane.setManaged(false);
-        loginPane.setVisible(false);
-        loginPane.setManaged(false);
-        registerPane.setVisible(true);
-        registerPane.setManaged(true);
+    private void showUserCreate() {
+        UserCreateView createView = new UserCreateView(userController, this::showAdminDashboard, this::showAdminDashboard);
+        setView(createView.buildView());
+    }
+
+    private void showUserEdit(User target) {
+        UserEditView editView = new UserEditView(userController, target, this::showAdminDashboard, this::showAdminDashboard);
+        setView(editView.buildView());
+    }
+
+    private void showUserHome() {
+        UserHomeView home = new UserHomeView(currentUser, this::showProfile, this::logout);
+        recaptchaWidget.getWebView().setVisible(false);
+        setView(home.buildView());
+    }
+
+    private void showProfile() {
+        Runnable back = currentUser.isAdmin() ? this::showAdminDashboard : this::showUserHome;
+        UserProfileView profile = new UserProfileView(userController, faceAuthService, currentUser, back, this::showProfile, this::showLogs, this::logout, this::showUserHome);
+        recaptchaWidget.getWebView().setVisible(false);
+        setView(profile.buildView());
+    }
+
+    private void showLogs() {
+        AdminLogsView logs = new AdminLogsView(this::showAdminDashboard, this::showProfile, this::showLogs, this::logout, this::showUserHome);
+        recaptchaWidget.getWebView().setVisible(false);
+        setView(logs.buildView());
     }
 
     private void logout() {
-        currentUser = null;
-        currentUserLabel.setText("Not connected");
-        showLoginPane();
-    }
-
-    private void setSuccess(Label label, String message) {
-        label.getStyleClass().removeAll("feedback-error", "feedback-success");
-        label.getStyleClass().add("feedback-success");
-        label.setText(message);
-    }
-
-    private void setError(Label label, String message) {
-        label.getStyleClass().removeAll("feedback-error", "feedback-success");
-        label.getStyleClass().add("feedback-error");
-        label.setText(message);
-    }
-
-    private String validateLoginInputs(String email, String password) {
-        List<String> errors = new ArrayList<>();
-
-        if (email == null || email.trim().isEmpty()) {
-            errors.add("Email: required.");
-        } else if (!userController.isValidEmail(email)) {
-            errors.add("Email: invalid format (example: user@example.com).");
-        }
-
-        if (password == null || password.isEmpty()) {
-            errors.add("Password: required.");
-        }
-
-        return buildValidationMessage(errors);
-    }
-
-    private String validateRegisterInputs(String email, String password, String firstName, String lastName) {
-        List<String> errors = new ArrayList<>();
-
-        if (email == null || email.trim().isEmpty()) {
-            errors.add("Email: required.");
-        } else if (!userController.isValidEmail(email)) {
-            errors.add("Email: invalid format (example: user@example.com).");
-        }
-
-        if (password == null || password.isEmpty()) {
-            errors.add("Password: required.");
-        } else if (!userController.isStrongPassword(password)) {
-            errors.add("Password: must contain at least 6 characters.");
-        }
-
-        if (firstName == null || firstName.trim().isEmpty()) {
-            errors.add("First name: required.");
-        } else if (!userController.isValidName(firstName)) {
-            errors.add("First name: letters/spaces/hyphen/apostrophe only (1-50 chars).");
-        }
-
-        if (lastName != null && !lastName.trim().isEmpty() && !userController.isValidName(lastName)) {
-            errors.add("Last name: letters/spaces/hyphen/apostrophe only (1-50 chars), or leave empty.");
-        }
-
-        return buildValidationMessage(errors);
-    }
-
-    private String validateUserFormInputs(String email, String password, String firstName, String lastName, String role) {
-        List<String> errors = new ArrayList<>();
-
-        if (email == null || email.trim().isEmpty()) {
-            errors.add("Email: required.");
-        } else if (!userController.isValidEmail(email)) {
-            errors.add("Email: invalid format (example: user@example.com).");
-        }
-
-        if (password == null || password.isEmpty()) {
-            errors.add("Password: required.");
-        } else if (!userController.isStrongPassword(password)) {
-            errors.add("Password: must contain at least 6 characters.");
-        }
-
-        if (firstName == null || firstName.trim().isEmpty()) {
-            errors.add("First name: required.");
-        } else if (!userController.isValidName(firstName)) {
-            errors.add("First name: letters/spaces/hyphen/apostrophe only (1-50 chars).");
-        }
-
-        if (lastName != null && !lastName.trim().isEmpty() && !userController.isValidName(lastName)) {
-            errors.add("Last name: letters/spaces/hyphen/apostrophe only (1-50 chars), or leave empty.");
-        }
-
-        if (role == null || role.trim().isEmpty()) {
-            errors.add("Role: required (Admin or Normal User).");
-        }
-
-        return buildValidationMessage(errors);
-    }
-
-    private String buildValidationMessage(List<String> errors) {
-        if (errors.isEmpty()) {
-            return null;
-        }
-
-        StringBuilder builder = new StringBuilder("Please fix the following:\n");
-        for (String error : errors) {
-            builder.append("- ").append(error).append('\n');
-        }
-
-        return builder.toString().trim();
+        this.currentUser = null;
+        chatbotController.setLoggedUser(null);
+        
+        // Hide chatbot bubble
+        root.getChildren().stream()
+            .filter(n -> n.getStyleClass().contains("chat-bubble-btn"))
+            .forEach(n -> n.setVisible(false));
+            
+        showLogin();
     }
 
     public static void main(String[] args) {

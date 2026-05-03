@@ -36,3 +36,12 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+# Custom excludes
+src/main/resources/credentials.json
+chat_logs/
+uploads/
+exports/
+*.log
+__pycache__/
+.env

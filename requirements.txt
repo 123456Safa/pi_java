@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+deepface
+opencv-python
+tf-keras
+numpy
+scipy
+pydantic
+python-multipart
+apache-httpclient
