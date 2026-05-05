@@ -1,57 +1,58 @@
 .fo-root {
-    -fx-background-color: #f7f9fc;
-    -fx-font-family: "Inter", "Segoe UI", sans-serif;
+    -fx-background-color: -px-bg;
+    -fx-font-family: "Segoe UI", "Inter", system-ui, sans-serif;
 }
 
 .fo-topbar {
     -fx-background-color: rgba(255, 255, 255, 0.95);
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 15, 0, 0, 2);
-    -fx-border-width: 0;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.04), 15, 0, 0, 2);
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: -px-border;
 }
 
 .fo-brand-title {
     -fx-font-size: 26px;
     -fx-font-weight: 900;
-    -fx-text-fill: #1a1f36;
+    -fx-text-fill: -px-text;
     -fx-cursor: hand;
     -fx-letter-spacing: -0.5;
 }
 
 .fo-brand-title:hover {
-    -fx-text-fill: #635bff;
+    -fx-text-fill: -px-primary;
 }
 
 .fo-brand-subtitle {
     -fx-font-size: 11px;
-    -fx-text-fill: #8792a2;
+    -fx-text-fill: -px-text-secondary;
 }
 
 .fo-nav-button {
     -fx-background-color: transparent;
-    -fx-text-fill: #424770;
-    -fx-background-radius: 8;
+    -fx-text-fill: -px-text-secondary;
+    -fx-background-radius: 12;
     -fx-font-size: 14px;
-    -fx-font-weight: 600;
+    -fx-font-weight: 700;
     -fx-padding: 8 16 8 16;
     -fx-cursor: hand;
 }
 
 .fo-nav-button:hover {
-    -fx-background-color: #f3f6f8;
-    -fx-text-fill: #1a1f36;
+    -fx-background-color: -px-primary-ultra;
+    -fx-text-fill: -px-text;
 }
 
 .fo-nav-button-active {
-    -fx-background-color: #f3f6f8;
-    -fx-text-fill: #635bff;
+    -fx-background-color: -px-primary-ultra;
+    -fx-text-fill: -px-primary;
 }
 
 .fo-user-chip {
-    -fx-background-color: #e3e8ee;
+    -fx-background-color: -px-border;
     -fx-background-radius: 999;
     -fx-padding: 8 16 8 16;
-    -fx-text-fill: #1a1f36;
-    -fx-font-weight: bold;
+    -fx-text-fill: -px-text;
+    -fx-font-weight: 700;
     -fx-font-size: 13px;
 }
 
@@ -61,8 +62,8 @@
 
 .fo-placeholder-title {
     -fx-font-size: 18px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #1a1f36;
+    -fx-font-weight: 700;
+    -fx-text-fill: -px-text;
 }
 
 .catalogue-page,
@@ -71,15 +72,16 @@
 }
 
 .hero-card {
-    -fx-background-color: linear-gradient(to right, #163b5b, #1d694f);
+    -fx-background-color: linear-gradient(to right, -px-primary-dark, -px-primary);
     -fx-background-radius: 26;
     -fx-padding: 26;
+    -fx-effect: -px-shadow-primary;
 }
 
 .hero-title {
     -fx-font-size: 30px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #243248;
+    -fx-font-weight: 800;
+    -fx-text-fill: -px-text;
 }
 
 .hero-card .hero-title {
@@ -88,11 +90,11 @@
 
 .hero-subtitle {
     -fx-font-size: 15px;
-    -fx-text-fill: #718197;
+    -fx-text-fill: -px-text-secondary;
 }
 
 .hero-card .hero-subtitle {
-    -fx-text-fill: rgba(255,255,255,0.84);
+    -fx-text-fill: rgba(255,255,255,0.85);
 }
 
 .catalogue-scroll,
@@ -111,69 +113,70 @@
 }
 
 .product-card {
-    -fx-background-color: white;
+    -fx-background-color: -px-surface;
     -fx-background-radius: 22;
-    -fx-border-color: #e7edf6;
+    -fx-border-color: -px-border;
     -fx-border-radius: 22;
-    -fx-effect: dropshadow(gaussian, rgba(36,50,72,0.06), 15, 0, 0, 4);
+    -fx-effect: -px-shadow-sm;
     -fx-cursor: hand;
 }
 
 .product-card:hover {
-    -fx-effect: dropshadow(gaussian, rgba(36,50,72,0.15), 25, 0, 0, 8);
-    -fx-border-color: #c9d8eb;
+    -fx-effect: -px-shadow-lg;
+    -fx-border-color: -px-border-hover;
 }
 
 .product-card-media {
     -fx-alignment: center;
-    -fx-background-color: linear-gradient(to bottom right, #eff5ff, #dff2ea);
+    -fx-background-color: -px-primary-ultra;
     -fx-background-radius: 18;
 }
 
 .product-card-media-label {
     -fx-font-size: 28px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #5d4df1;
+    -fx-font-weight: 800;
+    -fx-text-fill: -px-primary;
 }
 
 .product-card-title {
     -fx-font-size: 19px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #243248;
+    -fx-font-weight: 800;
+    -fx-text-fill: -px-text;
 }
 
 .product-card-description {
     -fx-font-size: 13px;
-    -fx-text-fill: #6e7d92;
+    -fx-text-fill: -px-text-secondary;
 }
 
 .product-card-price {
     -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #118a58;
+    -fx-font-weight: 800;
+    -fx-text-fill: -px-accent-dark;
 }
 
 .fo-action-button {
-    -fx-background-radius: 14;
-    -fx-border-radius: 14;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
     -fx-padding: 11 18 11 18;
     -fx-font-size: 14px;
-    -fx-font-weight: bold;
+    -fx-font-weight: 700;
     -fx-cursor: hand;
 }
 
 .fo-action-primary {
-    -fx-background-color: linear-gradient(to right, #6d5dfc, #5b4be9);
+    -fx-background-color: linear-gradient(to right, -px-primary, -px-primary-dark);
     -fx-text-fill: white;
 }
 
 .fo-action-primary:hover {
     -fx-opacity: 0.92;
+    -fx-effect: -px-shadow-primary;
 }
 
 .history-search {
-    -fx-background-color: white;
-    -fx-border-color: #dbe3ea;
+    -fx-background-color: -px-surface;
+    -fx-border-color: -px-border;
     -fx-border-radius: 14;
     -fx-background-radius: 14;
     -fx-padding: 11 14;
@@ -182,35 +185,33 @@
 
 .history-results {
     -fx-font-size: 13;
-    -fx-text-fill: #6b7280;
-    -fx-font-weight: bold;
+    -fx-text-fill: -px-text-secondary;
+    -fx-font-weight: 700;
 }
 
 .empty-state {
-    -fx-background-color: white;
+    -fx-background-color: -px-surface;
     -fx-background-radius: 18;
-    -fx-border-color: #e7edf6;
+    -fx-border-color: -px-border;
     -fx-border-radius: 18;
     -fx-padding: 22;
     -fx-font-size: 14px;
-    -fx-text-fill: #5d6b7f;
+    -fx-text-fill: -px-text-secondary;
 }
 
 .cart-inline-message {
-    -fx-text-fill: #118a58;
+    -fx-text-fill: -px-accent-dark;
     -fx-font-size: 13px;
-    -fx-font-weight: bold;
+    -fx-font-weight: 700;
 }
 
 .panier-badge {
-    -fx-background-color: #d53a4a;
+    -fx-background-color: -px-danger;
     -fx-text-fill: white;
     -fx-font-size: 11px;
-    -fx-font-weight: bold;
+    -fx-font-weight: 800;
     -fx-background-radius: 999;
     -fx-padding: 2 5;
     -fx-min-width: 18;
     -fx-alignment: center;
 }
-
-

@@ -16,6 +16,7 @@
             fx:controller="controllers.frontoffice.FrontOfficeMainController"
             styleClass="fo-root">
     <stylesheets>
+        <URL value="@../pharmax-design-system.css" />
         <URL value="@frontoffice.css" />
     </stylesheets>
     <top>

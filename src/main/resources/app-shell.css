@@ -1,57 +1,90 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   APP SHELL — Global Navigation Bar + Container
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 .app-shell-root {
-    -fx-background-color: linear-gradient(to bottom right, #f4f6fb, #eef3fb);
-    -fx-font-family: "Segoe UI";
+    -fx-background-color: #f8fafc;
+    -fx-font-family: "Segoe UI", "Inter", system-ui, sans-serif;
 }
 
+/* ── Glassmorphism Top Bar ──────────────────────────────────────────────── */
 .app-shell-topbar {
-    -fx-background-color: white;
-    -fx-border-color: #e6ebf3;
+    -fx-background-color: rgba(255, 255, 255, 0.92);
+    -fx-border-color: #e2e8f0;
     -fx-border-width: 0 0 1 0;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.06), 12, 0, 0, 2);
 }
 
 .app-shell-title {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #1f2b3d;
+    -fx-font-size: 22px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #0f172a;
+    -fx-cursor: hand;
+}
+
+.app-shell-title:hover {
+    -fx-text-fill: #635bff;
 }
 
 .app-shell-subtitle {
-    -fx-font-size: 13px;
-    -fx-text-fill: #728197;
+    -fx-font-size: 11px;
+    -fx-text-fill: #94a3b8;
+    -fx-font-weight: 600;
 }
 
-.module-label-caption {
-    -fx-font-size: 13px;
-    -fx-text-fill: #728197;
-}
-
-.module-label-value {
-    -fx-font-size: 13px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #1f2b3d;
-    -fx-padding: 0 10 0 0;
-}
-
+/* ── Module Nav Buttons ─────────────────────────────────────────────────── */
 .module-button {
-    -fx-background-color: #edf2ff;
-    -fx-text-fill: #54637a;
-    -fx-background-radius: 14;
-    -fx-border-radius: 14;
-    -fx-padding: 10 18 10 18;
+    -fx-background-color: transparent;
+    -fx-text-fill: #475569;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 9 18 9 18;
     -fx-font-size: 14px;
-    -fx-font-weight: bold;
+    -fx-font-weight: 700;
     -fx-cursor: hand;
 }
 
 .module-button:hover {
-    -fx-background-color: #dde7ff;
+    -fx-background-color: #f1f5f9;
+    -fx-text-fill: #0f172a;
 }
 
 .module-button-active {
-    -fx-background-color: linear-gradient(to right, #6d5dfc, #5b4be9);
+    -fx-background-color: linear-gradient(to bottom right, #635bff, #4f46e5);
     -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(99,91,255,0.3), 12, 0, 0, 4);
 }
 
+.module-button-active:hover {
+    -fx-background-color: linear-gradient(to bottom right, #7c75ff, #635bff);
+}
+
+/* ── Content Area ───────────────────────────────────────────────────────── */
 .app-shell-content {
     -fx-padding: 0;
+    -fx-background-color: transparent;
+}
+
+/* ── Module info chips ──────────────────────────────────────────────────── */
+.module-label-caption {
+    -fx-font-size: 11px;
+    -fx-text-fill: #94a3b8;
+    -fx-font-weight: 600;
+}
+
+.module-label-value {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #0f172a;
+    -fx-padding: 0 8 0 0;
+}
+
+/* ── User Chip ──────────────────────────────────────────────────────────── */
+.user-chip-shell {
+    -fx-background-color: linear-gradient(to right, #ede9fe, #e0e7ff);
+    -fx-background-radius: 999;
+    -fx-padding: 8 16 8 16;
+    -fx-text-fill: #4f46e5;
+    -fx-font-weight: 700;
+    -fx-font-size: 13px;
 }

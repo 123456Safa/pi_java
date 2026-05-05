@@ -2,39 +2,35 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
 <?import javafx.geometry.Insets?>
 
 <VBox xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controllers.GestionCategorieController"
-      stylesheets="@categoriefront.css"
-      spacing="0" style="-fx-background-color: #f4f6fb;">
+      stylesheets="@../pharmax-design-system.css"
+      spacing="18" styleClass="crud-page">
 
     <!-- ═══ PAGE HEADER ═══ -->
-    <VBox styleClass="page-header" spacing="4">
+    <VBox styleClass="crud-toolbar" spacing="4">
         <HBox alignment="CENTER_LEFT" spacing="20">
-            <Label text="Gestion des Catégories" styleClass="main-title"/>
+            <VBox spacing="4">
+                <Label text="Gestion des Catégories" styleClass="crud-toolbar-title"/>
+                <HBox spacing="6" alignment="CENTER_LEFT">
+                    <Label text="Tableau de bord / Catégories" styleClass="crud-toolbar-subtitle"/>
+                </HBox>
+            </VBox>
             <Region HBox.hgrow="ALWAYS"/>
-            <Button text="+ Nouvelle Catégorie" styleClass="add-btn"
+            <Button text="+ Nouvelle Catégorie" styleClass="action-button primary-action"
                     fx:id="btnAjouter" onAction="#onAjouter"/>
-        </HBox>
-        <HBox spacing="6" alignment="CENTER_LEFT">
-            <Label text="Tableau de bord" styleClass="breadcrumb-link"/>
-            <Label text="/" styleClass="breadcrumb-sep"/>
-            <Label text="Catégories" styleClass="breadcrumb-current"/>
         </HBox>
     </VBox>
 
     <!-- ═══ CARD LISTE ═══ -->
-    <VBox styleClass="list-card" spacing="16" VBox.vgrow="ALWAYS">
+    <VBox styleClass="table-card" spacing="16" VBox.vgrow="ALWAYS">
 
         <Label text="Liste des Catégories" styleClass="card-title"/>
 
-        <!-- FILTRES REMOVED -->
-
         <!-- TABLEAU -->
-        <TableView fx:id="tableCategories" styleClass="product-table" VBox.vgrow="ALWAYS">
+        <TableView fx:id="tableCategories" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="colNom"         text="NOM"           prefWidth="200"/>
                 <TableColumn fx:id="colDescription" text="DESCRIPTION"   prefWidth="320"/>
@@ -53,9 +49,5 @@
 
     </VBox>
 
-    <!-- ═══ FOOTER ═══ -->
-    <HBox styleClass="page-footer" alignment="CENTER">
-        <Label text="© 2026 Pharmax" styleClass="footer-label"/>
-    </HBox>
-
 </VBox>
+

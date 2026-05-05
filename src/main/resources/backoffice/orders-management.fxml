@@ -18,25 +18,21 @@
     </VBox>
 
     <HBox spacing="18">
-        <VBox spacing="8" styleClass="metric-card status-stat-card" HBox.hgrow="ALWAYS"
-              style="-fx-background-color: linear-gradient(to bottom right, #f4a524, #dd8b00); -fx-border-color: #d18700; -fx-border-width: 1; -fx-border-radius: 24; -fx-background-radius: 24; -fx-padding: 18 20 18 20;">
-            <Label text="En attente" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
-            <Label fx:id="pendingStatLabel" text="0" style="-fx-text-fill: white; -fx-font-size: 44px; -fx-font-weight: bold;" />
+        <VBox spacing="8" styleClass="px-metric px-metric-amber" HBox.hgrow="ALWAYS">
+            <Label text="En attente" styleClass="px-metric-label" />
+            <Label fx:id="pendingStatLabel" text="0" styleClass="px-metric-value" />
         </VBox>
-        <VBox spacing="8" styleClass="metric-card status-stat-card" HBox.hgrow="ALWAYS"
-              style="-fx-background-color: linear-gradient(to bottom right, #6d5dfc, #4f46cf); -fx-border-color: #4b42cb; -fx-border-width: 1; -fx-border-radius: 24; -fx-background-radius: 24; -fx-padding: 18 20 18 20;">
-            <Label text="Confirmees" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
-            <Label fx:id="confirmedStatLabel" text="0" style="-fx-text-fill: white; -fx-font-size: 44px; -fx-font-weight: bold;" />
+        <VBox spacing="8" styleClass="px-metric px-metric-indigo" HBox.hgrow="ALWAYS">
+            <Label text="Confirmees" styleClass="px-metric-label" />
+            <Label fx:id="confirmedStatLabel" text="0" styleClass="px-metric-value" />
         </VBox>
-        <VBox spacing="8" styleClass="metric-card status-stat-card" HBox.hgrow="ALWAYS"
-              style="-fx-background-color: linear-gradient(to bottom right, #14b8a6, #0f8f82); -fx-border-color: #0d7c70; -fx-border-width: 1; -fx-border-radius: 24; -fx-background-radius: 24; -fx-padding: 18 20 18 20;">
-            <Label text="Livrees" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
-            <Label fx:id="deliveredStatLabel" text="0" style="-fx-text-fill: white; -fx-font-size: 44px; -fx-font-weight: bold;" />
+        <VBox spacing="8" styleClass="px-metric px-metric-emerald" HBox.hgrow="ALWAYS">
+            <Label text="Livrees" styleClass="px-metric-label" />
+            <Label fx:id="deliveredStatLabel" text="0" styleClass="px-metric-value" />
         </VBox>
-        <VBox spacing="8" styleClass="metric-card status-stat-card" HBox.hgrow="ALWAYS"
-              style="-fx-background-color: linear-gradient(to bottom right, #dc4354, #bb2f42); -fx-border-color: #a72c3c; -fx-border-width: 1; -fx-border-radius: 24; -fx-background-radius: 24; -fx-padding: 18 20 18 20;">
-            <Label text="Annulees" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
-            <Label fx:id="cancelledStatLabel" text="0" style="-fx-text-fill: white; -fx-font-size: 44px; -fx-font-weight: bold;" />
+        <VBox spacing="8" styleClass="px-metric px-metric-rose" HBox.hgrow="ALWAYS">
+            <Label text="Annulees" styleClass="px-metric-label" />
+            <Label fx:id="cancelledStatLabel" text="0" styleClass="px-metric-value" />
         </VBox>
     </HBox>
 

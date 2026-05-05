@@ -21,12 +21,16 @@ public class AppShellController {
 
     @FXML
     private StackPane contentPane;
+    @FXML
+    private Button frontOfficeButton;
+    @FXML
+    private Button backOfficeButton;
 
     @FXML
     public void initialize() {
-        modules.put(FRONT_OFFICE, new ModuleDefinition("/frontoffice/main.fxml", "Front Office", null));
+        modules.put(FRONT_OFFICE, new ModuleDefinition("/frontoffice/main.fxml", "Front Office", frontOfficeButton));
+        modules.put(BACK_OFFICE, new ModuleDefinition("/main.fxml", "Back Office", backOfficeButton));
         instance = this; // Stocker la référence
-        modules.put(BACK_OFFICE, new ModuleDefinition("/main.fxml", "Back Office", null));
         showFrontOffice();
     }
 
@@ -50,11 +54,23 @@ public class AppShellController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(module.fxmlPath()));
             Parent view = loader.load();
             contentPane.getChildren().setAll(view);
+            updateActiveButton(module.button());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    private void updateActiveButton(Button activeButton) {
+        Button[] buttons = {frontOfficeButton, backOfficeButton};
+        for (Button btn : buttons) {
+            if (btn != null) {
+                btn.getStyleClass().remove("module-button-active");
+            }
+        }
+        if (activeButton != null && !activeButton.getStyleClass().contains("module-button-active")) {
+            activeButton.getStyleClass().add("module-button-active");
+        }
+    }
 
     public static AppShellController getInstance() {
         return instance;

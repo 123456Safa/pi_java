@@ -18,6 +18,7 @@
             fx:controller="controllers.frontoffice.PanierController"
             prefWidth="1200.0" prefHeight="760.0">
     <stylesheets>
+        <URL value="@../pharmax-design-system.css" />
         <URL value="@panier.css" />
     </stylesheets>
     <center>

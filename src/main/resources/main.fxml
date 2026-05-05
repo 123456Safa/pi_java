@@ -16,6 +16,7 @@
             prefWidth="1360.0" prefHeight="820.0"
             styleClass="admin-root">
     <stylesheets>
+        <URL value="@pharmax-design-system.css" />
         <URL value="@admin.css" />
     </stylesheets>
 

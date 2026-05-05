@@ -15,9 +15,37 @@
             styleClass="app-shell-root">
     <stylesheets>
         <URL value="@app-shell.css" />
+        <URL value="@pharmax-design-system.css" />
     </stylesheets>
 
+    <!-- ═══ TOP NAVIGATION BAR ═══ -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="app-shell-topbar">
+            <padding>
+                <Insets top="14" right="28" bottom="14" left="28" />
+            </padding>
 
+            <!-- Brand -->
+            <VBox spacing="1">
+                <Label text="⚕ PHARMAX" styleClass="app-shell-title" />
+                <Label text="Système de gestion pharmaceutique" styleClass="app-shell-subtitle" />
+            </VBox>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Navigation Buttons -->
+            <HBox spacing="8" alignment="CENTER">
+                <Button fx:id="frontOfficeButton" text="🏪  Boutique" onAction="#showFrontOffice" styleClass="module-button" />
+                <Button fx:id="backOfficeButton" text="⚙  Administration" onAction="#showBackOffice" styleClass="module-button" />
+            </HBox>
+
+            <Region prefWidth="16" />
+
+            <Label text="👤 Admin" styleClass="user-chip-shell" />
+        </HBox>
+    </top>
+
+    <!-- ═══ CONTENT AREA ═══ -->
     <center>
         <javafx.scene.control.ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent; -fx-background: transparent;">
             <StackPane fx:id="contentPane" styleClass="app-shell-content" />

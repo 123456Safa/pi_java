@@ -1,0 +1,567 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PHARMAX DESIGN SYSTEM v3.0 — Unified Premium Theme
+   One CSS to rule all modules: produit, commande, utilisateur, categories,
+   reclamation, orders-management, historique, catalogue, panier.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. ROOT TOKENS ─────────────────────────────────────────────────────── */
+.root {
+    /* Primary palette — deep indigo / violet */
+    -px-primary:        #635bff;
+    -px-primary-dark:   #4f46e5;
+    -px-primary-light:  #ede9fe;
+    -px-primary-ultra:  #f5f3ff;
+
+    /* Accent — teal / emerald */
+    -px-accent:         #10b981;
+    -px-accent-dark:    #059669;
+    -px-accent-light:   #d1fae5;
+
+    /* Danger */
+    -px-danger:         #ef4444;
+    -px-danger-light:   #fef2f2;
+
+    /* Warning */
+    -px-warning:        #f59e0b;
+    -px-warning-light:  #fffbeb;
+
+    /* Neutrals */
+    -px-bg:             #f8fafc;
+    -px-surface:        #ffffff;
+    -px-border:         #e2e8f0;
+    -px-border-hover:   #cbd5e1;
+    -px-text:           #0f172a;
+    -px-text-secondary: #64748b;
+    -px-text-muted:     #94a3b8;
+
+    /* Shadows */
+    -px-shadow-sm:      dropshadow(gaussian, rgba(15,23,42,0.04), 8, 0, 0, 2);
+    -px-shadow-md:      dropshadow(gaussian, rgba(15,23,42,0.07), 16, 0, 0, 4);
+    -px-shadow-lg:      dropshadow(gaussian, rgba(15,23,42,0.10), 24, 0, 0, 8);
+    -px-shadow-primary: dropshadow(gaussian, rgba(99,91,255,0.25), 16, 0, 0, 6);
+
+    /* Radius */
+    -px-radius:         14;
+    -px-radius-lg:      22;
+    -px-radius-full:    999;
+
+    /* Font */
+    -fx-font-family:    "Segoe UI", "Inter", system-ui, sans-serif;
+    -fx-font-size:      14px;
+    -fx-background-color: -px-bg;
+}
+
+
+/* ── 2. SCROLLBARS — Sleek & Minimal ────────────────────────────────────── */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar {
+    -fx-background-color: transparent;
+    -fx-pref-width: 8px;
+    -fx-pref-height: 8px;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #cbd5e1;
+    -fx-background-radius: 999;
+    -fx-background-insets: 1;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #94a3b8;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+    -fx-padding: 0;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+
+
+/* ── 3. TYPOGRAPHY ──────────────────────────────────────────────────────── */
+.px-page-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: 800;
+    -fx-text-fill: -px-text;
+}
+
+.px-page-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: -px-text-secondary;
+}
+
+.px-card-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -px-text;
+}
+
+.px-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -px-text-secondary;
+    -fx-text-transform: uppercase;
+}
+
+
+/* ── 4. CARDS ───────────────────────────────────────────────────────────── */
+.px-card {
+    -fx-background-color: -px-surface;
+    -fx-background-radius: 22;
+    -fx-border-color: -px-border;
+    -fx-border-radius: 22;
+    -fx-border-width: 1;
+    -fx-padding: 24;
+    -fx-effect: -px-shadow-sm;
+}
+
+.px-card:hover {
+    -fx-effect: -px-shadow-md;
+    -fx-border-color: -px-border-hover;
+}
+
+
+/* ── 5. BUTTONS ─────────────────────────────────────────────────────────── */
+.px-btn {
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-padding: 11 20 11 20;
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+    -fx-effect: -px-shadow-sm;
+}
+
+.px-btn-primary {
+    -fx-background-color: linear-gradient(to bottom right, #635bff, #4f46e5);
+    -fx-text-fill: white;
+}
+
+.px-btn-primary:hover {
+    -fx-background-color: linear-gradient(to bottom right, #7c75ff, #635bff);
+    -fx-effect: -px-shadow-primary;
+}
+
+.px-btn-secondary {
+    -fx-background-color: -px-primary-light;
+    -fx-text-fill: -px-primary;
+    -fx-border-color: transparent;
+}
+
+.px-btn-secondary:hover {
+    -fx-background-color: #ddd6fe;
+}
+
+.px-btn-danger {
+    -fx-background-color: -px-danger-light;
+    -fx-text-fill: -px-danger;
+}
+
+.px-btn-danger:hover {
+    -fx-background-color: #fee2e2;
+}
+
+.px-btn-success {
+    -fx-background-color: -px-accent-light;
+    -fx-text-fill: -px-accent-dark;
+}
+
+.px-btn-success:hover {
+    -fx-background-color: #a7f3d0;
+}
+
+.px-btn-outline {
+    -fx-background-color: -px-surface;
+    -fx-text-fill: -px-text;
+    -fx-border-color: -px-border;
+    -fx-border-width: 1;
+}
+
+.px-btn-outline:hover {
+    -fx-background-color: -px-bg;
+    -fx-border-color: -px-border-hover;
+}
+
+
+/* ── 6. TEXT FIELDS & INPUTS ────────────────────────────────────────────── */
+.px-input,
+.text-field,
+.text-area {
+    -fx-background-color: -px-surface;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: -px-border;
+    -fx-border-width: 1;
+    -fx-padding: 11 14 11 14;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: -px-text-muted;
+}
+
+.px-input:focused,
+.text-field:focused,
+.text-area:focused {
+    -fx-border-color: -px-primary;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(99,91,255,0.15), 10, 0, 0, 2);
+}
+
+.combo-box {
+    -fx-background-color: -px-surface;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: -px-border;
+    -fx-border-width: 1;
+    -fx-padding: 4 8 4 8;
+    -fx-min-height: 42;
+}
+
+.combo-box:focused {
+    -fx-border-color: -px-primary;
+}
+
+.date-picker {
+    -fx-background-color: -px-surface;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: -px-border;
+    -fx-padding: 4 8 4 8;
+}
+
+.date-picker:focused,
+.date-picker .text-field:focused {
+    -fx-border-color: -px-primary;
+}
+
+
+/* ── 7. TABLES ──────────────────────────────────────────────────────────── */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: -px-bg;
+    -fx-background-radius: 12 12 0 0;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent -px-border transparent;
+    -fx-size: 48;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: -px-text-secondary;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+
+.table-row-cell {
+    -fx-background-color: -px-surface;
+    -fx-border-color: transparent transparent -px-border transparent;
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: -px-primary-ultra;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: -px-primary-light;
+}
+
+.table-row-cell:selected .text {
+    -fx-fill: -px-text;
+}
+
+.table-cell {
+    -fx-padding: 14 12 14 12;
+    -fx-font-size: 14px;
+    -fx-text-fill: -px-text;
+}
+
+/* Alternating rows */
+.table-row-cell:odd {
+    -fx-background-color: #fafbfd;
+}
+.table-row-cell:odd:hover {
+    -fx-background-color: -px-primary-ultra;
+}
+.table-row-cell:odd:selected {
+    -fx-background-color: -px-primary-light;
+}
+
+
+/* ── 8. PAGINATION ──────────────────────────────────────────────────────── */
+.pagination {
+    -fx-page-information-visible: false;
+}
+
+.pagination .pagination-control {
+    -fx-background-color: transparent;
+}
+
+.pagination .pagination-control .control-box {
+    -fx-spacing: 6;
+}
+
+.pagination .pagination-control .control-box .number-button,
+.pagination .pagination-control .control-box .bullet-button,
+.pagination .pagination-control .control-box .left-arrow-button,
+.pagination .pagination-control .control-box .right-arrow-button {
+    -fx-background-color: -px-surface;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: -px-border;
+    -fx-border-width: 1;
+    -fx-min-width: 38;
+    -fx-min-height: 38;
+    -fx-cursor: hand;
+    -fx-text-fill: -px-text-secondary;
+    -fx-font-weight: 700;
+    -fx-font-size: 13px;
+}
+
+.pagination .pagination-control .control-box .number-button:hover,
+.pagination .pagination-control .control-box .left-arrow-button:hover,
+.pagination .pagination-control .control-box .right-arrow-button:hover {
+    -fx-background-color: -px-primary-ultra;
+    -fx-border-color: -px-primary;
+}
+
+.pagination .pagination-control .control-box .number-button:selected {
+    -fx-background-color: linear-gradient(to bottom right, #635bff, #4f46e5);
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-effect: -px-shadow-primary;
+}
+
+
+/* ── 9. STATUS BADGES ───────────────────────────────────────────────────── */
+.status-badge {
+    -fx-background-radius: 999;
+    -fx-padding: 5 14 5 14;
+    -fx-font-weight: 700;
+    -fx-font-size: 12px;
+}
+
+.status-pending {
+    -fx-background-color: #fef3c7;
+    -fx-text-fill: #92400e;
+}
+
+.status-confirmed {
+    -fx-background-color: -px-primary-light;
+    -fx-text-fill: #4338ca;
+}
+
+.status-delivered {
+    -fx-background-color: -px-accent-light;
+    -fx-text-fill: #065f46;
+}
+
+.status-cancelled {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #991b1b;
+}
+
+
+/* ── 10. METRIC CARDS ───────────────────────────────────────────────────── */
+.px-metric {
+    -fx-background-radius: 20;
+    -fx-padding: 22 24;
+    -fx-effect: -px-shadow-md;
+}
+
+.px-metric-indigo {
+    -fx-background-color: linear-gradient(to bottom right, #635bff, #4f46e5);
+}
+
+.px-metric-emerald {
+    -fx-background-color: linear-gradient(to bottom right, #10b981, #059669);
+}
+
+.px-metric-amber {
+    -fx-background-color: linear-gradient(to bottom right, #f59e0b, #d97706);
+}
+
+.px-metric-rose {
+    -fx-background-color: linear-gradient(to bottom right, #f43f5e, #e11d48);
+}
+
+.px-metric-cyan {
+    -fx-background-color: linear-gradient(to bottom right, #06b6d4, #0891b2);
+}
+
+.px-metric-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: rgba(255,255,255,0.80);
+    -fx-font-weight: 600;
+}
+
+.px-metric-value {
+    -fx-font-size: 36px;
+    -fx-font-weight: 800;
+    -fx-text-fill: white;
+}
+
+
+/* ── 11. TOOLTIPS ───────────────────────────────────────────────────────── */
+.tooltip {
+    -fx-background-color: #1e293b;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 8 12;
+    -fx-font-size: 12px;
+    -fx-effect: -px-shadow-md;
+}
+
+
+/* ── 12. CRUD PAGE LAYOUT (shared by produit, commande, utilisateur, etc) ─ */
+.crud-page {
+    -fx-spacing: 18;
+    -fx-padding: 4;
+}
+
+.crud-toolbar {
+    -fx-background-color: -px-surface;
+    -fx-background-radius: 22;
+    -fx-padding: 22 26;
+    -fx-effect: -px-shadow-sm;
+    -fx-border-color: -px-border;
+    -fx-border-radius: 22;
+    -fx-border-width: 1;
+}
+
+.crud-toolbar-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
+    -fx-text-fill: -px-text;
+}
+
+.crud-toolbar-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: -px-text-secondary;
+}
+
+.form-card,
+.table-card {
+    -fx-background-color: -px-surface;
+    -fx-background-radius: 22;
+    -fx-padding: 22 26;
+    -fx-effect: -px-shadow-sm;
+    -fx-border-color: -px-border;
+    -fx-border-radius: 22;
+    -fx-border-width: 1;
+}
+
+.card-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -px-text;
+}
+
+.input-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -px-text-secondary;
+}
+
+.action-button {
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+    -fx-padding: 11 20 11 20;
+    -fx-font-size: 14px;
+    -fx-effect: -px-shadow-sm;
+}
+
+.action-button:hover {
+    -fx-effect: -px-shadow-md;
+}
+
+.primary-action {
+    -fx-background-color: linear-gradient(to bottom right, #635bff, #4f46e5);
+    -fx-text-fill: white;
+}
+
+.primary-action:hover {
+    -fx-background-color: linear-gradient(to bottom right, #7c75ff, #635bff);
+    -fx-effect: -px-shadow-primary;
+}
+
+.secondary-action {
+    -fx-background-color: -px-primary-light;
+    -fx-text-fill: -px-primary;
+}
+
+.secondary-action:hover {
+    -fx-background-color: #ddd6fe;
+}
+
+.danger-action {
+    -fx-background-color: -px-danger-light;
+    -fx-text-fill: -px-danger;
+}
+
+.danger-action:hover {
+    -fx-background-color: #fee2e2;
+}
+
+
+/* ── 13. FILTERS BAR ────────────────────────────────────────────────────── */
+.filters-bar {
+    -fx-alignment: center-left;
+    -fx-spacing: 12;
+}
+
+.status-combo {
+    -fx-background-color: -px-surface;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: -px-border;
+    -fx-padding: 4 8;
+    -fx-min-height: 42;
+}
+
+.status-combo:focused {
+    -fx-border-color: -px-primary;
+}
+
+
+/* ── 14. EMPTY STATE ────────────────────────────────────────────────────── */
+.empty-state {
+    -fx-background-color: -px-surface;
+    -fx-background-radius: 18;
+    -fx-border-color: -px-border;
+    -fx-border-radius: 18;
+    -fx-padding: 40;
+    -fx-font-size: 15px;
+    -fx-text-fill: -px-text-secondary;
+    -fx-alignment: center;
+}
+
+
+/* ── 15. SEPARATOR ──────────────────────────────────────────────────────── */
+.separator .line {
+    -fx-border-color: -px-border;
+    -fx-border-width: 1 0 0 0;
+}
