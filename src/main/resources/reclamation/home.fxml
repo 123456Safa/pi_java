@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.HomeReclamationController"
+      stylesheets="@style1.css,@pagination.css"
+      spacing="0"
+      prefHeight="800.0"
+      prefWidth="1200.0"
+      style="-fx-background-color: #f4f8f6;">
+
+ 
+
+  
+
+    <!-- ═══ HERO BANNER (RECLAMATIONS) ═══ -->
+    <VBox styleClass="hero-banner" alignment="CENTER" spacing="10" prefHeight="160">
+        <Label text="Centre d'Assistance &amp; Réclamations" styleClass="hero-title"/>
+        <Label text="Nous sommes là pour vous aider. Consultez et gérez vos demandes." styleClass="hero-subtitle"/>
+    </VBox>
+
+    <!-- Scrollable Content Wrapper -->
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="content-scroll" VBox.vgrow="ALWAYS">
+        <VBox spacing="24" style="-fx-padding: 30 50; -fx-background-color: #f4f8f6;">
+
+            <!-- Header Section -->
+            <VBox spacing="8">
+                <Label text="Mes Réclamations" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #0d2b1e;"/>
+                <Label text="Consultez vos réclamations et vos demandes de support" style="-fx-font-size: 14; -fx-text-fill: #4a6158;"/>
+            </VBox>
+
+            <!-- Search and Action Section (Unified, No Filter) -->
+            <HBox spacing="16" alignment="CENTER_LEFT" style="-fx-padding: 20 24; -fx-background-color: white; -fx-border-color: #c8e8d8; -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,80,40,0.06), 10, 0, 0, 4);">
+
+                <!-- Spacer to push button to right -->
+                <Region HBox.hgrow="ALWAYS" />
+
+                <!-- Add Button -->
+                <Button text="✨ Nouvelle Réclamation" onAction="#openAdd" styleClass="hero-cta-btn" />
+            </HBox>
+
+            <!-- Pagination Container -->
+            <VBox VBox.vgrow="ALWAYS" spacing="0">
+                <Pagination fx:id="pagination" VBox.vgrow="ALWAYS"
+                           style="-fx-page-information-visible: false; -fx-font-size: 12; -fx-padding: 0;" />
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
+
+</VBox>

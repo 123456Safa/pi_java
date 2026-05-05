@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.Locale;
 
 public class HistoriqueController {
     private static final int CURRENT_USER_ID = 1;
@@ -59,10 +60,6 @@ public class HistoriqueController {
 
     @FXML
     public void initialize() {
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            currentPage = 0;
-            refreshCommandes();
-        });
         loadCommandes();
     }
 
@@ -80,12 +77,7 @@ public class HistoriqueController {
     private void refreshCommandes() {
         commandesContainer.getChildren().clear();
 
-        String query = searchField == null ? "" : searchField.getText();
-        List<Commandes> filteredCommandes = allCommandes.stream()
-                .filter(commande -> matchesSearch(commande, query))
-                .collect(Collectors.toList());
-
-        int totalItems = filteredCommandes.size();
+        int totalItems = allCommandes.size();
         int totalPages = (int) Math.ceil((double) totalItems / ITEMS_PER_PAGE);
 
         if (currentPage >= totalPages && totalPages > 0) {
@@ -99,7 +91,7 @@ public class HistoriqueController {
         int toIndex = Math.min(fromIndex + ITEMS_PER_PAGE, totalItems);
 
         if (fromIndex < totalItems) {
-            List<Commandes> pagedCommandes = filteredCommandes.subList(fromIndex, toIndex);
+            List<Commandes> pagedCommandes = allCommandes.subList(fromIndex, toIndex);
             for (Commandes commande : pagedCommandes) {
                 commandesContainer.getChildren().add(createCommandeCard(commande));
             }
@@ -236,21 +228,14 @@ public class HistoriqueController {
         return row;
     }
 
-    private boolean matchesSearch(Commandes commande, String query) {
-        if (query == null || query.isBlank()) {
-            return true;
-        }
-
-        String normalizedQuery = query.trim().toLowerCase();
-        String searchableText = String.join(" ",
-                String.valueOf(commande.getId()),
-                safeLower(commande.getStatut()),
-                safeLower(formatDate(commande.getCreatedAt())),
-                safeLower(commande.getProduits()),
-                String.format("%.2f", commande.getTotales())
-        ).toLowerCase();
-
-        return searchableText.contains(normalizedQuery);
+    private boolean matchesSearch(Commandes commande, String keyword) {
+        if (keyword == null || keyword.isBlank()) return true;
+        String lowerKeyword = keyword.toLowerCase(Locale.ROOT);
+        return String.valueOf(commande.getId()).contains(lowerKeyword)
+                || (commande.getStatut() != null && commande.getStatut().toLowerCase(Locale.ROOT).contains(lowerKeyword))
+                || (commande.getProduits() != null && commande.getProduits().toLowerCase(Locale.ROOT).contains(lowerKeyword))
+                || (commande.getCreatedAt() != null && commande.getCreatedAt().toLowerCase(Locale.ROOT).contains(lowerKeyword))
+                || String.format(Locale.ROOT, "%.2f", commande.getTotales()).contains(lowerKeyword);
     }
 
     private int countArticles(int commandeId) {

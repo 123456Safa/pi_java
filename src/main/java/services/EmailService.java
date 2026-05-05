@@ -3,9 +3,16 @@ package services;
 import models.CommandeConfirmation;
 import models.LigneCommandes;
 
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.io.*;
+import java.util.*;
 import java.util.Properties;
 
 /**
@@ -16,6 +23,99 @@ import java.util.Properties;
  */
 public class EmailService {
 
+    // ── Brevo API for reclamation emails ─────────────────────────────────────
+    private static final String BREVO_API_KEY = System.getenv("BREVO_API_KEY") != null
+            ? System.getenv("BREVO_API_KEY")
+            : "YOUR_BREVO_API_KEY_HERE";
+    private static final String BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
+    private static final String BREVO_FROM_EMAIL = "safabaalouch25@gmail.com";
+    private static final String BREVO_FROM_NAME = "Support Système";
+
+    public static void sendReclamationResolvedEmail(String toEmail, String toName, String reclamationTitle) {
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpPost post = new HttpPost(BREVO_API_URL);
+            post.setHeader("Accept", "application/json");
+            post.setHeader("Content-Type", "application/json; charset=UTF-8");
+            post.setHeader("api-key", BREVO_API_KEY);
+
+            Map<String, Object> body = new LinkedHashMap<>();
+            Map<String, String> sender = new LinkedHashMap<>();
+            sender.put("email", BREVO_FROM_EMAIL);
+            sender.put("name", BREVO_FROM_NAME);
+            body.put("sender", sender);
+
+            List<Map<String, String>> to = new ArrayList<>();
+            Map<String, String> rec = new LinkedHashMap<>();
+            rec.put("email", toEmail);
+            rec.put("name", toName);
+            to.add(rec);
+            body.put("to", to);
+            body.put("subject", "Réclamation Résolue ✓");
+
+            String html = "<html><head><meta charset='UTF-8'></head><body style='font-family:Arial'>" +
+                    "<h2 style='color:green'>Réclamation Résolue ✓</h2>" +
+                    "<p>Bonjour " + toName + ",</p>" +
+                    "<p>Votre réclamation a été traitée avec succès.</p>" +
+                    "<p><b>Titre:</b> " + reclamationTitle + "</p>" +
+                    "<p>Merci,<br/>Support système</p></body></html>";
+            body.put("htmlContent", html);
+
+            ObjectMapper mapper = new ObjectMapper();
+            post.setEntity(new StringEntity(mapper.writeValueAsString(body), java.nio.charset.StandardCharsets.UTF_8));
+
+            client.execute(post, response -> {
+                int code = response.getCode();
+                System.out.println(code >= 200 && code < 300 ? "Email réclamation envoyé à " + toEmail : "Erreur email réclamation: " + code);
+                return null;
+            });
+        } catch (Exception e) {
+            System.err.println("Erreur envoi email réclamation: " + e.getMessage());
+        }
+    }
+
+    public static void sendOrderStatusEmail(String toEmail, String toName, int orderId, String newStatus) {
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpPost post = new HttpPost(BREVO_API_URL);
+            post.setHeader("Accept", "application/json");
+            post.setHeader("Content-Type", "application/json; charset=UTF-8");
+            post.setHeader("api-key", BREVO_API_KEY);
+
+            Map<String, Object> body = new LinkedHashMap<>();
+            Map<String, String> sender = new LinkedHashMap<>();
+            sender.put("email", BREVO_FROM_EMAIL);
+            sender.put("name", BREVO_FROM_NAME);
+            body.put("sender", sender);
+
+            List<Map<String, String>> to = new ArrayList<>();
+            Map<String, String> rec = new LinkedHashMap<>();
+            rec.put("email", toEmail);
+            rec.put("name", toName);
+            to.add(rec);
+            body.put("to", to);
+            body.put("subject", "Mise à jour de votre commande #" + orderId);
+
+            String html = "<html><head><meta charset='UTF-8'></head><body style='font-family:Arial'>" +
+                    "<h2 style='color:#0f172a'>Mise à jour de commande</h2>" +
+                    "<p>Bonjour " + toName + ",</p>" +
+                    "<p>Le statut de votre commande <b>#" + orderId + "</b> a été mis à jour.</p>" +
+                    "<p>Nouveau statut: <b style='color:#16a34a'>" + newStatus + "</b></p>" +
+                    "<p>Merci pour votre confiance,<br/>L'équipe PharmaX</p></body></html>";
+            body.put("htmlContent", html);
+
+            ObjectMapper mapper = new ObjectMapper();
+            post.setEntity(new StringEntity(mapper.writeValueAsString(body), java.nio.charset.StandardCharsets.UTF_8));
+
+            client.execute(post, response -> {
+                int code = response.getCode();
+                System.out.println(code >= 200 && code < 300 ? "Email statut commande envoyé à " + toEmail : "Erreur email statut: " + code);
+                return null;
+            });
+        } catch (Exception e) {
+            System.err.println("Erreur envoi email statut commande: " + e.getMessage());
+        }
+    }
+
+    // ── Gmail SMTP for order emails ───────────────────────────────────────────
     private static final String CONFIG_FILE = "email_config.properties";
 
     // ── Load config ──────────────────────────────────────────────────────────
@@ -54,75 +154,49 @@ public class EmailService {
 
     // ── Public API ───────────────────────────────────────────────────────────
     /**
-     * Sends an order confirmation email in a background thread (non-blocking).
+     * Sends an order confirmation email in a background thread using Brevo API (non-blocking).
      */
     public static void sendConfirmationAsync(CommandeConfirmation confirmation, String recipientEmail) {
         new Thread(() -> {
-            try {
-                Properties cfg = loadConfig();
-                String email    = cfg.getProperty("sender.email",    "").trim();
-                String password = cfg.getProperty("sender.password", "").trim();
+            try (CloseableHttpClient client = HttpClients.createDefault()) {
+                HttpPost post = new HttpPost(BREVO_API_URL);
+                post.setHeader("Accept", "application/json");
+                post.setHeader("Content-Type", "application/json; charset=UTF-8");
+                post.setHeader("api-key", BREVO_API_KEY);
 
-                if (email.isBlank() || email.equals("VOTRE_EMAIL@gmail.com")) {
-                    System.err.println("⚠️  Email non configuré. Éditez le fichier : " + new File(CONFIG_FILE).getAbsolutePath());
-                    return;
-                }
-                if (password.isBlank() || password.equals("VOTRE_APP_PASSWORD")) {
-                    System.err.println("⚠️  App Password non configuré. Éditez le fichier : " + new File(CONFIG_FILE).getAbsolutePath());
-                    return;
-                }
+                Map<String, Object> body = new LinkedHashMap<>();
+                Map<String, String> sender = new LinkedHashMap<>();
+                sender.put("email", BREVO_FROM_EMAIL);
+                sender.put("name", BREVO_FROM_NAME);
+                body.put("sender", sender);
 
-                sendConfirmation(confirmation, recipientEmail, email, password);
-                System.out.println("✅ Email envoyé avec succès à : " + recipientEmail);
+                List<Map<String, String>> to = new ArrayList<>();
+                Map<String, String> rec = new LinkedHashMap<>();
+                rec.put("email", recipientEmail);
+                rec.put("name", confirmation.getClient().getNom());
+                to.add(rec);
+                body.put("to", to);
+                body.put("subject", "Votre commande PHARMAX #" + confirmation.getCommandeId() + " a été confirmée ✓");
 
-            } catch (AuthenticationFailedException e) {
-                System.err.println("❌ Authentification Gmail échouée.");
-                System.err.println("   → Vérifiez l'email et l'App Password dans : " + new File(CONFIG_FILE).getAbsolutePath());
-                System.err.println("   → Détail : " + e.getMessage());
-            } catch (MessagingException e) {
-                System.err.println("❌ Erreur d'envoi email : " + e.getMessage());
-                if (e.getCause() != null) System.err.println("   Cause : " + e.getCause().getMessage());
+                body.put("htmlContent", buildHtmlBody(confirmation));
+
+                ObjectMapper mapper = new ObjectMapper();
+                post.setEntity(new StringEntity(mapper.writeValueAsString(body), java.nio.charset.StandardCharsets.UTF_8));
+
+                client.execute(post, response -> {
+                    int code = response.getCode();
+                    if (code >= 200 && code < 300) {
+                        System.out.println("✅ Email de confirmation de commande envoyé avec succès à : " + recipientEmail);
+                    } else {
+                        System.err.println("❌ Erreur lors de l'envoi de l'email de confirmation : " + code);
+                    }
+                    return null;
+                });
             } catch (Exception e) {
                 System.err.println("❌ Erreur inattendue lors de l'envoi email : " + e.getMessage());
                 e.printStackTrace();
             }
         }, "EmailSender").start();
-    }
-
-    // ── Core send logic ──────────────────────────────────────────────────────
-    private static void sendConfirmation(CommandeConfirmation confirmation,
-                                         String recipientEmail,
-                                         String senderEmail,
-                                         String appPassword)
-            throws MessagingException, UnsupportedEncodingException {
-
-        Properties props = new Properties();
-        props.put("mail.smtp.auth",                "true");
-        props.put("mail.smtp.starttls.enable",     "true");
-        props.put("mail.smtp.starttls.required",   "true");
-        props.put("mail.smtp.host",                "smtp.gmail.com");
-        props.put("mail.smtp.port",                "587");
-        props.put("mail.smtp.ssl.trust",           "smtp.gmail.com");
-        props.put("mail.smtp.connectiontimeout",   "10000");
-        props.put("mail.smtp.timeout",             "10000");
-
-        Session session = Session.getInstance(props, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(senderEmail, appPassword);
-            }
-        });
-
-        // Uncomment to debug SMTP conversation:
-        // session.setDebug(true);
-
-        MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(senderEmail, "PHARMAX", "UTF-8"));
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
-        message.setSubject("Votre commande PHARMAX #" + confirmation.getCommandeId() + " a été confirmée ✓", "UTF-8");
-        message.setContent(buildHtmlBody(confirmation), "text/html; charset=UTF-8");
-
-        Transport.send(message);
     }
 
     // ── HTML body ────────────────────────────────────────────────────────────

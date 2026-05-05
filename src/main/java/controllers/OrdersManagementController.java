@@ -361,6 +361,27 @@ public class OrdersManagementController {
             commande.setStatut(newStatus);
             commandeService.update(commande);
             refresh();
+            
+            // Envoyer un e-mail au client en arrière-plan
+            new Thread(() -> {
+               try {
+                  String email = "client@pharmax.com"; 
+                  String nom = "Client";
+                  try (java.sql.Connection cnx = utils.MyConnection.getInstance().getConnection();
+                       java.sql.PreparedStatement ps = cnx.prepareStatement("SELECT email, nom FROM utilisateur WHERE id = ?")) {
+                       ps.setInt(1, commande.getUtilisateurId());
+                       java.sql.ResultSet rs = ps.executeQuery();
+                       if(rs.next()){
+                           email = rs.getString("email");
+                           nom = rs.getString("nom");
+                       }
+                  }
+                  services.EmailService.sendOrderStatusEmail(email, nom, commande.getId(), newStatus);
+               } catch(Exception ex){
+                  System.err.println("Erreur lors de l'envoi de l'e-mail de statut : " + ex.getMessage());
+               }
+            }).start();
+            
         } catch (SQLException e) {
             showError("Statut non modifie", "La mise a jour du statut a echoue.");
         }

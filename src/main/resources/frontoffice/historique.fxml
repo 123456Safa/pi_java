@@ -14,15 +14,7 @@
       styleClass="history-page">
     <Label text="Mes commandes" styleClass="hero-title" />
     <Label text="Consultez et recherchez les details de vos commandes" styleClass="hero-subtitle" />
-    <HBox spacing="12" alignment="CENTER_LEFT">
-        <TextField fx:id="searchField"
-                   promptText="Rechercher par numero, statut, date, total ou produit"
-                   styleClass="history-search"
-                   HBox.hgrow="ALWAYS" />
-        <Label fx:id="resultsLabel"
-               text="0 commande"
-               styleClass="history-results" />
-    </HBox>
+    <!-- Search removed by request -->
 
     <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 10 20 10 20; -fx-background-color: #f8fafc; -fx-background-radius: 8; -fx-border-color: #e2e8f0; -fx-border-radius: 8;">
         <Label text="COMMANDE" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #64748b;" minWidth="120" />

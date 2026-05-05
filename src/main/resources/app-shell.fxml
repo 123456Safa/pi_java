@@ -19,6 +19,8 @@
 
 
     <center>
-        <StackPane fx:id="contentPane" styleClass="app-shell-content" />
+        <javafx.scene.control.ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+            <StackPane fx:id="contentPane" styleClass="app-shell-content" />
+        </javafx.scene.control.ScrollPane>
     </center>
 </BorderPane>
