@@ -1,0 +1,173 @@
+/* ================================================================
+   PHARMAX — DASHBOARD ADMIN CSS
+   Fond #f4f6fb | Violet #5856d6 | Bleu #007bff | Orange #fd7e14
+   ================================================================ */
+
+* { -fx-font-family: "Segoe UI", Arial, sans-serif; }
+
+/* ══════════════════════════════════════
+   GLOBAL STRUCTURE
+══════════════════════════════════════ */
+.dashboard-root {
+    -fx-background-color: #f4f6fb;
+}
+
+/* ══════════════════════════════════════
+   HEADER
+══════════════════════════════════════ */
+.dash-header {
+    -fx-background-color: white;
+    -fx-padding: 24 32;
+    -fx-border-color: #e8eaf2;
+    -fx-border-width: 0 0 1 0;
+    -fx-effect: dropshadow(gaussian, rgba(88,86,214,0.05), 8, 0.1, 0, 2);
+}
+.dash-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a2e;
+}
+.dash-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #8a8fa8;
+}
+
+/* ══════════════════════════════════════
+   SCROLL PANE
+══════════════════════════════════════ */
+.dash-scroll {
+    -fx-background: #f4f6fb;
+    -fx-background-color: #f4f6fb;
+    -fx-border-color: transparent;
+}
+.dash-scroll .viewport {
+    -fx-background-color: #f4f6fb;
+}
+.dash-body {
+    -fx-padding: 30 32;
+    -fx-background-color: #f4f6fb;
+}
+
+/* ══════════════════════════════════════
+   STAT CARDS
+══════════════════════════════════════ */
+.stat-card {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: #e8eaf2;
+    -fx-border-width: 1;
+    -fx-padding: 20 24;
+    -fx-effect: dropshadow(gaussian, rgba(88,86,214,0.08), 12, 0.1, 0, 4);
+}
+
+/* Thèmes spécifiques (Bordure gauche colorée) */
+.stat-card-blue {
+    -fx-border-width: 1 1 1 4;
+    -fx-border-color: #e8eaf2 #e8eaf2 #e8eaf2 #3b82f6;
+}
+.stat-card-violet {
+    -fx-border-width: 1 1 1 4;
+    -fx-border-color: #e8eaf2 #e8eaf2 #e8eaf2 #5856d6;
+}
+.stat-card-orange {
+    -fx-border-width: 1 1 1 4;
+    -fx-border-color: #e8eaf2 #e8eaf2 #e8eaf2 #f59e0b;
+}
+
+/* Contenu des stats */
+.stat-icon {
+    -fx-font-size: 32px;
+}
+.stat-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #8a8fa8;
+}
+.stat-value {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a2e;
+}
+
+/* Tendances */
+.stat-trend-positive {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #10b981;
+    -fx-padding: 6 0 0 0;
+}
+.stat-trend-warning {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #f59e0b;
+    -fx-padding: 6 0 0 0;
+}
+
+/* ══════════════════════════════════════
+   CHART CARDS
+══════════════════════════════════════ */
+.chart-card {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: #e8eaf2;
+    -fx-border-width: 1;
+    -fx-padding: 24;
+    -fx-effect: dropshadow(gaussian, rgba(88,86,214,0.06), 14, 0.1, 0, 4);
+}
+.chart-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a2e;
+}
+
+/* Personnalisation PieChart */
+.chart-pie-label {
+    -fx-fill: #4a5280;
+    -fx-font-size: 11px;
+}
+.chart-legend {
+    -fx-background-color: transparent;
+    -fx-padding: 10px;
+}
+.chart-legend-item {
+    -fx-text-fill: #4a5280;
+}
+
+/* Personnalisation BarChart */
+.axis {
+    -fx-tick-label-fill: #8a8fa8;
+    -fx-font-size: 10px;
+}
+.axis-label {
+    -fx-text-fill: #4a5280;
+    -fx-font-size: 11px;
+}
+.chart-bar {
+    -fx-bar-fill: #5856d6;
+}
+.default-color0.chart-bar { -fx-bar-fill: #5856d6; }
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+.dash-footer {
+    -fx-padding: 20 0 10 0;
+    -fx-border-color: #e8eaf2 transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+}
+.dash-footer-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #a0a5b8;
+}
+
+/* SCROLLBAR */
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 8;
+}
+.scroll-bar .thumb {
+    -fx-background-color: #c0c4d8;
+    -fx-background-radius: 10;
+}

@@ -1,0 +1,310 @@
+.root {
+    -fx-font-family: "Inter", "Segoe UI", sans-serif;
+    -fx-background-color: #f7f9fc;
+}
+
+.label {
+    -fx-text-fill: #1a1f36;
+}
+
+.cart-layout {
+    -fx-padding: 24;
+}
+
+.list-column {
+    -fx-padding: 4 0 0 0;
+}
+
+.page-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1a1f36;
+    -fx-letter-spacing: -0.5;
+}
+
+.page-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #697386;
+}
+
+.products-scroll, .summary-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.products-scroll > .viewport, .summary-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.products-list {
+    -fx-padding: 4 4 4 0;
+}
+
+.summary-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: #e3e8ee;
+    -fx-border-radius: 12;
+    -fx-padding: 24;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 15, 0, 0, 2);
+}
+
+.summary-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1f36;
+}
+
+.summary-section {
+    -fx-background-color: #f7f9fc;
+    -fx-background-radius: 8;
+    -fx-padding: 16;
+}
+
+.summary-row {
+    -fx-spacing: 10;
+}
+
+.summary-label {
+    -fx-text-fill: #697386;
+    -fx-font-size: 14px;
+}
+
+.summary-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1a1f36;
+}
+
+.summary-hint {
+    -fx-font-size: 12px;
+    -fx-text-fill: #697386;
+}
+
+.points-box {
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 8;
+    -fx-border-color: #e3e8ee;
+    -fx-border-radius: 8;
+    -fx-padding: 12;
+}
+
+.points-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1f36;
+}
+
+.summary-success {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #00d66f;
+}
+
+.summary-total-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1f36;
+}
+
+.summary-total-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #635bff;
+}
+
+.field-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #3c4257;
+}
+
+.text-field, .combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #e3e8ee;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 10 12;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.02), 4, 0, 0, 1);
+}
+
+.text-field:focused, .combo-box:focused {
+    -fx-border-color: #635bff;
+    -fx-effect: dropshadow(gaussian, rgba(99, 91, 255, 0.2), 6, 0, 0, 1);
+}
+
+.combo-box .list-cell {
+    -fx-padding: 8 10;
+}
+
+.button {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.primary-button {
+    -fx-background-color: #635bff;
+    -fx-text-fill: white;
+    -fx-padding: 12 16;
+    -fx-max-width: Infinity;
+    -fx-font-size: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);
+}
+
+.primary-button:hover {
+    -fx-background-color: #5851df;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 12, 0, 0, 3);
+}
+
+.secondary-button {
+    -fx-background-color: white;
+    -fx-text-fill: #1a1f36;
+    -fx-border-color: #e3e8ee;
+    -fx-padding: 11 16;
+    -fx-max-width: Infinity;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 4, 0, 0, 1);
+}
+
+.secondary-button:hover {
+    -fx-background-color: #f7f9fc;
+}
+
+.outline-button {
+    -fx-background-color: #eef8f2;
+    -fx-text-fill: #1e9b61;
+    -fx-border-color: #bfe5ce;
+    -fx-padding: 11 16;
+    -fx-max-width: Infinity;
+}
+
+.outline-button:hover {
+    -fx-background-color: #e1f3e8;
+}
+
+.empty-state {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: #e3e8ee;
+    -fx-border-radius: 12;
+    -fx-padding: 32;
+    -fx-font-size: 15px;
+    -fx-text-fill: #697386;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 15, 0, 0, 2);
+}
+
+.panier-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: #e3e8ee;
+    -fx-border-radius: 12;
+    -fx-padding: 16 18;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 15, 0, 0, 2);
+}
+
+.product-media {
+    -fx-min-width: 70;
+    -fx-min-height: 70;
+    -fx-max-width: 70;
+    -fx-max-height: 70;
+    -fx-background-color: #f7f9fc;
+    -fx-background-radius: 8;
+    -fx-border-color: #e3e8ee;
+    -fx-border-radius: 8;
+}
+
+.product-media-icon {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #635bff;
+}
+
+.product-name {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1f36;
+}
+
+.product-description {
+    -fx-font-size: 12px;
+    -fx-text-fill: #697386;
+}
+
+.product-price {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1a1f36;
+}
+
+.quantity-box {
+    -fx-spacing: 8;
+    -fx-alignment: center-left;
+}
+
+.qty-button {
+    -fx-min-width: 32;
+    -fx-min-height: 32;
+    -fx-max-width: 32;
+    -fx-max-height: 32;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.qty-minus, .qty-plus {
+    -fx-background-color: #f7f9fc;
+    -fx-border-color: #e3e8ee;
+    -fx-text-fill: #424770;
+    -fx-cursor: hand;
+}
+
+.qty-minus:hover, .qty-plus:hover {
+    -fx-background-color: #e3e8ee;
+}
+
+.qty-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1a1f36;
+    -fx-padding: 0 8;
+}
+
+.subtotal-block {
+    -fx-alignment: center-right;
+    -fx-spacing: 4;
+}
+
+.subtotal-title {
+    -fx-font-size: 12px;
+    -fx-text-fill: #697386;
+}
+
+.subtotal-value {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #635bff;
+}
+
+.delete-button {
+    -fx-background-color: white;
+    -fx-text-fill: #df1b41;
+    -fx-border-color: #df1b41;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-padding: 8 12;
+    -fx-cursor: hand;
+}
+
+.delete-button:hover {
+    -fx-background-color: #fce7eb;
+}
+
+.error-message {
+    -fx-font-size: 12px;
+    -fx-text-fill: #df1b41;
+    -fx-font-weight: 600;
+}

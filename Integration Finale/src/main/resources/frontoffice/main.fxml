@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="mainPane"
+            xmlns="http://javafx.com/javafx/20.0.2"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.frontoffice.FrontOfficeMainController"
+            styleClass="fo-root">
+    <stylesheets>
+        <URL value="@frontoffice.css" />
+    </stylesheets>
+    <top>
+        <VBox styleClass="fo-header">
+            <HBox alignment="CENTER_LEFT" styleClass="fo-promo-bar">
+                <Label text="▣  BLOG" styleClass="fo-promo-link" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label text="✦  LIVRAISON GRATUITE DES 99 DT D'ACHAT !!" styleClass="fo-promo-title" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label text="Contact" styleClass="fo-promo-link" />
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="24" styleClass="fo-mainbar">
+                <Label fx:id="pharmaxLabel" text="Pharmax." onMouseClicked="#handlePharmaxLabelClick" styleClass="fo-brand-title" />
+                <Region HBox.hgrow="ALWAYS" />
+                <HBox alignment="CENTER" spacing="0" styleClass="fo-search-box">
+                    <TextField promptText="Cherchez le produit qui vous convient" styleClass="fo-search-field" HBox.hgrow="ALWAYS" />
+                    <Button text="Rechercher" styleClass="fo-search-button" />
+                </HBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button text="Connexion" styleClass="fo-login-button" />
+                <StackPane>
+                    <Button fx:id="notificationsButton" text="🔔 Notifs" onAction="#showNotifications" styleClass="fo-cart-button" style="-fx-background-color: transparent; -fx-text-fill: #1e293b;" />
+                    <Label fx:id="notificationsBadge" text="0" styleClass="panier-badge" StackPane.alignment="TOP_RIGHT" />
+                </StackPane>
+                <StackPane>
+                    <Button fx:id="panierButton" text="🛒  Panier" onAction="#showPanier" styleClass="fo-cart-button" />
+                    <Label fx:id="panierBadge" text="0" styleClass="panier-badge" StackPane.alignment="TOP_RIGHT" />
+                </StackPane>
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="22" styleClass="fo-nav-row">
+                <Button fx:id="catalogueButton" text="Promos" onAction="#showCatalogue" styleClass="fo-nav-button" />
+                <Button fx:id="reclamationsButton" text="Réclamations" onAction="#showReclamations" styleClass="fo-nav-button" />
+                <Label text="Nouveautés" styleClass="fo-nav-label" />
+                <Label text="Bons Plans" styleClass="fo-nav-label" />
+                <Label text="Marques" styleClass="fo-nav-label" />
+                <Label text="Nos coffrets" styleClass="fo-nav-label" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label text="Maquillage" styleClass="fo-chip-pink" />
+                <Label text="Nutrition Sportive" styleClass="fo-chip-blue" />
+                <Label text="Animalerie" styleClass="fo-chip-orange" />
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="26" styleClass="fo-category-row">
+                <Label text="♧  BÉBÉ ET MAMAN" styleClass="fo-category-active" />
+                <Label text="Visage" styleClass="fo-category-label" />
+                <Label text="Cheveux" styleClass="fo-category-label" />
+                <Label text="Corps" styleClass="fo-category-label" />
+                <Label text="Compléments alimentaires" styleClass="fo-category-label" />
+                <Label text="Hygiène" styleClass="fo-category-label" />
+                <Label text="Solaires" styleClass="fo-category-label" />
+                <Label text="Bio &amp; naturel" styleClass="fo-category-label" />
+                <Label text="Matériel médical" styleClass="fo-category-label" />
+                <Label text="Homme" styleClass="fo-category-label" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="historiqueButton" text="Mes commandes" onAction="#showHistorique" styleClass="fo-history-link" />
+            </HBox>
+        </VBox>
+    </top>
+    <center>
+        <VBox alignment="CENTER" spacing="10" styleClass="fo-content-placeholder">
+            <Label text="Chargement..." styleClass="fo-placeholder-title" />
+        </VBox>
+    </center>
+</BorderPane>

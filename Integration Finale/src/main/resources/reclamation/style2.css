@@ -1,0 +1,432 @@
+/* ================================================================
+   PHARMAX — SIDEBAR CSS (Style Violet — comme la capture)
+   Fond violet #5856d6 | Boutons blancs | Actif blanc opaque
+   ================================================================ */
+
+* { -fx-font-family: "Segoe UI", Arial, sans-serif; }
+
+/* ══════════════════════════════════════
+   SIDEBAR CONTAINER
+══════════════════════════════════════ */
+.sidebar {
+    -fx-background-color: #5856d6;
+    -fx-min-width: 220;
+    -fx-max-width: 220;
+    -fx-pref-width: 220;
+    -fx-effect: dropshadow(gaussian, rgba(88,86,214,0.4), 18, 0.15, 4, 0);
+}
+
+/* ══════════════════════════════════════
+   LOGO ZONE
+══════════════════════════════════════ */
+.sidebar-logo-zone {
+    -fx-padding: 24 20 16 20;
+    -fx-background-color: #4e4cc4;
+}
+.sidebar-brand {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+.sidebar-brand-sub {
+    -fx-font-size: 10px;
+    -fx-text-fill: rgba(255,255,255,0.5);
+    -fx-font-weight: bold;
+}
+
+/* ══════════════════════════════════════
+   DIVIDERS
+══════════════════════════════════════ */
+.sidebar-divider {
+    -fx-background-color: rgba(255,255,255,0.12);
+    -fx-pref-height: 1;
+    -fx-min-height: 1;
+    -fx-max-height: 1;
+}
+.sidebar-divider-thin {
+    -fx-background-color: rgba(255,255,255,0.1);
+    -fx-pref-height: 1;
+    -fx-min-height: 1;
+    -fx-max-height: 1;
+}
+
+/* ══════════════════════════════════════
+   MENU ZONE
+══════════════════════════════════════ */
+.sidebar-menu {
+    -fx-padding: 12 10;
+}
+
+/* SECTION LABEL */
+.sidebar-section-label {
+    -fx-text-fill: rgba(255,255,255,0.45);
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 14 10 6 14;
+}
+
+/* ══════════════════════════════════════
+   SIDEBAR BUTTONS
+══════════════════════════════════════ */
+.sidebar-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255,255,255,0.8);
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 11 14 11 16;
+    -fx-cursor: hand;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+.sidebar-btn:hover {
+    -fx-background-color: rgba(255,255,255,0.12);
+    -fx-text-fill: white;
+}
+.sidebar-btn-active {
+    -fx-background-color: white;
+    -fx-text-fill: #5856d6;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0.2, 0, 3);
+}
+.sidebar-btn-active:hover {
+    -fx-background-color: #f0efff;
+    -fx-text-fill: #4644c0;
+}
+
+/* ══════════════════════════════════════
+   BOUTON SECONDAIRE (Front Office)
+══════════════════════════════════════ */
+.sidebar-btn-secondary {
+    -fx-background-color: rgba(255,255,255,0.08);
+    -fx-text-fill: rgba(255,255,255,0.65);
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 14 10 16;
+    -fx-cursor: hand;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(255,255,255,0.15);
+    -fx-border-width: 1;
+}
+.sidebar-btn-secondary:hover {
+    -fx-background-color: rgba(255,255,255,0.18);
+    -fx-text-fill: white;
+}
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+.sidebar-footer {
+    -fx-padding: 10 16 18 16;
+    -fx-background-color: #4e4cc4;
+}
+.sidebar-footer-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: rgba(255,255,255,0.4);
+}
+.sidebar-version-label {
+    -fx-font-size: 10px;
+    -fx-text-fill: rgba(255,255,255,0.4);
+    -fx-background-color: rgba(255,255,255,0.1);
+    -fx-background-radius: 6;
+    -fx-padding: 2 8;
+}
+
+/* ══════════════════════════════════════
+   SCROLLBAR (global clean)
+══════════════════════════════════════ */
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 6;
+}
+.scroll-bar .thumb {
+    -fx-background-color: #3a3a58;
+    -fx-background-radius: 10;
+}
+.scroll-bar .track {
+    -fx-background-color: transparent;
+}
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-pref-height: 0;
+}
+
+/* ══════════════════════════════════════
+   FOCUS (suppression effet bleu natif)
+══════════════════════════════════════ */
+:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+/* ══════════════════════════════════════
+   BUTTONS GLOBAL
+══════════════════════════════════════ */
+.main-action-btn {
+    -fx-background-color: linear-gradient(to right, #5856d6, #4f46e5);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-padding: 10 22;
+    -fx-font-size: 14;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(88,86,214,0.35), 8, 0.2, 0, 3);
+}
+.main-action-btn:hover {
+    -fx-background-color: linear-gradient(to right, #4f46e5, #4338ca);
+}
+
+/* ══════════════════════════════════════
+   TABLE ACTIONS (global)
+══════════════════════════════════════ */
+.table-action-edit {
+    -fx-background-color: #fffbea;
+    -fx-border-color: #ffc107;
+    -fx-border-width: 1;
+    -fx-text-fill: #c88f00;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-font-size: 13px;
+    -fx-padding: 5 10;
+    -fx-cursor: hand;
+}
+.table-action-edit:hover { -fx-background-color: #ffc107; -fx-text-fill: white; }
+
+.table-action-delete {
+    -fx-background-color: #fff2f3;
+    -fx-border-color: #ef4444;
+    -fx-border-width: 1;
+    -fx-text-fill: #ef4444;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-font-size: 13px;
+    -fx-padding: 5 10;
+    -fx-cursor: hand;
+}
+.table-action-delete:hover { -fx-background-color: #ef4444; -fx-text-fill: white; }
+
+.table-action-detail {
+    -fx-background-color: #e8f8fb;
+    -fx-border-color: #17a2b8;
+    -fx-border-width: 1;
+    -fx-text-fill: #17a2b8;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-font-size: 13px;
+    -fx-padding: 5 10;
+    -fx-cursor: hand;
+}
+.table-action-detail:hover { -fx-background-color: #17a2b8; -fx-text-fill: white; }
+
+/* ══════════════════════════════════════
+   NOTIFICATIONS
+══════════════════════════════════════ */
+.notification-list {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+.notification-list .list-cell {
+    -fx-padding: 12;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #e2e8f0;
+    -fx-font-size: 13;
+}
+.notification-list .list-cell:hover   { -fx-background-color: #f1f5f9; }
+.notification-list .list-cell:selected{ -fx-background-color: #dbeafe; }
+.notification-urgent  { -fx-background-color: #fef3c7; -fx-text-fill: #92400e; }
+.notification-critical{ -fx-background-color: #fee2e2; -fx-text-fill: #991b1b; }
+.notification-info    { -fx-background-color: #dbeafe; -fx-text-fill: #1e40af; }
+
+/* ══════════════════════════════════════
+   DIALOG
+══════════════════════════════════════ */
+.dialog-pane {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+}
+.dialog-pane .header-panel {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 16;
+}
+.dialog-pane .content { -fx-padding: 20; }
+.dialog-pane .button-bar {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 12 20;
+}
+
+/* ══════════════════════════════════════
+   CORAL NOTIFICATION DESIGN (LIGHT)
+══════════════════════════════════════ */
+.coral-dialog-pane {
+    -fx-background-color: white;
+    -fx-border-color: #f1f2f6;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+.coral-dialog-pane .button-bar {
+    -fx-background-color: white;
+    -fx-border-color: #f1f2f6;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 8 15;
+}
+.coral-dialog-pane .button-bar .button {
+    -fx-background-color: #ff6b6b;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+}
+
+.coral-header {
+    -fx-background-color: #ff6b6b;
+    -fx-padding: 15;
+}
+.coral-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+.coral-settings-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-cursor: hand;
+}
+.coral-filter-btn {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 4 12;
+    -fx-background-radius: 15;
+    -fx-cursor: hand;
+}
+.coral-filter-btn:selected {
+    -fx-background-color: white;
+    -fx-text-fill: #ff6b6b;
+}
+
+.coral-content {
+    -fx-padding: 0;
+    -fx-background-color: white;
+}
+.coral-list-view {
+    -fx-background-color: white;
+    -fx-border-width: 0;
+}
+.coral-list-view .list-cell {
+    -fx-background-color: white;
+    -fx-border-color: #f1f2f6;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0;
+}
+.coral-list-view .list-cell:selected {
+    -fx-background-color: #f8f9fa;
+}
+
+/* Item Layout */
+.coral-item-root {
+    -fx-padding: 15;
+    -fx-background-color: white;
+}
+.coral-item-root:hover {
+    -fx-background-color: #f8f9fa;
+}
+
+.coral-notif-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+    -fx-font-weight: normal;
+}
+.coral-notif-text-bold {
+    -fx-font-weight: bold;
+}
+.coral-notif-time {
+    -fx-font-size: 12px;
+    -fx-text-fill: #95a5a6;
+}
+.coral-unread-dot {
+    -fx-fill: #1abc9c;
+    -fx-stroke: transparent;
+}
+/* ══════════════════════════════════════
+   PREMIUM PAGINATION (PURPLE PILLS)
+══════════════════════════════════════ */
+.pagination {
+    -fx-background-color: white;
+    -fx-padding: 10;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);
+}
+
+.pagination .pagination-control {
+    -fx-background-color: transparent;
+}
+
+.pagination .control-box {
+    -fx-spacing: 5;
+    -fx-alignment: CENTER;
+}
+
+/* Page Numbers */
+.pagination .toggle-button {
+    -fx-background-color: #f0f1ff;
+    -fx-text-fill: #8e84f4;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-min-width: 35;
+    -fx-min-height: 35;
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+}
+
+.pagination .toggle-button:selected {
+    -fx-background-color: #8e84f4;
+    -fx-text-fill: white;
+}
+
+.pagination .toggle-button:hover {
+    -fx-background-color: #e0e2ff;
+}
+
+/* Back and Next Buttons */
+.pagination .button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8e84f4;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.pagination .button:hover {
+    -fx-text-fill: #6c63ff;
+    -fx-background-color: rgba(142, 132, 244, 0.1);
+    -fx-background-radius: 8;
+}
+
+.pagination .button .left-arrow, 
+.pagination .button .right-arrow {
+    -fx-background-color: #8e84f4;
+    -fx-shape: null; /* On peut personnaliser la forme ici si besoin */
+}
+
+/* Hide the '...' label if needed or style it */
+.pagination .bullet-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #bdc3c7;
+}

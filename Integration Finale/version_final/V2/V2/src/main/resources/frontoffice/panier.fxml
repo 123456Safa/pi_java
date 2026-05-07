@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.frontoffice.PanierController"
+            prefWidth="1200.0" prefHeight="760.0">
+    <stylesheets>
+        <URL value="@panier.css" />
+    </stylesheets>
+    <center>
+        <GridPane hgap="24" vgap="0" styleClass="cart-layout">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="70" hgrow="ALWAYS" />
+                <ColumnConstraints percentWidth="30" minWidth="320" />
+            </columnConstraints>
+
+            <VBox GridPane.columnIndex="0" spacing="18" styleClass="list-column">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Votre panier" styleClass="page-title" />
+                        <Label fx:id="itemsCountLabel" text="0 article" styleClass="page-subtitle" />
+                    </VBox>
+                </HBox>
+
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="products-scroll">
+                    <content>
+                        <VBox fx:id="panierList" spacing="14" styleClass="products-list" />
+                    </content>
+                </ScrollPane>
+                <VBox.vgrow>
+                    <Priority fx:value="ALWAYS" />
+                </VBox.vgrow>
+
+                <Button fx:id="continuerAchatsBtn" text="Revenir au catalogue et completer l'achat" styleClass="outline-button" />
+            </VBox>
+
+            <ScrollPane GridPane.columnIndex="1" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="summary-scroll">
+                <content>
+                    <VBox fx:id="resumeCommande" spacing="14" styleClass="summary-card">
+                        <Label text="Resume de commande" styleClass="summary-title" />
+
+                        <VBox spacing="8" styleClass="summary-section">
+                            <HBox alignment="CENTER_LEFT" styleClass="summary-row">
+                                <Label text="Sous-total" styleClass="summary-label" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="sousTotalLabel" styleClass="summary-value" />
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" styleClass="summary-row">
+                                <Label text="Livraison" styleClass="summary-label" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="livraisonLabel" text="A calculer" styleClass="summary-value" />
+                            </HBox>
+                            <Label fx:id="livraisonInfoLabel" text="" styleClass="summary-hint" visible="false" managed="false" />
+                            <HBox alignment="CENTER_LEFT" styleClass="summary-row">
+                                <Label text="Reduction points" styleClass="summary-label" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="pointsReductionLabel" text="0,00 DT" styleClass="summary-value" />
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" styleClass="summary-row">
+                                <Label text="TVA (19%)" styleClass="summary-label" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="tvaLabel" styleClass="summary-value" />
+                            </HBox>
+                        </VBox>
+
+                        <Separator />
+
+                        <HBox alignment="CENTER_LEFT" styleClass="summary-row">
+                            <Label text="Total TTC" styleClass="summary-total-label" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="totalTTCLabel" styleClass="summary-total-value" />
+                        </HBox>
+
+                        <Separator />
+
+                        <VBox spacing="4">
+                            <Label text="Nom complet" styleClass="field-label" />
+                            <TextField fx:id="nomField" promptText="Votre nom complet" />
+                            <Label fx:id="nomErrorLabel" text="Le nom est requis" styleClass="error-message" visible="false" managed="false" />
+                        </VBox>
+                        <VBox spacing="4">
+                            <Label text="Email" styleClass="field-label" />
+                            <TextField fx:id="emailField" promptText="nom@email.com" />
+                            <Label fx:id="emailErrorLabel" text="Email invalide" styleClass="error-message" visible="false" managed="false" />
+                        </VBox>
+                        <VBox spacing="6" styleClass="points-box">
+                            <Label fx:id="pointsDisponiblesLabel" text="Points disponibles : 0" styleClass="points-title" />
+                            <CheckBox fx:id="utiliserPointsCheckBox" text="Utiliser mes points pour une reduction" />
+                            <CheckBox fx:id="livraisonGratuiteCheckBox" text="Utiliser 50 points pour livraison gratuite" />
+                            <Label fx:id="pointsInfoLabel" text="" styleClass="summary-hint" />
+                        </VBox>
+                        <VBox spacing="4">
+                            <Label text="Adresse de livraison" styleClass="field-label" />
+                            <TextField fx:id="adresseField" promptText="Adresse complete" />
+                            <Label fx:id="adresseErrorLabel" text="L'adresse est requise" styleClass="error-message" visible="false" managed="false" />
+                        </VBox>
+                        <VBox spacing="4">
+                            <Label text="Numero de telephone" styleClass="field-label" />
+                            <TextField fx:id="telField" promptText="8 chiffres" />
+                            <Label fx:id="telErrorLabel" text="Le telephone doit contenir 8 chiffres" styleClass="error-message" visible="false" managed="false" />
+                        </VBox>
+                        <VBox spacing="6">
+                            <Label text="Mode de paiement" styleClass="field-label" />
+                            <ComboBox fx:id="paiementBox" promptText="Selectionner" />
+                        </VBox>
+
+                        <VBox spacing="8">
+                            <Button fx:id="confirmerBtn" onAction="#confirmerCommande" text="Confirmer la commande" styleClass="primary-button" />
+                            <Button fx:id="viderBtn" text="Vider le panier" styleClass="secondary-button" />
+                        </VBox>
+                    </VBox>
+                </content>
+            </ScrollPane>
+        </GridPane>
+    </center>
+</BorderPane>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="650.0" prefWidth="800.0" spacing="0" style="-fx-background-color: #f4f8f6;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="controllers.FormReclamationController"
+      stylesheets="@style1.css">
+
+   
+
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="content-scroll" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent;">
+        <VBox spacing="24" style="-fx-padding: 40 60;">
+
+            <!-- Page Header -->
+            <HBox spacing="15" alignment="CENTER_LEFT">
+             
+                <VBox spacing="2">
+                    <Label text="Soumettre une Réclamation" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #0d2b1e;"/>
+                    <Label text="Faites-nous part de votre problème et notre équipe reviendra vers vous." style="-fx-font-size: 14; -fx-text-fill: #4a6158;" />
+                </VBox>
+            </HBox>
+
+            <!-- Main Form Card -->
+            <VBox spacing="30" style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #e2ece8; -fx-border-width: 1 1 1 6; -fx-border-color: #e2ece8 #e2ece8 #e2ece8 #006B45; -fx-padding: 40; -fx-effect: dropshadow(gaussian, rgba(0,80,40,0.06), 15, 0, 0, 5);">
+
+                <VBox spacing="20">
+                    
+                    <!-- Titre Field -->
+                    <VBox spacing="10">
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="OBJET DE VOTRE RÉCLAMATION" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #0d2b1e;" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="titreCharCount" text="0/255" style="-fx-font-size: 11; -fx-text-fill: #90a8a0;" />
+                        </HBox>
+                        <TextField fx:id="titre" promptText="Ex: Commande non reçue, Produit manquant..." 
+                                   style="-fx-font-size: 14; -fx-padding: 14; -fx-background-color: #fcfdfc; -fx-border-color: #e2ece8; -fx-border-radius: 8; -fx-background-radius: 8; -fx-text-fill: #2d4a3e;" />
+                        <Label fx:id="titreError" style="-fx-font-size: 11; -fx-text-fill: #f5222d;" />
+                    </VBox>
+
+                    <!-- Description Field -->
+                    <VBox spacing="10">
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="VOTRE MESSAGE" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #0d2b1e;" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="descCharCount" text="0/2000" style="-fx-font-size: 11; -fx-text-fill: #90a8a0;" />
+                        </HBox>
+                        <TextArea fx:id="description" promptText="Merci de nous donner le plus de détails possible (numéro de commande, date, etc.)..." prefHeight="200" 
+                                  style="-fx-font-size: 14; -fx-padding: 14; -fx-background-color: #fcfdfc; -fx-border-color: #e2ece8; -fx-border-radius: 8; -fx-background-radius: 8; -fx-text-fill: #2d4a3e;" wrapText="true" />
+                        <Label fx:id="descError" style="-fx-font-size: 11; -fx-text-fill: #f5222d;" />
+                    </VBox>
+
+                </VBox>
+
+                <!-- Footer Buttons -->
+                <HBox spacing="15" alignment="CENTER_RIGHT" style="-fx-padding: 10 0 0 0;">
+                    <Button onAction="#cancel" text="Annuler" styleClass="btn-header-action" style="-fx-min-width: 120; -fx-padding: 12 25;" />
+                    <Button onAction="#save" text="▶ Envoyer ma demande" styleClass="btn-header-panier" style="-fx-min-width: 250; -fx-padding: 12 35; -fx-font-size: 15; -fx-background-color: #006B45;" />
+                </HBox>
+
+            </VBox>
+
+            <!-- Support Promise -->
+            <VBox alignment="CENTER" spacing="12" style="-fx-background-color: #f0f7f4; -fx-padding: 20; -fx-background-radius: 12; -fx-border-color: #c8e8d8; -fx-border-width: 1; -fx-border-radius: 12;">
+                <Label text="Notre Engagement Support" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #006B45;" />
+                <Label text="Nous nous engageons à répondre à toutes les réclamations sous 24 à 48 heures ouvrées." style="-fx-font-size: 13; -fx-text-fill: #4a6158; -fx-text-alignment: center;" wrapText="true" />
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
+
+</VBox>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.frontoffice.NotificationController"
+            styleClass="fo-content-pane">
+    <stylesheets>
+        <URL value="@frontoffice.css" />
+    </stylesheets>
+
+    <top>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="30" right="40" bottom="20" left="40"/>
+            </padding>
+            <HBox alignment="CENTER_LEFT">
+                <Label text="Mes Notifications 🔔" styleClass="fo-section-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="unreadLabel" text="0 non lue(s)" styleClass="fo-badge-green"/>
+            </HBox>
+            <Label text="Retrouvez ici les mises à jour de vos commandes et alertes." styleClass="fo-section-subtitle"/>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 0 40 40 40;">
+            <VBox fx:id="notificationsContainer" spacing="12">
+                <!-- Notifications will be injected here dynamically -->
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

@@ -1,0 +1,37 @@
+/* pagination.css */
+/* Modern pagination styling */
+.pagination {
+    -fx-background-color: transparent;
+    -fx-padding: 10 0 0 0;
+}
+.pagination .control-box {
+    -fx-spacing: 8;
+    -fx-alignment: center;
+}
+.pagination .button {
+    -fx-background-color: #e5e7eb; /* light gray */
+    -fx-text-fill: #374151; /* dark gray */
+    -fx-font-size: 12px;
+    -fx-pref-width: 28px;
+    -fx-pref-height: 28px;
+    -fx-background-radius: 14px;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-effect: none;
+}
+.pagination .button:hover {
+    -fx-background-color: #d1d5db; /* slightly darker */
+}
+.pagination .button:selected, .pagination .button:focused {
+    -fx-background-color: #6366f1; /* indigo/purple */
+    -fx-text-fill: white;
+}
+.pagination .increment-arrow, .pagination .decrement-arrow {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 14px;
+}
+/* Hide page information text */
+.pagination .page-information {
+    -fx-opacity: 0;
+}

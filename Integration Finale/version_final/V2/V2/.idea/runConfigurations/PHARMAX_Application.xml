@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="PHARMAX Application" type="Application" factoryName="Application" singleton="true">
+    <option name="MAIN_CLASS_NAME" value="org.example.Main" />
+    <module name="pidev-integrated" />
+    <option name="VM_PARAMETERS" value="--module-path &quot;$MAVEN_REPOSITORY$/org/openjfx/javafx-base/20.0.2/javafx-base-20.0.2-win.jar$PATH_SEPARATOR$$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/20.0.2/javafx-graphics-20.0.2-win.jar$PATH_SEPARATOR$$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/20.0.2/javafx-controls-20.0.2-win.jar$PATH_SEPARATOR$$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/20.0.2/javafx-fxml-20.0.2-win.jar&quot; --add-modules javafx.controls,javafx.fxml --enable-native-access javafx.graphics" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

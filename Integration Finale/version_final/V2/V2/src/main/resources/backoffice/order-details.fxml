@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="18" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.OrderDetailsController"
+      styleClass="crud-page">
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="crud-toolbar">
+        <VBox spacing="4">
+            <Label text="Order details page" styleClass="crud-toolbar-title" />
+            <Label text="Toutes les lignes de commande de la commande selectionnee" styleClass="crud-toolbar-subtitle" />
+        </VBox>
+        <Region HBox.hgrow="ALWAYS" />
+        <Button text="Back to Orders" onAction="#goBack" styleClass="action-button secondary-action" />
+    </HBox>
+
+    <VBox spacing="18" styleClass="form-card">
+        <Label text="Commande selectionnee" styleClass="card-title" />
+        <GridPane hgap="16" vgap="14">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="20" />
+                <ColumnConstraints percentWidth="20" />
+                <ColumnConstraints percentWidth="20" />
+                <ColumnConstraints percentWidth="20" />
+                <ColumnConstraints percentWidth="20" />
+            </columnConstraints>
+
+            <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label text="Commande" styleClass="input-label" />
+                <Label fx:id="orderIdLabel" styleClass="detail-value" />
+            </VBox>
+            <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label text="Statut" styleClass="input-label" />
+                <Label fx:id="statusLabel" styleClass="detail-value" />
+            </VBox>
+            <VBox spacing="6" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                <Label text="Total" styleClass="input-label" />
+                <Label fx:id="totalLabel" styleClass="detail-value" />
+            </VBox>
+            <VBox spacing="6" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                <Label text="Utilisateur" styleClass="input-label" />
+                <Label fx:id="userIdLabel" styleClass="detail-value" />
+            </VBox>
+            <VBox spacing="6" GridPane.columnIndex="4" GridPane.rowIndex="0">
+                <Label text="Created At" styleClass="input-label" />
+                <Label fx:id="createdAtLabel" styleClass="detail-value" />
+            </VBox>
+        </GridPane>
+    </VBox>
+
+    <VBox spacing="14" styleClass="table-card" VBox.vgrow="ALWAYS">
+        <Label text="Lignes de commande" styleClass="card-title" />
+        <TableView fx:id="detailsTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="productNameColumn" text="Product Name" prefWidth="360" />
+                <TableColumn fx:id="quantityColumn" text="Quantity" prefWidth="120" />
+                <TableColumn fx:id="unitPriceColumn" text="Unit Price" prefWidth="140" />
+                <TableColumn fx:id="subtotalColumn" text="Subtotal" prefWidth="160" />
+            </columns>
+        </TableView>
+    </VBox>
+</VBox>

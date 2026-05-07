@@ -1,0 +1,54 @@
+-- ===============================================
+-- PHARMAX - Copier-Coller dans MySQL Workbench
+-- ===============================================
+-- Ouvrez une nouvelle requête et exécutez ce script entièrement
+
+-- Sélectionner la base de données
+USE pharm;
+
+-- Créer la table produits
+CREATE TABLE IF NOT EXISTS produits (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(255),
+    prix DOUBLE,
+    description TEXT,
+    stock INT
+);
+
+-- Vider la table (optionnel, si des produits existent déjà)
+-- TRUNCATE TABLE produits;
+
+-- Insérer les 25 produits
+INSERT IGNORE INTO produits (nom, prix, description, stock) VALUES
+('Aspirine 500mg', 4.99, 'Analgésique - 20 comprimés', 50),
+('Paracétamol 500mg', 3.49, 'Anti-douleur - 16 comprimés', 75),
+('Ibuprofène 200mg', 5.99, 'Anti-inflammatoire - 24 comprimés', 60),
+('Sirop contre la toux', 8.50, 'Expectorant - 200ml', 30),
+('Spray nasal', 6.99, 'Décongestionnant - 15ml', 45),
+('Pastilles gorge', 2.99, 'Menthe - 20 pastilles', 100),
+('Oméprazole 20mg', 7.50, 'Anti-reflux - 14 gélules', 40),
+('Charbon actif', 5.49, 'Troubles digestifs - 30 comprimés', 55),
+('Probiotiques', 12.99, 'Flore intestinale - 30 gélules', 25),
+('Vitamines C', 6.99, 'Vitamine C - 30 comprimés', 80),
+('Multivitamines', 9.99, 'Complément - 30 comprimés', 45),
+('Calcium + D', 10.99, 'Santé osseuse - 30 comprimés', 35),
+('Magnésium', 8.49, 'Relaxation - 60 gélules', 50),
+('Antihistaminique', 7.99, 'Anti-allergène - 30 comprimés', 65),
+('Pommade anti-itch', 5.99, 'Crème - 50g', 40),
+('Gel antibactérien', 3.99, 'Désinfectant - 100ml', 120),
+('Pansements', 4.99, '30 pansements', 90),
+('Thermomètre', 15.99, 'Sans contact - 1 unité', 20),
+('Masques', 6.99, '50 masques', 75),
+('Écran solaire', 11.99, 'SPF 50 - 200ml', 55),
+('Crème hydratante', 9.49, 'Soin peau - 100ml', 40),
+('Shampooing', 7.99, 'Médical - 250ml', 35),
+('Mélatonine', 8.99, 'Sommeil - 60 comprimés', 50),
+('Glucosamine', 14.99, 'Articulations - 60 gélules', 25),
+('Zinc', 6.49, 'Immunité - 30 comprimés', 70);
+
+-- Vérification
+SELECT '=== RÉSULTAT ===' AS '';
+SELECT COUNT(*) AS 'Nombre total de produits' FROM produits;
+SELECT '✅ Les produits ont été insérés avec succès !' AS '';
+SELECT * FROM produits LIMIT 5;
+

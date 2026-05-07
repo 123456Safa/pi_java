@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="18" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.frontoffice.HistoriqueController"
+      styleClass="history-page">
+    <Label text="Mes commandes" styleClass="hero-title" />
+    <Label text="Consultez et recherchez les details de vos commandes" styleClass="hero-subtitle" />
+    <HBox spacing="12" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField"
+                   promptText="Rechercher par numero, statut, date, total ou produit"
+                   styleClass="history-search"
+                   HBox.hgrow="ALWAYS" />
+        <Label fx:id="resultsLabel"
+               text="0 commande"
+               styleClass="history-results" />
+    </HBox>
+
+    <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 10 20 10 20; -fx-background-color: #f8fafc; -fx-background-radius: 8; -fx-border-color: #e2e8f0; -fx-border-radius: 8;">
+        <Label text="COMMANDE" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #64748b;" minWidth="120" />
+        <Label text="STATUT" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #64748b;" minWidth="100" alignment="CENTER" />
+        <Label text="ARTICLES" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #64748b;" minWidth="100" />
+        <Label text="MONTANT TOTAL" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #64748b;" minWidth="120" />
+        <HBox HBox.hgrow="ALWAYS" />
+        <Label text="ACTIONS" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #64748b;" minWidth="100" alignment="CENTER" />
+    </HBox>
+
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="history-scroll" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent;">
+        <content>
+            <VBox fx:id="commandesContainer" spacing="12">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10" />
+                </padding>
+            </VBox>
+        </content>
+    </ScrollPane>
+
+    <HBox spacing="15" alignment="CENTER" style="-fx-padding: 10 0 20 0;">
+        <Button fx:id="prevButton" text="Précédent" onAction="#handlePrevPage"
+                style="-fx-background-color: white; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 16; -fx-cursor: hand; -fx-text-fill: #374151; -fx-font-weight: bold;" />
+        
+        <HBox fx:id="pageNumbersContainer" spacing="8" alignment="CENTER" />
+
+        <Button fx:id="nextButton" text="Suivant" onAction="#handleNextPage"
+                style="-fx-background-color: white; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 16; -fx-cursor: hand; -fx-text-fill: #374151; -fx-font-weight: bold;" />
+    </HBox>
+</VBox>

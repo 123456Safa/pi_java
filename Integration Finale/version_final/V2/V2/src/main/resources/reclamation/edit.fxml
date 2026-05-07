@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="650.0" prefWidth="800.0" spacing="0" style="-fx-background-color: #f4f8f6;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="controllers.EditReclamationController"
+      stylesheets="@style1.css">
+
+   
+
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="content-scroll" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent;">
+        <VBox spacing="24" style="-fx-padding: 40 60;">
+
+            <!-- Page Header -->
+            <HBox spacing="15" alignment="CENTER_LEFT">
+               
+                <VBox spacing="2">
+                    <Label text="Modifier ma Réclamation" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #0d2b1e;"/>
+                    <Label text="Mettez à jour les informations de votre demande de support" style="-fx-font-size: 14; -fx-text-fill: #4a6158;" />
+                </VBox>
+            </HBox>
+
+            <!-- Main Form Card -->
+            <VBox spacing="30" style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #e2ece8; -fx-border-width: 1 1 1 6; -fx-border-color: #e2ece8 #e2ece8 #e2ece8 #0057A8; -fx-padding: 40; -fx-effect: dropshadow(gaussian, rgba(0,80,40,0.06), 15, 0, 0, 5);">
+
+                <!-- Status Header -->
+                <HBox spacing="12" alignment="CENTER_LEFT" style="-fx-background-color: #f0f7ff; -fx-padding: 12 18; -fx-background-radius: 8; -fx-border-color: #cce3ff; -fx-border-radius: 8;">
+                    <Label text="📄  RÉFÉRENCE :" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #0057A8;" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label text="STATUT :" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #64748b;" />
+                    <Label fx:id="lblStatusActuel" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: #0057A8; -fx-padding: 4 12; -fx-background-radius: 15;" />
+                </HBox>
+
+                <Separator />
+
+                <!-- Input Fields -->
+                <VBox spacing="20">
+                    
+                    <!-- Titre Field -->
+                    <VBox spacing="10">
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="OBJET DE LA RÉCLAMATION" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #0d2b1e;" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="titreCharCount" text="0/255" style="-fx-font-size: 11; -fx-text-fill: #90a8a0;" />
+                        </HBox>
+                        <TextField fx:id="titre" promptText="Ex: Problème de livraison, Produit endommagé..." 
+                                   style="-fx-font-size: 14; -fx-padding: 14; -fx-background-color: #fcfdfc; -fx-border-color: #e2ece8; -fx-border-radius: 8; -fx-background-radius: 8; -fx-text-fill: #2d4a3e;" />
+                        <Label fx:id="titreError" style="-fx-font-size: 11; -fx-text-fill: #f5222d;" />
+                    </VBox>
+
+                    <!-- Description Field -->
+                    <VBox spacing="10">
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="DESCRIPTION DÉTAILLÉE" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #0d2b1e;" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="descCharCount" text="0/2000" style="-fx-font-size: 11; -fx-text-fill: #90a8a0;" />
+                        </HBox>
+                        <TextArea fx:id="description" promptText="Expliquez-nous en détail le problème rencontré..." prefHeight="180" 
+                                  style="-fx-font-size: 14; -fx-padding: 14; -fx-background-color: #fcfdfc; -fx-border-color: #e2ece8; -fx-border-radius: 8; -fx-background-radius: 8; -fx-text-fill: #2d4a3e;" wrapText="true" />
+                        <Label fx:id="descError" style="-fx-font-size: 11; -fx-text-fill: #f5222d;" />
+                    </VBox>
+
+                </VBox>
+
+                <!-- Footer Buttons -->
+                <HBox spacing="15" alignment="CENTER_RIGHT" style="-fx-padding: 10 0 0 0;">
+                    <Button onAction="#cancel" text="Annuler" styleClass="btn-header-action" style="-fx-min-width: 120; -fx-padding: 12 25;" />
+                    <Button onAction="#save" text="💾 Enregistrer les modifications" styleClass="btn-header-panier" style="-fx-min-width: 250; -fx-padding: 12 35; -fx-font-size: 15; -fx-background-color: #006B45;" />
+                </HBox>
+
+            </VBox>
+
+            <!-- Bottom Note -->
+            <HBox alignment="CENTER" spacing="10" style="-fx-padding: 10;">
+                <Label text="🔒" style="-fx-font-size: 16;" />
+                <Label text="Vos données sont protégées et traitées avec soin par notre équipe de support." style="-fx-font-size: 12; -fx-text-fill: #90a8a0;" />
+            </HBox>
+
+        </VBox>
+    </ScrollPane>
+
+</VBox>

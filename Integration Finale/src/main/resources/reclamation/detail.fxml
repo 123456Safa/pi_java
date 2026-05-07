@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+
+<VBox spacing="0" style="-fx-background-color: #f4f8f6;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="controllers.DetailReclamationController"
+      stylesheets="@style1.css">
+
+   
+
+    
+
+    <!-- Main Content Wrapper -->
+    <VBox spacing="20" style="-fx-padding: 30 50; -fx-background-color: #f4f8f6;" VBox.vgrow="ALWAYS">
+        
+        <!-- Header Section -->
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Button onAction="#onBack" styleClass="btn-header-action" text="← Retour" />
+            <VBox spacing="2">
+                <Label text="Détails de la Réclamation" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #0d2b1e;"/>
+                <Label fx:id="lblDate" style="-fx-font-size: 13; -fx-text-fill: #64748b;" />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="lblStatut" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 6 14; -fx-background-radius: 20; -fx-border-radius: 20;" />
+        </HBox>
+
+        <!-- Main Card in ScrollPane -->
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="content-scroll" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
+            <VBox spacing="24">
+                
+                <!-- Info Card -->
+                <VBox spacing="20" style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #e2ece8; -fx-border-width: 1 1 1 6; -fx-border-color: #e2ece8 #e2ece8 #e2ece8 #006B45; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,80,40,0.08), 12, 0, 0, 4);">
+                    
+                    <VBox spacing="10">
+                        <Label fx:id="lblTitre" style="-fx-font-size: 22; -fx-font-weight: 800; -fx-text-fill: #0d2b1e;" />
+                        <Separator style="-fx-opacity: 0.5;" />
+                    </VBox>
+
+                    <VBox spacing="8">
+                        <Label text="Description du problème" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #006B45;" />
+                        <TextArea fx:id="txtDescription" editable="false" prefHeight="120.0" style="-fx-font-size: 14; -fx-text-fill: #4a6158; -fx-control-inner-background: #fcfdfc; -fx-background-color: transparent; -fx-border-color: #e2ece8; -fx-border-radius: 8;" wrapText="true" />
+                    </VBox>
+
+                    <HBox spacing="15" alignment="CENTER_RIGHT">
+                        <Button fx:id="btnEditer" onAction="#onEdit" styleClass="btn-header-action" text="✏️ Modifier ma demande" style="-fx-min-width: 180;"/>
+                        <Button fx:id="btnSupprimer" onAction="#onDelete" style="-fx-background-color: #fff1f0; -fx-text-fill: #f5222d; -fx-border-color: #ffa39e; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 8 20; -fx-font-weight: bold; -fx-cursor: hand;" text="🗑️ Supprimer" />
+                    </HBox>
+                </VBox>
+
+                <!-- Responses Section -->
+                <VBox spacing="15">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="💬 Réponses du Support" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #0d2b1e;" />
+                        <Label fx:id="lblReponseCount" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #006B45; -fx-background-color: #e6f7f0; -fx-padding: 2 10; -fx-background-radius: 10;" />
+                    </HBox>
+                    
+                    <VBox fx:id="reponseContainer" spacing="16" style="-fx-padding: 5 0;" />
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </VBox>
+</VBox>

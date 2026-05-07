@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fitToWidth="true" hbarPolicy="NEVER" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.frontoffice.CatalogueController" styleClass="catalogue-scroll">
+    <VBox spacing="18" styleClass="catalogue-page" alignment="TOP_CENTER">
+        <VBox spacing="16" alignment="CENTER" styleClass="hero-card">
+            <Label text="♧  Votre sante, notre priorite" styleClass="hero-title" />
+            <Label text="Decouvrez notre selection de produits pharmaceutiques &amp; bien-etre"
+                   styleClass="hero-subtitle"
+                   wrapText="true" />
+            <Label text="Decouvrir maintenant  →" styleClass="hero-cta" />
+        </VBox>
+        <VBox fx:id="productsContainer" VBox.vgrow="ALWAYS" alignment="CENTER" />
+    </VBox>
+</ScrollPane>

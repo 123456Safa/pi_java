@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.GestionProduitController"
+      stylesheets="@produitfront.css"
+      spacing="0" style="-fx-background-color: #f4f6fb;">
+
+    <!-- ═══ PAGE HEADER ═══ -->
+    <VBox styleClass="page-header" spacing="4">
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <Label text="Gestion des Produits" styleClass="main-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="+ Nouveau Produit" styleClass="add-btn"
+                    fx:id="btnAjouter" onAction="#onAjouter"/>
+        </HBox>
+        <HBox spacing="6" alignment="CENTER_LEFT">
+            <Label text="Tableau de bord" styleClass="breadcrumb-link"/>
+            <Label text="/" styleClass="breadcrumb-sep"/>
+            <Label text="Produits" styleClass="breadcrumb-current"/>
+        </HBox>
+    </VBox>
+
+    <!-- ═══ CARD LISTE ═══ -->
+    <VBox styleClass="list-card" spacing="16" VBox.vgrow="ALWAYS">
+
+        <Label text="Liste des Produits" styleClass="card-title"/>
+
+        <!-- FILTRES -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <TextField promptText="Rechercher par nom ou ref..."
+                       fx:id="tfRechercheProduit" styleClass="search-field"
+                       prefWidth="240"/>
+            <ComboBox promptText="Toutes les catégories"
+                      fx:id="cbCategorieProduit" styleClass="filter-combo"
+                      prefWidth="190"/>
+            <ComboBox promptText="Date création"
+                      fx:id="cbTriProduit" styleClass="filter-combo"
+                      prefWidth="160"/>
+            <ComboBox promptText="Descendant"
+                      fx:id="cbOrdreProduit" styleClass="filter-combo"
+                      prefWidth="140"/>
+        </HBox>
+
+        <!-- BOUTONS FILTRE -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button text="🔍  Rechercher" styleClass="filter-btn"
+                    fx:id="btnRechercherProduit" onAction="#onRechercherProduit"/>
+            <Button text="↺  Réinitialiser" styleClass="reset-btn"
+                    fx:id="btnResetProduit" onAction="#onResetRechercheProduit"/>
+        </HBox>
+
+        <!-- TABLEAU -->
+        <TableView fx:id="tableProduits" styleClass="product-table" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn text="IMAGE"          fx:id="colImage"          prefWidth="80"/>
+                <TableColumn text="NOM"            fx:id="colNom"            prefWidth="200"/>
+                <TableColumn text="Description"      fx:id="colDescription"    prefWidth="120"/>
+                <TableColumn text="CATÉGORIE"      fx:id="colCategorieId"    prefWidth="120"/>
+                <TableColumn text="PRIX"           fx:id="colPrix"           prefWidth="110"/>
+                <TableColumn text="PRIX FINAL"     fx:id="colPrixFinal"      prefWidth="110"/>
+                <TableColumn text="CODE PROMO"     fx:id="colPromoCode"      prefWidth="130"/>
+                <TableColumn text="STOCK"          fx:id="colQuantite"       prefWidth="80"/>
+                <TableColumn text="STATUT"         fx:id="colStatut"         prefWidth="140"/>
+                <TableColumn text="EXPIRATION"     fx:id="colDateExpiration" prefWidth="120" visible="false"/>
+                <TableColumn text="ACTIONS"        fx:id="colActions"        prefWidth="280"/>
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+        </TableView>
+        
+        <!-- PAGINATION -->
+        <HBox alignment="CENTER" style="-fx-padding: 10 0 0 0;">
+            <Pagination fx:id="pagination" maxPageIndicatorCount="5" />
+        </HBox>
+
+    </VBox>
+
+    <!-- ═══ FOOTER ═══ -->
+    <HBox styleClass="page-footer" alignment="CENTER">
+        <Label text="© 2026 Pharmax" styleClass="footer-label"/>
+    </HBox>
+
+</VBox>

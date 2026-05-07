@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/V2/CREATE_RECLAMATION_TABLES.sql">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/V2/CREATE_RECLAMATION_TABLES.sql" />
+              <option name="updatedContent" value="-- ============================================&#10;-- PHARMAX - Ajout des tables manquantes&#10;-- Tables: reclamation et reponse&#10;-- ============================================&#10;&#10;USE pharmaxfinal;&#10;&#10;-- Créer la table reclamation&#10;CREATE TABLE IF NOT EXISTS reclamation (&#10;    id INT PRIMARY KEY AUTO_INCREMENT,&#10;    titre VARCHAR(255) NOT NULL,&#10;    description TEXT,&#10;    date_creation DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,&#10;    statut VARCHAR(50) DEFAULT 'en_attente',&#10;    user_id INT,&#10;    FOREIGN KEY (user_id) REFERENCES `user` (id) ON DELETE CASCADE&#10;);&#10;&#10;-- Créer la table reponse&#10;CREATE TABLE IF NOT EXISTS reponse (&#10;    id INT PRIMARY KEY AUTO_INCREMENT,&#10;    contenu TEXT NOT NULL,&#10;    date_reponse DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,&#10;    reclamation_id INT,&#10;    FOREIGN KEY (reclamation_id) REFERENCES reclamation (id) ON DELETE CASCADE&#10;);&#10;&#10;-- Vérification&#10;SELECT '✅ Tables reclamation et reponse créées!' as Status;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

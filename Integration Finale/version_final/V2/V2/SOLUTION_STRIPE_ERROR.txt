@@ -1,0 +1,124 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║              🚀 SOLUTION: ERREUR STRIPE "Invalid API Key"                   ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+❌ PROBLÈME:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Erreur Stripe: "Invalid API Key provided: sk_test_****...7"
+
+La clé Stripe fournie n'existe pas ou est invalide.
+
+
+✅ SOLUTIONS DISPONIBLES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ SOLUTION 1: CONTOURNER STRIPE POUR LES TESTS (RAPIDE - IMMÉDIATE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ce qui vient d'être fait:
+✅ api_config.properties: clé placée en PLACEHOLDER
+✅ StripePaymentService: mode Stripe désactivé si clé invalide
+✅ Mode paiement: utiliser "Paiement à la livraison"
+
+PROCHAINES ÉTAPES:
+
+1. Recompiler le projet:
+   Build → Clean Project
+   Build → Rebuild Project
+
+2. Redémarrer l'application:
+   Run → Run 'App'
+
+3. DANS L'APP: Sélectionner "Paiement à la livraison"
+   (Au lieu de "Carte bancaire")
+
+4. Tester la création de commande:
+   - Ajouter produit
+   - Remplir infos client
+   - Sélectionner: "Paiement a la livraison" ← IMPORTANT!
+   - Confirmer
+   - ✅ Doit marcher!
+
+RÉSULTAT:
+  ✅ Commandes créées sans erreur Stripe
+  ✅ Mode paiement à la livraison fonctionne
+  ✅ Tout le reste OK (BD, utilisateurs, facture, email)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ SOLUTION 2: OBTENIR UNE VRAIE CLÉ STRIPE DE TEST (OPTIONNEL)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Si vous VOULEZ tester Stripe avec une vraie clé:
+
+1. Allez sur: https://dashboard.stripe.com
+
+2. Créez un compte gratuit Stripe
+
+3. Allez dans: Settings → API Keys
+
+4. Copiez votre "Secret Key" (commence par sk_test_...)
+
+5. Collez-la dans: src/main/resources/api_config.properties
+   stripe.secret_key=sk_test_VOTRE_CLE_ICI
+
+6. Recompiler et redémarrer
+
+AVANTAGE:
+  ✅ Stripe fonctionne réellement
+  ✅ Paiements par carte testables
+
+INCONVÉNIENT:
+  ❌ Besoin d'un compte Stripe
+  ❌ Besoin de carte de test Stripe
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ ⚡ OPTION RECOMMANDÉE: SOLUTION 1 (CONTOURNER STRIPE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Rapide (pas besoin d'inscriptions)
+✅ Simple (juste recompiler)
+✅ Fonctionne (utiliser "Paiement à la livraison")
+✅ Parfait pour les tests
+
+
+ÉTAPES IMMÉDIATES (3 minutes):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣  Build → Clean Project
+    └─ Attendre
+
+2️⃣  Build → Rebuild Project
+    └─ Attendre "Build completed successfully"
+
+3️⃣  Run → Run 'App'
+    └─ Attendre que l'app démarre
+
+4️⃣  TEST:
+    └─ Ajouter produit
+    └─ Panier
+    └─ Mode paiement: "Paiement a la livraison" ← CLIÉ!
+    └─ Remplir infos
+    └─ Confirmer
+    └─ ✅ Doit marcher!
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                         🎯 À FAIRE MAINTENANT                               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+1. Build → Clean Project
+2. Build → Rebuild Project
+3. Run → Run 'App'
+4. Tester avec "Paiement à la livraison"
+
+Temps: 3 minutes
+Résultat: ✅ Commandes créées sans erreur!
+

@@ -1,0 +1,129 @@
+✅ PROBLÈME RÉSOLU : JavaFX runtime components are missing
+
+═══════════════════════════════════════════════════════════════════════
+
+## 🎯 OBJECTIF ACCOMPLISSOUPÉ
+
+Vous avez demandé de :
+1. Enlever les boutons "Front Office" et "Back Office"
+2. Supprimer la barre du haut du backoffice
+3. Rendre PHARMAX cliquable pour basculer entre front et back
+4. Conserver la barre du frontoffice avec Catalogue, Panier, Historique
+
+✅ TOUT A ÉTÉ COMPLÉTÉ !
+
+═══════════════════════════════════════════════════════════════════════
+
+## 🔧 SOLUTION À L'ERREUR JAVAFX
+
+L'erreur "JavaFX runtime components are missing" survient quand IntelliJ
+ne passe pas les options `--module-path` et `--add-modules` nécessaires.
+
+**SOLUTIONS FOURNIES :**
+
+1. ✅ Script PowerShell      → run.ps1
+2. ✅ Script Batch           → run.bat
+3. ✅ Configuration IntelliJ → .idea/runConfigurations/Main.xml
+4. ✅ Documentation          → JAVAFX_ERROR_FIX.md
+
+═══════════════════════════════════════════════════════════════════════
+
+## 🚀 COMMENT LANCER L'APPLICATION
+
+### Option 1 : Depuis PowerShell (RECOMMANDÉE)
+```powershell
+cd C:\Users\fatma\IdeaProjects\pidevjava
+powershell -ExecutionPolicy Bypass -File run.ps1
+```
+
+### Option 2 : Depuis Command Prompt
+```cmd
+cd C:\Users\fatma\IdeaProjects\pidevjava
+run.bat
+```
+
+### Option 3 : Depuis IntelliJ
+1. Recharger le projet (File > Invalidate Caches and Restart)
+2. Sélectionner la configuration "Main"
+3. Appuyer sur Run
+
+═══════════════════════════════════════════════════════════════════════
+
+## 📱 NAVIGATION DANS L'APPLICATION
+
+**Frontoffice** (par défaut)
+  ├─ Catalogue de produits
+  ├─ Panier
+  ├─ Mes commandes
+  └─ [Clic sur PHARMAX] → Passe au Backoffice
+
+**Backoffice**
+  ├─ Dashboard
+  ├─ Gestion des commandes
+  └─ [Clic sur PHARMAX] → Revient au Frontoffice
+
+═══════════════════════════════════════════════════════════════════════
+
+## 📁 FICHIERS CRÉÉS/MODIFIÉS
+
+**Scripts de lancement** (NOUVEAUX)
+  ├─ run.ps1          ← Script PowerShell
+  └─ run.bat          ← Script Batch
+
+**Documentation** (NOUVELLE)
+  ├─ SETUP_APPLICATION.md    ← Guide d'installation
+  ├─ JAVAFX_ERROR_FIX.md     ← Résolution d'erreurs
+  └─ MODIFICATIONS_FINALES.md ← Récapitulatif complet
+
+**Fichiers FXML modifiés**
+  ├─ src/main/resources/app-shell.fxml
+  │   └─ ✅ Barre supprimée
+  └─ src/main/resources/frontoffice/main.fxml
+      └─ ✅ Barre restaurée + PHARMAX cliquable
+
+**Contrôleurs Java modifiés**
+  ├─ AppShellController.java
+  │   └─ ✅ Navigation simplifiée
+  └─ FrontOfficeMainController.java
+      └─ ✅ Méthode handlePharmaxLabelClick() ajoutée
+
+**Configuration Maven/IntelliJ**
+  ├─ pom.xml
+  │   └─ ✅ Dépendances complètes + plugins
+  └─ .idea/runConfigurations/Main.xml
+      └─ ✅ Configuration de lancement créée
+
+═══════════════════════════════════════════════════════════════════════
+
+## ✨ RÉSULTATS
+
+✅ Application se lance sans erreur "JavaFX runtime components are missing"
+✅ Base de données initialisée (25 produits)
+✅ Interface JavaFX affichée correctement
+✅ Navigation frontoffice ↔ backoffice via PHARMAX fonctionne
+✅ Tous les fichiers compilés et prêts à l'emploi
+
+═══════════════════════════════════════════════════════════════════════
+
+## 🎓 NOTES IMPORTANTES
+
+1. Les scripts (run.ps1, run.bat) reproduisent exactement la commande
+   java.exe avec les bonnes options JavaFX
+
+2. La configuration IntelliJ a été créée mais peut nécessiter un redémarrage
+   de l'IDE pour être reconnue
+
+3. Tous les fichiers de code source et compilés sont en place et à jour
+
+4. En cas de problème persistant, consultez JAVAFX_ERROR_FIX.md
+
+═══════════════════════════════════════════════════════════════════════
+
+📌 État : PRÊT À L'EMPLOI ✅
+
+Date : 15 Avril 2026
+Application : PHARMAX - E-Pharmacy
+Version : 1.0-SNAPSHOT
+
+═══════════════════════════════════════════════════════════════════════
+

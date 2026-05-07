@@ -1,0 +1,208 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    ✅ CHECKLIST DE MISE EN PLACE                           ║
+║                  PHARMAX - Ajouter 25 Produits                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+CLIQUEZ DANS LES CASES AU FUR ET À MESURE POUR SUIVRE VOTRE PROGRESSION!
+
+================================================================================
+📚 LECTURE DES DOCUMENTS (Facultatif mais recommandé)
+================================================================================
+
+□ J'ai lu LIRE_D_ABORD.txt
+□ J'ai compris les 5 étapes à suivre
+□ Je suis prêt à commencer
+
+(Temps estimé: 5 minutes)
+
+================================================================================
+🔧 PRÉPARATION (10 minutes)
+================================================================================
+
+□ ÉTAPE 1: J'ai arrêté l'application JavaFX (clic bouton rouge "Stop")
+□ ÉTAPE 2: J'attends que l'application s'arrête complètement
+□ ÉTAPE 3: Build → Clean Project (attendre la fin)
+□ ÉTAPE 4: Build → Build Project (attendre la fin)
+
+================================================================================
+🚀 LANCEMENT (5 minutes)
+================================================================================
+
+□ ÉTAPE 5: J'appuie sur F5 pour relancer l'application
+□ ÉTAPE 6: L'application démarre
+□ ÉTAPE 7: Je regarde la console en bas d'IntelliJ (onglet "Run")
+
+================================================================================
+📊 VÉRIFICATION DES LOGS (5 minutes)
+================================================================================
+
+Dans la console, je dois voir (dans cet ordre):
+
+□ "✅ Connecté à la base de données"
+□ "=== 🔧 INITIALISATION DE LA BASE DE DONNÉES ==="
+□ "📋 Vérification/Création table 'produits'..."
+□ "✅ Table 'produits' créée/vérifiée"
+□ "📊 Vérification des données existantes..."
+□ "📌 Produits actuels en BD: 0" (première fois) OU "25" (deuxième fois)
+
+Si première fois (0 produits):
+  □ "📦 INSERTION de 25 produits de test..."
+  □ "✅ [1/25] Produit inséré"
+  □ "✅ [2/25] Produit inséré"
+  □ ... (jusqu'à 25)
+  □ "✅ RÉSULTAT: 25/25 produits insérés avec succès!"
+  □ "✅ TOTAL EN BD: 25 produits"
+
+Si deuxième fois (25 produits déjà présents):
+  □ "✅ Données déjà présentes (25 produits) - Aucune insertion nécessaire"
+
+Enfin:
+  □ "✅ Initialisation TERMINÉE"
+
+================================================================================
+🎯 TEST DANS L'INTERFACE (3 minutes)
+================================================================================
+
+L'application s'est ouverte:
+□ L'interface affiche "Bienvenue sur PHARMAX"
+□ Je vois 3 boutons:
+  □ "🛍️ Catalogue" (vert)
+  □ "🛒 Panier" (rouge)
+  □ "📜 Historique" (bleu)
+
+Je clique sur "🛍️ Catalogue":
+□ La vue change (affichage du catalogue)
+□ Je vois 25 produits affichés
+□ Chaque produit affiche:
+  □ Le nom du produit
+  □ La description
+  □ Le prix
+  □ Un bouton "Ajouter au panier"
+
+================================================================================
+✅ VÉRIFICATION EN BASE DE DONNÉES (Optionnel - 5 minutes)
+================================================================================
+
+Pour être 100% sûr, vérifiez en base de données:
+
+□ Ouvrez MySQL Workbench
+□ Connectez-vous à votre serveur MySQL
+□ Exécutez cette requête:
+
+   USE pharm;
+   SELECT COUNT(*) FROM produits;
+
+Résultat attendu:
+  □ Le nombre doit être: 25
+
+Pour voir les produits:
+□ Exécutez:
+
+   SELECT * FROM produits LIMIT 3;
+
+Résultat attendu:
+  □ Je vois les 3 premiers produits avec toutes les colonnes:
+    □ id
+    □ nom
+    □ prix
+    □ description
+    □ stock
+
+================================================================================
+🎉 SUCCÈS! (Si toutes les cases sont cochées)
+================================================================================
+
+✅ L'initialisation a fonctionné
+✅ Les produits ont été insérés
+✅ Le catalogue affiche 25 produits
+✅ La base de données contient 25 produits
+
+🎊 BRAVO! Votre application PHARMAX est maintenant complète et testée!
+
+================================================================================
+🆘 SI VOUS AVEZ UN PROBLÈME
+================================================================================
+
+□ Les logs ne montrent rien?
+   → Vérifiez que vous regardez l'onglet "Run" en bas d'IntelliJ
+   → Attendez 10 secondes après le lancement
+   → Relancez l'application (F5)
+
+□ Les logs affichent une erreur?
+   → Consultez GUIDE_AJOUT_PRODUITS.md (section Dépannage)
+   → Exécutez AJOUTER_PRODUITS.sql manuellement
+
+□ Les produits ne s'affichent pas dans l'interface?
+   → Vérifiez que vous avez cliqué sur "🛍️ Catalogue"
+   → Attendez 5 secondes (le chargement peut être lent)
+   → Relancez l'application complètement (Ctrl+C, puis F5)
+
+□ Erreur "Connexion à la base de données refusée"?
+   → Vérifiez que MySQL est en cours d'exécution
+   → Vérifiez que la base 'pharm' existe
+   → Consultez GUIDE_AJOUT_PRODUITS.md
+
+================================================================================
+📞 BESOIN D'AIDE?
+================================================================================
+
+Consultez ces fichiers dans cet ordre:
+
+1. LIRE_CONSOLE.txt (comprendre ce qu'on doit voir)
+2. SOLUTION_RAPIDE.txt (troubleshooting rapide)
+3. GUIDE_AJOUT_PRODUITS.md (guide complet)
+4. FICHIER_UTILISATION.txt (support technique)
+
+================================================================================
+✅ TABLEAU DE SYNTHÈSE
+================================================================================
+
+ÉTAPE            │ STATUS        │ FICHIERS IMPLIQUÉS
+─────────────────┼───────────────┼──────────────────────────────────────
+1. Arrêt app     │ □ Fait        │ -
+2. Clean Build   │ □ Fait        │ -
+3. Build Build   │ □ Fait        │ -
+4. Relancer (F5) │ □ Fait        │ Main.java
+5. Vérif logs    │ □ Fait        │ DataInitializer.java
+6. Clique Cata   │ □ Fait        │ CatalogueController.java
+7. Voir produits │ □ Fait        │ Base de données 'produits'
+8. Vérif BD      │ □ Optionnel   │ VERIFIER_PRODUITS.sql
+
+================================================================================
+🎯 RÉSULTAT FINAL ATTENDU
+================================================================================
+
+AVANT la solution:
+  ❌ Catalogue vide
+  ❌ Message "Aucun produit disponible"
+
+APRÈS la solution:
+  ✅ Catalogue rempli avec 25 produits
+  ✅ Tous les produits ont leurs détails (prix, description, stock)
+  ✅ Les boutons "Ajouter au panier" sont visibles et fonctionnels
+
+================================================================================
+📝 NOTES PERSONNELLES:
+================================================================================
+
+Écrivez ici vos observations ou problèmes rencontrés:
+
+_________________________________________________________________
+
+_________________________________________________________________
+
+_________________________________________________________________
+
+_________________________________________________________________
+
+================================================================================
+🏁 JE SUIS PRÊT(E) À TESTER PHARMAX AVEC LES 25 PRODUITS!
+================================================================================
+
+Créé pour PHARMAX - E-Pharmacy
+Avril 2026
+
+Bonne chance! 🍀
+
+================================================================================
+

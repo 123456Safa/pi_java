@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>reCAPTCHA Verification</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: transparent !important;
+            overflow: hidden;
+        }
+    </style>
+    <!-- Replace YOUR_SITE_KEY with your actual Google reCAPTCHA v3 Site Key -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6LdYl84sAAAAAH_tF9shOrB2bJlc5tynj1qTU47-"></script>
+    <script>
+        /**
+         * This function is called by the JavaFX backend to trigger the reCAPTCHA token generation.
+         * The 'action' parameter helps identify what the user is doing (e.g., 'login', 'register').
+         */
+        function executeRecaptcha(actionName) {
+            grecaptcha.ready(function() {
+                grecaptcha.execute('6LdYl84sAAAAAH_tF9shOrB2bJlc5tynj1qTU47-', {action: actionName}).then(function(token) {
+                    // Send the token back to JavaFX via the injected JavaConnector
+                    if (window.javaConnector) {
+                        window.javaConnector.onToken(token);
+                    } else {
+                        console.error("javaConnector is not defined. Cannot send token to JavaFX.");
+                    }
+                }).catch(function(error) {
+                     if (window.javaConnector) {
+                         window.javaConnector.onError(error.toString());
+                     }
+                });
+            });
+        }
+    </script>
+</head>
+<body>
+    <!-- Hidden body, reCAPTCHA v3 runs in the background -->
+</body>
+</html>

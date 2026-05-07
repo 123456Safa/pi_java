@@ -1,0 +1,122 @@
+COMMANDES RAPIDES - PHARMAX Application
+=========================================
+
+1. LANCER L'APPLICATION (MEILLEURE MÉTHODE)
+-------------------------------------------
+PowerShell :
+  cd C:\Users\fatma\IdeaProjects\pidevjava
+  powershell -ExecutionPolicy Bypass -File run.ps1
+
+Command Prompt :
+  cd C:\Users\fatma\IdeaProjects\pidevjava
+  run.bat
+
+Terminal IntelliJ :
+  powershell -ExecutionPolicy Bypass -File run.ps1
+
+
+2. NAVIGUER DANS L'APPLICATION
+-------------------------------
+• Au lancement → Frontoffice (Catalogue)
+• Clic sur "PHARMAX" (haut de la barre) → Backoffice
+• Clic sur "PHARMAX" (backoffice) → Frontoffice
+
+Boutons disponibles :
+  - Frontoffice : Catalogue | Panier | Mes commandes
+  - Backoffice : Dashboard | Commande
+
+
+3. DOCUMENTATION
+----------------
+• COMMENCEZ_PAR_LIRE.txt ← Synthèse rapide
+• SETUP_APPLICATION.md ← Guide complet
+• JAVAFX_ERROR_FIX.md ← Résolution d'erreurs
+• MODIFICATIONS_FINALES.md ← Détail des changements
+
+
+4. FICHIERS CLÉS
+---------------
+Scripts :
+  • run.ps1 - Lancement PowerShell
+  • run.bat - Lancement Batch
+
+Code source :
+  • src/main/java/controllers/AppShellController.java
+  • src/main/java/controllers/frontoffice/FrontOfficeMainController.java
+
+Interface :
+  • src/main/resources/app-shell.fxml
+  • src/main/resources/frontoffice/main.fxml
+
+Configuration :
+  • pom.xml - Configuration Maven
+  • .idea/runConfigurations/Main.xml - Configuration IntelliJ
+
+
+5. DÉPANNAGE
+-----------
+Error: JavaFX runtime components are missing
+  → Utiliser run.ps1 ou run.bat
+  → Ou lancer depuis IntelliJ après redémarrage
+
+Application ne démarre pas
+  → Vérifier que target/classes existe
+  → Vérifier que la base de données est accessible
+  → Consulter JAVAFX_ERROR_FIX.md
+
+Base de données
+  → L'application initialise automatiquement
+  → 25 produits de test sont pré-chargés
+
+
+6. TECHNOLOGIES UTILISÉES
+--------------------------
+• Java 17+
+• JavaFX 20.0.2
+• MySQL 8.0.26
+• Maven
+
+
+7. STRUCTURE DE L'APPLICATION
+------------------------------
+Shell Principal
+  ├─ StackPane (contenu dynamique)
+  │
+  ├─ Frontoffice Module
+  │   ├─ Barre : PHARMAX | Catalogue | Panier | Mes commandes | Client
+  │   └─ Contenu : Catalogue avec produits
+  │
+  └─ Backoffice Module
+      ├─ Sidebar : Menu + Brand
+      └─ Contenu : Dashboard et Gestion des commandes
+
+Navigation : Clic PHARMAX (bidirectionnel)
+
+
+8. COMMANDES MAVEN (OPTIONNEL)
+------------------------------
+Compiler :
+  mvn clean compile
+
+Nettoyer :
+  mvn clean
+
+Compiler et empaqueter :
+  mvn clean package
+
+Réinitialiser le cache IntelliJ :
+  rm -Recurse -Force .idea/caches
+
+
+RÉSUMÉ
+======
+✅ Application fonctionnelle
+✅ Interface simplifiée
+✅ Navigation bi-directionnelle
+✅ Documentation complète
+✅ Prêt à l'emploi
+
+Lancement recommandé : run.ps1
+
+Questions ? Consulter JAVAFX_ERROR_FIX.md
+

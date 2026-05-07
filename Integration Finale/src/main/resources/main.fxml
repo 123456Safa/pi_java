@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.MainController"
+            prefWidth="1360.0" prefHeight="820.0"
+            styleClass="admin-root">
+    <stylesheets>
+        <URL value="@admin.css" />
+    </stylesheets>
+
+    <left>
+        <VBox prefWidth="270.0" styleClass="sidebar">
+            <padding>
+                <Insets top="28" right="18" bottom="28" left="18" />
+            </padding>
+
+            <!-- Brand -->
+            <VBox spacing="4" styleClass="brand-box">
+                <Label fx:id="pharmaXLabel" text="pharmaX" styleClass="brand-title"
+                       onMouseClicked="#handlePharmaXLabelClick" style="-fx-cursor: hand;" />
+                <Label text="Backoffice · Administration" styleClass="brand-subtitle" />
+            </VBox>
+
+            <VBox spacing="8" styleClass="menu-box">
+
+                <!-- ── COMMANDES ── -->
+                <Label text="COMMANDES" styleClass="sidebar-section-label"
+                       style="-fx-font-size: 10; -fx-text-fill: #aaaaaa; -fx-padding: 10 0 2 4;" />
+                <Button fx:id="dashboardButton" text="📊  Dashboard Commandes"
+                        onAction="#showDashboard" styleClass="sidebar-button" />
+                <Button fx:id="commandesButton" text="🛒  Commandes"
+                        onAction="#showCommandes" styleClass="sidebar-button" />
+
+                <!-- ── PRODUITS ── -->
+                <Label text="PRODUITS" styleClass="sidebar-section-label"
+                       style="-fx-font-size: 10; -fx-text-fill: #aaaaaa; -fx-padding: 10 0 2 4;" />
+                <Button fx:id="gestionDashboardButton" text="📦  Dashboard Produits"
+                        onAction="#showGestionDashboard" styleClass="sidebar-button" />
+                <Button fx:id="gestionProduitsButton" text="🏷  Produits"
+                        onAction="#showGestionProduits" styleClass="sidebar-button" />
+                <Button fx:id="gestionCategoriesButton" text="🗂  Catégories"
+                        onAction="#showGestionCategories" styleClass="sidebar-button" />
+
+                <!-- ── RÉCLAMATIONS ── -->
+                <Label text="RÉCLAMATIONS" styleClass="sidebar-section-label"
+                       style="-fx-font-size: 10; -fx-text-fill: #aaaaaa; -fx-padding: 10 0 2 4;" />
+                <Button fx:id="reclamationsAdminButton" text="📋  Réclamations"
+                        onAction="#showReclamationsAdmin" styleClass="sidebar-button" />
+
+                <!-- ── UTILISATEURS ── -->
+                <Label text="UTILISATEURS" styleClass="sidebar-section-label"
+                       style="-fx-font-size: 10; -fx-text-fill: #aaaaaa; -fx-padding: 10 0 2 4;" />
+                <Button fx:id="usersDirectoryButton" text="👥  Users Directory"
+                        onAction="#showUsersDirectory" styleClass="sidebar-button" />
+                <Button fx:id="auditLogsButton" text="📜  Audit Logs"
+                        onAction="#showAuditLogs" styleClass="sidebar-button" />
+                <Button fx:id="monProfilAdminButton" text="👤  Mon Profil"
+                        onAction="#showMonProfil" styleClass="sidebar-button" />
+                
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS" />
+
+            <VBox spacing="4" styleClass="sidebar-footer">
+                <Label text="PharmaX Admin" styleClass="sidebar-footer-title" />
+                <Label text="Commandes · Produits · Réclamations · Utilisateurs" styleClass="sidebar-footer-subtitle" />
+            </VBox>
+        </VBox>
+    </left>
+
+    <center>
+        <BorderPane styleClass="workspace">
+            <top>
+                <fx:include source="/backoffice/app-bar.fxml" fx:id="appBar"/>
+            </top>
+            <center>
+                <ScrollPane fitToWidth="true" fitToHeight="false"
+                            hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                            styleClass="content-scroll">
+                    <content>
+                        <StackPane fx:id="contentPane" styleClass="content-pane" />
+                    </content>
+                </ScrollPane>
+            </center>
+        </BorderPane>
+    </center>
+
+</BorderPane>

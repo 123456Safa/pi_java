@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.QrScannerController"
+      spacing="18"
+      styleClass="crud-page">
+
+    <VBox spacing="8" styleClass="crud-toolbar">
+        <Label text="Scanner QR commande" styleClass="crud-toolbar-title"/>
+        <Label text="Scannez le QR de facture. L'ID visible de commande ne suffit pas pour valider la livraison." styleClass="crud-toolbar-subtitle"/>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <TextField fx:id="qrField" promptText="PHARMAX_DELIVERY:CODE_SECURISE" styleClass="history-search" HBox.hgrow="ALWAYS"/>
+            <Button text="Afficher" onAction="#handleScan" styleClass="action-button primary-action"/>
+        </HBox>
+    </VBox>
+
+    <VBox spacing="16" styleClass="table-card">
+        <Label text="Commande scannee" styleClass="card-title"/>
+        <GridPane hgap="18" vgap="12">
+            <Label text="ID" styleClass="input-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <Label fx:id="commandeIdLabel" text="-" styleClass="detail-value" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="Produits" styleClass="input-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <Label fx:id="produitsLabel" text="-" wrapText="true" styleClass="detail-value" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="Total" styleClass="input-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <Label fx:id="totalLabel" text="-" styleClass="detail-value" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <Label text="Statut" styleClass="input-label" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <Label fx:id="statutLabel" text="-" styleClass="detail-value" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+            <Label text="Date" styleClass="input-label" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <Label fx:id="dateLabel" text="-" styleClass="detail-value" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        </GridPane>
+
+        <Button fx:id="markDeliveredButton" text="Marquer comme livre" onAction="#handleMarkDelivered"
+                styleClass="action-button primary-action"/>
+    </VBox>
+</VBox>

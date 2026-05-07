@@ -1,0 +1,57 @@
+.app-shell-root {
+    -fx-background-color: linear-gradient(to bottom right, #f4f6fb, #eef3fb);
+    -fx-font-family: "Segoe UI";
+}
+
+.app-shell-topbar {
+    -fx-background-color: white;
+    -fx-border-color: #e6ebf3;
+    -fx-border-width: 0 0 1 0;
+}
+
+.app-shell-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2b3d;
+}
+
+.app-shell-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #728197;
+}
+
+.module-label-caption {
+    -fx-font-size: 13px;
+    -fx-text-fill: #728197;
+}
+
+.module-label-value {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2b3d;
+    -fx-padding: 0 10 0 0;
+}
+
+.module-button {
+    -fx-background-color: #edf2ff;
+    -fx-text-fill: #54637a;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-padding: 10 18 10 18;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.module-button:hover {
+    -fx-background-color: #dde7ff;
+}
+
+.module-button-active {
+    -fx-background-color: linear-gradient(to right, #6d5dfc, #5b4be9);
+    -fx-text-fill: white;
+}
+
+.app-shell-content {
+    -fx-padding: 0;
+}

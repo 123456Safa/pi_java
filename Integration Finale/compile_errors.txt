@@ -1,0 +1,7 @@
+﻿.\mvnw.cmd : Le chemin d'accès spécifié est introuvable.
+Au caractère Ligne:1 : 1
++ .\mvnw.cmd compile 2>&1 | Out-File -FilePath "compile_errors.txt" -En ...
++ ~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Le chemin d'acc...st introuvable.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

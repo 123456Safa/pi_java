@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="controllers.DetailReclamationControlleradmin"
+            stylesheets="@style3.css"
+            style="-fx-background-color: #f4f6fb;">
+
+ 
+
+    <!-- ═══ HEADER ═══ -->
+ 
+
+    <!-- ═══ CONTENU ═══ -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+            <VBox spacing="20" styleClass="form-body" style="-fx-padding: 28;">
+
+                <!-- MAIN INFO CARD -->
+                <VBox styleClass="form-card" spacing="18">
+                    <HBox spacing="16" alignment="CENTER_LEFT">
+                        <Label fx:id="titre" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #0f172a;" />
+                        <Label fx:id="statut" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 5 12; -fx-background-radius: 20; -fx-background-color: #5856d6;" />
+                    </HBox>
+
+                    <Separator/>
+
+                    <GridPane hgap="24" vgap="16">
+                        <columnConstraints>
+                            <ColumnConstraints prefWidth="150" />
+                            <ColumnConstraints hgrow="ALWAYS" />
+                        </columnConstraints>
+                        
+                        <Label styleClass="field-label" text="📅 DATE DE CRÉATION" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Label fx:id="date" style="-fx-font-size: 14; -fx-text-fill: #1a1a2e; -fx-font-weight: 500;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        
+                        <Label styleClass="field-label" text="⚡ STATUT ACTUEL" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <Label fx:id="statusActuel" style="-fx-font-size: 13; -fx-text-fill: #0369a1; -fx-font-weight: 600; -fx-background-color: #eff6ff; -fx-padding: 6 12; -fx-background-radius: 6;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        
+                        <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2">
+                            <Label styleClass="field-label" text="📝 DESCRIPTION DÉTAILLÉE" />
+                            <Label fx:id="description" style="-fx-font-size: 14; -fx-text-fill: #475569; -fx-background-color: #f8fafc; -fx-padding: 16; -fx-background-radius: 10; -fx-border-color: #e2e8f0; -fx-border-radius: 10;" wrapText="true" />
+                        </VBox>
+                    </GridPane>
+
+                    <Separator/>
+
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <Button fx:id="btnModifier" onAction="#modifier" styleClass="button-add" style="-fx-background-color: #f59e0b;" text="✏️ Modifier Statut" />
+                        <MenuButton fx:id="btnTraduire" styleClass="button-add" style="-fx-background-color: #06b6d4;" text="🌐 Traduire">
+                            <items>
+                                <MenuItem text="English" onAction="#translateToEnglish"/>
+                                <MenuItem text="Español" onAction="#translateToSpanish"/>
+                                <MenuItem text="Deutsch" onAction="#translateToGerman"/>
+                                <MenuItem text="Italiano" onAction="#translateToItalian"/>
+                                <MenuItem text="Português" onAction="#translateToPortuguese"/>
+                                <MenuItem text="日本語" onAction="#translateToJapanese"/>
+                                <MenuItem text="中文" onAction="#translateToChinese"/>
+                                <MenuItem text="العربية" onAction="#translateToArabic"/>
+                                <MenuItem text="Русский" onAction="#translateToRussian"/>
+                            </items>
+                        </MenuButton>
+                        <Button fx:id="btnSupprimer" onAction="#supprimer" styleClass="button-add" style="-fx-background-color: #ef4444;" text="🗑️ Supprimer" />
+                    </HBox>
+                </VBox>
+
+                <!-- TRANSLATION CARD (Conditional) -->
+                <VBox fx:id="translationContainer" managed="false" visible="false" styleClass="form-card" spacing="15" style="-fx-border-color: #06b6d4; -fx-border-width: 0 0 0 6; -fx-background-color: #f0f9ff;">
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <Label style="-fx-font-size: 14; -fx-text-fill: #0891b2; -fx-font-weight: bold;" text="🌐 TRADUCTION IA" />
+                        <Label fx:id="translatedLangLabel" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: #06b6d4; -fx-padding: 4 10; -fx-background-radius: 6;" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button onAction="#closeTranslation" style="-fx-background-color: transparent; -fx-text-fill: #94a3b8; -fx-font-size: 16; -fx-cursor: hand;" text="✕" />
+                    </HBox>
+                    <VBox spacing="8">
+                        <Label styleClass="field-label" text="TITRE TRADUIT" style="-fx-text-fill: #0891b2;" />
+                        <Label fx:id="translatedTitre" style="-fx-background-color: white; -fx-padding: 12; -fx-background-radius: 8; -fx-border-color: #e0f2fe; -fx-border-radius: 8;" wrapText="true" />
+                    </VBox>
+                    <VBox spacing="8">
+                        <Label styleClass="field-label" text="DESCRIPTION TRADUITE" style="-fx-text-fill: #0891b2;" />
+                        <Label fx:id="translatedDescription" style="-fx-background-color: white; -fx-padding: 12; -fx-background-radius: 8; -fx-border-color: #e0f2fe; -fx-border-radius: 8;" wrapText="true" />
+                    </VBox>
+                </VBox>
+
+                <!-- RESPONSES CARD -->
+                <VBox styleClass="form-card" spacing="18">
+                    <HBox spacing="16" alignment="CENTER_LEFT">
+                        <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #5856d6;" text="💬  RÉPONSES ENVOYÉES" />
+                        <Label fx:id="reponseCount" style="-fx-font-size: 12; -fx-text-fill: white; -fx-background-color: #5856d6; -fx-padding: 2 10; -fx-background-radius: 10; -fx-font-weight: bold;" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnAjouterReponse" onAction="#repondre" styleClass="button-add" text="+ Ajouter Réponse" />
+                    </HBox>
+
+                    <Separator/>
+
+                    <VBox fx:id="reponseContainer" spacing="14" />
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

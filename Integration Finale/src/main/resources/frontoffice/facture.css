@@ -1,0 +1,332 @@
+/* ═══════════════════════════════════════════════
+   PHARMAX – Invoice / Facture Design System
+   ═══════════════════════════════════════════════ */
+
+/* ── Page Background ───────────────────────────── */
+.page-scroll {
+    -fx-background-color: #f7f9fc;
+    -fx-background: #f7f9fc;
+    -fx-font-family: "Inter", "Segoe UI", sans-serif;
+}
+.page-scroll > .viewport {
+    -fx-background-color: #f7f9fc;
+}
+
+/* ── Navigation Bar ─────────────────────────────── */
+.nav-bar {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 15, 0, 0, 2);
+    -fx-min-height: 62;
+    -fx-pref-height: 62;
+}
+.nav-brand {
+    -fx-font-size: 20px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #1a1f36;
+    -fx-letter-spacing: -0.5;
+}
+.nav-tagline {
+    -fx-font-size: 11px;
+    -fx-text-fill: #697386;
+}
+.status-pill {
+    -fx-background-color: #052e16;
+    -fx-background-radius: 20;
+    -fx-padding: 6 16;
+    -fx-border-color: #166534;
+    -fx-border-radius: 20;
+    -fx-border-width: 1;
+}
+.status-check {
+    -fx-text-fill: #4ade80;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+.status-text {
+    -fx-text-fill: #4ade80;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+/* Buttons */
+.btn-ghost {
+    -fx-background-color: transparent;
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 12px;
+    -fx-padding: 8 16;
+    -fx-background-radius: 7;
+    -fx-cursor: hand;
+}
+.btn-ghost:hover {
+    -fx-background-color: #1e293b;
+    -fx-text-fill: white;
+}
+.btn-dark {
+    -fx-background-color: #635bff;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 9 20;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);
+}
+.btn-dark:hover {
+    -fx-background-color: #5851df;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 12, 0, 0, 3);
+}
+
+/* ── Success Banner ─────────────────────────────── */
+.success-banner {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: #e3e8ee;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+    -fx-padding: 16 24;
+    -fx-max-width: 820;
+    -fx-pref-width: 820;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 15, 0, 0, 2);
+}
+.check-circle {
+    -fx-background-color: #00d66f;
+    -fx-background-radius: 20;
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-pref-width: 40;
+    -fx-pref-height: 40;
+}
+.check-icon {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+.banner-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1f36;
+}
+.banner-sub {
+    -fx-font-size: 13px;
+    -fx-text-fill: #697386;
+}
+
+/* ── Invoice Paper ──────────────────────────────── */
+.paper {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 25, 0, 0, 8);
+    -fx-max-width: 820;
+    -fx-pref-width: 820;
+    -fx-padding: 0 0 0 0;
+}
+
+/* Dark header band */
+.paper-header {
+    -fx-background-color: #f7f9fc;
+    -fx-background-radius: 12 12 0 0;
+    -fx-border-color: #e3e8ee;
+    -fx-border-width: 0 0 1 0;
+}
+.paper-brand {
+    -fx-font-size: 24px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #1a1f36;
+    -fx-letter-spacing: -0.5;
+}
+.paper-brand-sub {
+    -fx-font-size: 11px;
+    -fx-text-fill: #697386;
+}
+.paper-invoice-word {
+    -fx-font-size: 28px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #635bff;
+}
+.paper-id-prefix {
+    -fx-font-size: 13px;
+    -fx-text-fill: #64748b;
+}
+.paper-invoice-id {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1f36;
+}
+
+/* ── Meta Row (4-col grid) ──────────────────────── */
+.meta-row {
+    -fx-background-color: #f7f9fc;
+    -fx-border-color: transparent transparent #e3e8ee transparent;
+    -fx-border-width: 0 0 1 0;
+}
+.meta-block {
+    -fx-padding: 18 28;
+}
+.meta-sep {
+    -fx-background-color: #e3e8ee;
+}
+.meta-label {
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #94a3b8;
+    -fx-letter-spacing: 1.5;
+}
+.meta-value {
+    -fx-font-size: 13px;
+    -fx-text-fill: #1e293b;
+    -fx-font-weight: bold;
+}
+.badge-confirmed {
+    -fx-background-color: #dcfce7;
+    -fx-text-fill: #15803d;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+    -fx-background-radius: 6;
+    -fx-padding: 4 12;
+}
+.badge-pending {
+    -fx-background-color: #fef3c7;
+    -fx-text-fill: #b45309;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+    -fx-background-radius: 6;
+    -fx-padding: 4 12;
+}
+
+/* ── Client Section ─────────────────────────────── */
+.client-section {
+    -fx-padding: 22 36;
+    -fx-border-color: transparent transparent #e2e8f0 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+.section-label {
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #94a3b8;
+    -fx-letter-spacing: 1.5;
+}
+.client-name-big {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0f172a;
+}
+
+/* ── Items Table ────────────────────────────────── */
+.table-wrapper {
+    -fx-border-color: transparent transparent #e2e8f0 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+.table-head-row {
+    -fx-background-color: #f1f5f9;
+}
+.col-head {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #64748b;
+    -fx-letter-spacing: 1;
+}
+.col-head-center {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #64748b;
+    -fx-alignment: CENTER;
+    -fx-letter-spacing: 1;
+}
+.col-head-right {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #64748b;
+    -fx-alignment: CENTER_RIGHT;
+    -fx-letter-spacing: 1;
+}
+
+/* Row classes (assigned in Java) */
+.item-row-even {
+    -fx-background-color: white;
+    -fx-padding: 12 28;
+    -fx-border-color: transparent transparent #f1f5f9 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+.item-row-odd {
+    -fx-background-color: #fafbff;
+    -fx-padding: 12 28;
+    -fx-border-color: transparent transparent #f1f5f9 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+.item-row-even:hover, .item-row-odd:hover {
+    -fx-background-color: #eff6ff;
+}
+.cell-product {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+.cell-price {
+    -fx-font-size: 13px;
+    -fx-text-fill: #64748b;
+    -fx-alignment: CENTER;
+}
+.cell-qty {
+    -fx-font-size: 13px;
+    -fx-text-fill: #64748b;
+    -fx-alignment: CENTER;
+}
+.cell-subtotal {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0f172a;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+/* ── Totals ─────────────────────────────────────── */
+.totals-section {
+    -fx-padding: 22 36;
+    -fx-border-color: transparent transparent #e2e8f0 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+.total-line {
+    -fx-padding: 6 0;
+    -fx-border-color: transparent transparent #f1f5f9 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+.total-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #64748b;
+}
+.total-val {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #334155;
+    -fx-min-width: 110;
+    -fx-alignment: CENTER_RIGHT;
+}
+.grand-total-line {
+    -fx-padding: 12 0 0 0;
+    -fx-background-color: #f0fdf4;
+    -fx-background-radius: 8;
+}
+.grand-total-label {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0f172a;
+}
+.grand-total-val {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #16a34a;
+    -fx-min-width: 110;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+/* ── Paper Footer ───────────────────────────────── */
+.paper-footer {
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 0 0 14 14;
+    -fx-padding: 16 36;
+    -fx-border-color: #e2e8f0 transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+}
+.footer-text {
+    -fx-font-size: 11px;
+    -fx-text-fill: #94a3b8;
+}

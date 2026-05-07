@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.geometry.Insets?>
+
+<DialogPane stylesheets="@/gestion/style.css" styleClass="coral-dialog-pane" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BackOfficeNotificationController" prefWidth="380" prefHeight="500">
+    <header>
+        <VBox styleClass="coral-header">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="Notifications" styleClass="coral-title" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button styleClass="coral-settings-btn" text="⚙" />
+            </HBox>
+            <HBox spacing="10" style="-fx-padding: 10 0 0 0;">
+                <ToggleButton fx:id="btnFilterTout" text="Tout" styleClass="coral-filter-btn" selected="true">
+                    <toggleGroup>
+                        <ToggleGroup fx:id="filterGroup" />
+                    </toggleGroup>
+                </ToggleButton>
+                <ToggleButton fx:id="btnFilterNonLu" text="Non lu" styleClass="coral-filter-btn" toggleGroup="$filterGroup" />
+            </HBox>
+        </VBox>
+    </header>
+
+    <content>
+        <VBox styleClass="coral-content" VBox.vgrow="ALWAYS">
+            <ListView fx:id="lvProduits" styleClass="coral-list-view" VBox.vgrow="ALWAYS">
+                <placeholder>
+                    <VBox alignment="CENTER" spacing="10">
+                        <Label text="📭" style="-fx-font-size: 40px;" />
+                        <Label text="Aucune notification" style="-fx-text-fill: #95a5a6;" />
+                    </VBox>
+                </placeholder>
+            </ListView>
+            <!-- Label pour le titre de section caché par défaut ou géré par le contrôleur -->
+            <Label fx:id="lblMessage" visible="false" managed="false" />
+        </VBox>
+    </content>
+
+    <buttonTypes>
+        <ButtonType fx:id="btnFermer" text="Fermer" buttonData="CANCEL_CLOSE" />
+    </buttonTypes>
+</DialogPane>

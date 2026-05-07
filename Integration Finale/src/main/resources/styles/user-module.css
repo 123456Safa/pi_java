@@ -1,0 +1,376 @@
+/* 
+ * PharmaX - Premium Modern Design System
+ * Inspired by Glassmorphism and Fluid UI principles.
+ */
+
+.root {
+    /* Color Palette */
+    -fx-accent-primary: linear-gradient(to bottom right, #10b981, #059669); /* Emerald */
+    -fx-accent-secondary: linear-gradient(to bottom right, #3b82f6, #2563eb); /* Royal Blue */
+    -fx-accent-danger: linear-gradient(to bottom right, #ef4444, #dc2626); /* Rose Red */
+    
+    -fx-bg-base: #f8fafc;
+    -fx-bg-surface: #ffffff;
+    -fx-bg-glass: rgba(255, 255, 255, 0.7);
+    
+    -fx-text-main: #1e293b;
+    -fx-text-sub: #64748b;
+    -fx-text-muted: #94a3b8;
+    -fx-text-on-accent: #ffffff;
+    
+    -fx-border-color-default: #e2e8f0;
+    -fx-border-radius-lg: 16;
+    -fx-border-radius-md: 12;
+    
+    -fx-font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* Base Styles */
+.single-window-root {
+    -fx-background-color: -fx-bg-base;
+}
+
+/* Card & Surface Styles */
+.premium-card {
+    -fx-background-color: -fx-bg-surface;
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: -fx-border-color-default;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.06), 15, 0, 0, 8);
+}
+
+.glass-pane {
+    -fx-background-color: -fx-bg-glass;
+    -fx-background-radius: 16;
+    -fx-border-color: rgba(255, 255, 255, 0.4);
+    -fx-border-width: 1.5;
+}
+
+/* Header Styles */
+.premium-header {
+    -fx-background-color: -fx-bg-surface;
+    -fx-padding: 20 30;
+    -fx-border-color: transparent transparent -fx-border-color-default transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.premium-title {
+    -fx-font-size: 28;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-main;
+}
+
+/* Button Styles */
+.btn-primary {
+    -fx-background-color: -fx-accent-primary;
+    -fx-text-fill: -fx-text-on-accent;
+    -fx-font-weight: bold;
+    -fx-padding: 10 24;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+.btn-primary:hover { -fx-opacity: 0.9; }
+
+.btn-secondary {
+    -fx-background-color: -fx-accent-secondary;
+    -fx-text-fill: -fx-text-on-accent;
+    -fx-font-weight: bold;
+    -fx-padding: 10 24;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+.btn-secondary:hover { -fx-opacity: 0.9; }
+
+.btn-danger {
+    -fx-background-color: -fx-accent-danger;
+    -fx-text-fill: -fx-text-on-accent;
+    -fx-font-weight: bold;
+    -fx-padding: 10 24;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+.btn-danger:hover { -fx-opacity: 0.9; }
+
+.btn-outline {
+    -fx-background-color: transparent;
+    -fx-border-color: -fx-accent-primary;
+    -fx-border-radius: 8;
+    -fx-text-fill: #10b981;
+    -fx-font-weight: bold;
+    -fx-padding: 10 24;
+    -fx-cursor: hand;
+}
+.btn-outline:hover { -fx-background-color: rgba(16, 185, 129, 0.05); }
+
+.btn-outline-sm {
+    -fx-background-color: transparent;
+    -fx-border-color: -fx-border-color-default;
+    -fx-border-radius: 20;
+    -fx-text-fill: -fx-text-sub;
+    -fx-font-size: 11;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+.btn-outline-sm:hover {
+    -fx-border-color: -fx-accent-primary;
+    -fx-text-fill: -fx-accent-primary;
+}
+
+/* Form Styles */
+.modern-input {
+    -fx-background-color: #f1f5f9;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: transparent;
+    -fx-padding: 12;
+    -fx-font-size: 14;
+}
+.modern-input:focused {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #10b981;
+}
+
+/* Table Styles */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+.table-view .column-header {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: transparent transparent #e2e8f0 transparent;
+    -fx-padding: 10;
+}
+.table-view .column-header .label {
+    -fx-text-fill: -fx-text-sub;
+    -fx-font-weight: bold;
+}
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f1f5f9 transparent;
+}
+.table-row-cell:selected {
+    -fx-background-color: #f0fdf4;
+}
+
+/* Badge Styles */
+.badge {
+    -fx-padding: 4 12;
+    -fx-background-radius: 20;
+    -fx-font-size: 11;
+    -fx-font-weight: bold;
+}
+.badge-admin { -fx-background-color: #fef3c7; -fx-text-fill: #92400e; }
+.badge-user { -fx-background-color: #f1f5f9; -fx-text-fill: #475569; }
+
+/* Feedback Styles */
+.feedback-success {
+    -fx-text-fill: #065f46;
+    -fx-background-color: #dcfce7;
+    -fx-padding: 10 15;
+    -fx-background-radius: 8;
+}
+.feedback-error {
+    -fx-text-fill: #991b1b;
+    -fx-background-color: #fee2e2;
+    -fx-padding: 10 15;
+    -fx-background-radius: 8;
+}
+
+/* --- Chatbot Modern UI --- */
+.chat-panel {
+    -fx-background-color: -fx-bg-glass;
+    -fx-background-radius: 16;
+    -fx-border-color: rgba(255, 255, 255, 0.4);
+    -fx-border-width: 1.5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 30, 0, 0, 15);
+}
+
+.chat-header {
+    -fx-background-color: -fx-accent-primary;
+    -fx-background-radius: 16 16 0 0;
+}
+
+.chat-header-title {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16;
+}
+
+.chat-close-btn {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-background-radius: 50;
+    -fx-cursor: hand;
+}
+.chat-close-btn:hover { -fx-background-color: rgba(255, 255, 255, 0.3); }
+
+.chat-messages-container {
+    -fx-background-color: transparent;
+}
+
+.chat-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+.chat-scroll-pane .viewport { -fx-background-color: transparent; }
+
+.chat-message-user {
+    -fx-background-color: -fx-accent-primary;
+    -fx-background-radius: 16 16 2 16;
+    -fx-text-fill: white !important;
+    -fx-padding: 10 14;
+}
+
+/* Fix for TextArea internal text color */
+.chat-message-user .content {
+    -fx-background-color: transparent;
+}
+.chat-message-user .text {
+    -fx-fill: white !important;
+}
+
+.chat-message-ai {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 16 16 16 2;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1;
+    -fx-text-fill: -fx-text-main;
+    -fx-padding: 10 14;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 5, 0, 0, 2);
+}
+
+.chat-message-ai .text {
+    -fx-fill: -fx-text-main;
+}
+
+/* Aliases for Profile History */
+.chat-bubble-user { -fx-background-color: -fx-accent-primary; -fx-text-fill: white; -fx-background-radius: 16 16 2 16; -fx-padding: 10 14; }
+.chat-bubble-ai { -fx-background-color: white; -fx-text-fill: -fx-text-main; -fx-background-radius: 16 16 16 2; -fx-padding: 10 14; -fx-border-color: #e2e8f0; -fx-border-width: 1; }
+
+.chat-input-bar {
+    -fx-background-color: white;
+    -fx-background-radius: 0 0 16 16;
+    -fx-border-color: #e2e8f0 transparent transparent transparent;
+}
+
+.chat-input-field {
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 20;
+    -fx-padding: 8 15;
+}
+
+.chat-send-btn {
+    -fx-background-color: -fx-accent-primary;
+    -fx-text-fill: white;
+    -fx-background-radius: 50;
+    -fx-min-width: 36;
+    -fx-min-height: 36;
+    -fx-cursor: hand;
+}
+
+.chat-bubble-btn {
+    -fx-background-color: -fx-accent-primary;
+    -fx-text-fill: white;
+    -fx-font-size: 24;
+    -fx-background-radius: 50;
+    -fx-min-width: 60;
+    -fx-min-height: 60;
+    -fx-effect: dropshadow(three-pass-box, rgba(16, 185, 129, 0.4), 15, 0, 0, 8);
+    -fx-cursor: hand;
+}
+.chat-bubble-btn:hover { -fx-scale-x: 1.05; -fx-scale-y: 1.05; }
+
+/* --- Table Row Fixes --- */
+.table-row-cell:hover {
+    -fx-background-color: #f0fdf4 !important; /* Soft emerald hover */
+}
+.table-row-cell:selected {
+    -fx-background-color: #dcfce7 !important;
+}
+.table-row-cell .text {
+    -fx-fill: -fx-text-main; /* Ensure text is always readable */
+}
+
+/* --- Dialog & Popups --- */
+.dialog-pane {
+    -fx-background-color: -fx-bg-base;
+}
+.dialog-pane > .label.content {
+    -fx-text-fill: -fx-text-main;
+    -fx-font-size: 14;
+}
+.dialog-pane:header .header-panel {
+    -fx-background-color: -fx-accent-primary;
+}
+.dialog-pane:header .header-panel .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+.dialog-pane .button-bar .button {
+    -fx-background-color: #e2e8f0;
+    -fx-text-fill: -fx-text-main;
+}
+.dialog-pane .button-bar .button:default {
+    -fx-background-color: -fx-accent-primary;
+    -fx-text-fill: white;
+}
+
+/* --- Misc UI Fixes --- */
+.security-card-label {
+    -fx-text-fill: -fx-text-main !important;
+    -fx-font-weight: bold;
+}
+
+/* --- Modern Labels & Inputs --- */
+.input-group {
+    -fx-spacing: 6;
+}
+
+.modern-label {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.btn-back-header {
+    -fx-background-color: transparent;
+    -fx-text-fill: #10b981;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 8 16;
+}
+
+.btn-back-header:hover {
+    -fx-background-color: #f0fdf4;
+    -fx-background-radius: 8;
+}
+
+/* --- Modern 2FA Dialog --- */
+.modern-dialog-root {
+    -fx-background-color: white;
+    -fx-padding: 30;
+    -fx-spacing: 20;
+    -fx-background-radius: 20;
+}
+
+.qr-card {
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 4);
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 15;
+    -fx-border-width: 1;
+}
+
+.dialog-header-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+.dialog-subtitle {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 13px;
+}

@@ -1,0 +1,41 @@
+================================================================================
+INTELLIJ IDEA - JAVAFX VM OPTIONS FOR WINDOWS (FIXED)
+================================================================================
+
+⚠️ CRITICAL: This fixes the "Illegal char <:" error by using Windows separator
+
+================================================================================
+EXACT VM OPTIONS LINE (Copy-paste this):
+================================================================================
+
+--module-path C:\Users\fatma\.m2\repository\org\openjfx\javafx-base\20.0.2\javafx-base-20.0.2-win.jar;C:\Users\fatma\.m2\repository\org\openjfx\javafx-graphics\20.0.2\javafx-graphics-20.0.2-win.jar;C:\Users\fatma\.m2\repository\org\openjfx\javafx-controls\20.0.2\javafx-controls-20.0.2-win.jar;C:\Users\fatma\.m2\repository\org\openjfx\javafx-fxml\20.0.2\javafx-fxml-20.0.2-win.jar --add-modules javafx.controls,javafx.fxml --enable-native-access=javafx.graphics
+
+================================================================================
+HOW TO USE IN INTELLIJ:
+================================================================================
+
+1. Run → Edit Configurations...
+2. Create new "Application" configuration
+3. Main class: org.example.Main
+4. VM options: PASTE the line above
+5. Apply → OK
+6. Click Run button (Shift+F10)
+
+================================================================================
+KEY FIXES:
+================================================================================
+
+❌ BROKEN (Linux style): --module-path C:/path/to/jar:C:/path/to/jar
+✅ FIXED (Windows style): --module-path C:\path\to\jar;C:\path\to\jar
+
+- Uses ; (semicolon) separator - NOT : (colon)
+- Uses \ (backslash) - NOT / (forward slash)
+- All paths start with C:\Users\fatma\.m2\repository\
+
+================================================================================
+ALTERNATIVE: Use the batch file
+================================================================================
+
+If IntelliJ still gives issues, use: javafx_run_windows.bat
+
+This batch file has the correct Windows configuration built-in.
