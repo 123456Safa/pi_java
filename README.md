@@ -233,7 +233,7 @@ La classe principale est `org.example.Main`. Elle initialise la base de donnees,
 
 ## Structure des Fichiers
 
-
+```
 Integration Finale/
 ├── README.md
 ├── pom.xml
@@ -284,7 +284,7 @@ Integration Finale/
 │   │       └── reclamation/
 │   └── test/
 └── target/
-
+```
 
 ---
 
